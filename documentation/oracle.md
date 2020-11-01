@@ -32,15 +32,16 @@ Any contract that points to the `Oracle` should have a governable `address` for 
 
 `Oracle` maintains a simple state machine with two states: (1) `IDLE` and (2) `WAITING_FOR_HARBINGER`. 
 
-From the `IDLE` state, the `Oracle` can only transition to the `WAITING_FOR_HARBINGER` state. The `getXtzUsdPrice` can only be invoked when in the `IDLE` state. Invoking the entrypoint transitions the `Oracle` to the `WAITING_FOR_HARBINGER` state.
+From the `IDLE` state, the `Oracle` can only transition to the `WAITING_FOR_HARBINGER` state. The `getXtzUsdPrice` can only be invoked when in the `IDLE` state. Invoking the entrypoint transitions the `Oracle` to the `WAITING_FOR_HARBINGER` state. In the `IDLE` state, `clientCallback` is always `none`.
 
-From the `WAITING_FOR_HARBINGER` state, the `Oracle` can only transition to the `IDLE` state. The `getXtzUsdPrice_callback` can only be invoked when in the `WAITING_FOR_HARBINGER` state. Invoking the entrypoint transitions the `Oracle` to the `IDLE` state.
+From the `WAITING_FOR_HARBINGER` state, the `Oracle` can only transition to the `IDLE` state. The `getXtzUsdPrice_callback` can only be invoked when in the `WAITING_FOR_HARBINGER` state. Invoking the entrypoint transitions the `Oracle` to the `IDLE` state.  In the `WAITING_FOR_HARBINGER` state, `clientCallback` is always `some`.
 
 ## Storage
 
 The `Oracle` stores the following:
 - `harbingerContractAddress` (`address`): The address of the `Harbinger Price feed` contract. Used to request data and for ACL checking.
 - `state` (`nat`): The current state of the contract; see 'State Machine' above.
+- `clientCallback` (`option(contract(nat))`): A register that stores state when the `Oracle` is waiting for Harbinger data.
 
 There are no governable parameters in the `Oracle`.
 
