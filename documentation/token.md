@@ -14,6 +14,10 @@ Details of the `token` contract are omitted since the FA1.2 standard is well und
 
 The `token` contract controls the `KUSD` tokens. Tokens are specified in 10^18 precision, as are all values in Kollibri. The administrator of the token contract is the `minter` contract, who controls minting and burning of `KUSD` tokens based on it's own internal logic. 
 
+# Upgrade Path
+
+Any contract which interacts with the `Token` contract should have a governable reference. When a new `Token` contract is deployed, then the references should be updated. Additionally, if the admin needs to be changed, then the `Governor` should call `setAdmin` on the `Token` contract.
+
 ### Changes
 
 Kollibri tries to use this contract without modification to preserve security. Kollibri makes the following modifications:
