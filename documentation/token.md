@@ -6,7 +6,7 @@ The `Token` contract is an FA1.2 Token Contract.
 
 The FA1.2 token standard is available in the [Tezos Improvement Proposal Repository](https://gitlab.com/tzip/tzip/blob/master/A/FA1.2.md).
 
-The token contract was copied verbatim from [SmartPy's implementation](http://smartpy.io/dev/?template=fa12.py) on 09/06/2020 with some minor changes noted below.
+The token contract was copied verbatim from [SmartPy's implementation](http://smartpy.io/dev/?template=fa12.py) on 11/02/2020 with some minor changes noted below.
 
 ## Overview
 
