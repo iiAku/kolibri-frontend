@@ -37,14 +37,14 @@ The Kollibri system will prevent users from borrowing `KUSD` such that a CDP bec
 
 ### Liquidation
 
-If a CDP becomes under collateralized, then anyone can liquidate the CDP. This user is the **beneficiary**. 
+If a CDP becomes under collateralized, then anyone can liquidate the CDP. This user is the **liquidator**. 
 
 In liquidation, the following happens:
-1) The beneficiary receives all `XTZ` in the CDP.
-2) The beneficiary repays all outstanding `KUSD` tokens, plus an additional percentage based **liquidation** fee assessed on the assets.
+1) The liquidator receives all `XTZ` in the CDP.
+2) The liquidator repays all outstanding `KUSD` tokens, plus an additional percentage based **liquidation** fee assessed on the assets.
 3) The CDP is marked as **liquidated** and no longer accepts deposits, withdrawals, borrows or repayments. 
 
-This is economically beneficial to the beneficiary. Meanwhile, the CDP owner is penalized heavily for letting their CDP become undercollateralized. 
+This is economically beneficial to the liquidator. Meanwhile, the CDP owner is penalized heavily for letting their CDP become undercollateralized. 
 
 The following example illustrates the benefits:
 - The price of `XTZ/USD` is $2.00
