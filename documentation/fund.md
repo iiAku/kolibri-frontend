@@ -8,7 +8,7 @@ A `Fund` contract collects funds in `KUSD` and `XTZ` for later use.
 (1) Stability Fund: Acts as the liquidator of last resort
 (2) Developer Fund: Acts as an on-chain treasury to incentivize development.
 
-`Fund`s can liquidate a vault (and acquire `XTZ` from the liquidation) and they can also disperse that `XTZ`. 
+`Fund`s can liquidate an oven (and acquire `XTZ` from the liquidation) and they can also disperse that `XTZ`. 
 
 `Fund` contracts have two permissions on them:
 (1) `Administrator`: Can manage the `Fund`'s baker and instruct the fund to liquidate an `Oven`
@@ -20,7 +20,7 @@ Long term, `Administrator` should be a multi-sig or governance function controll
 
 Anyone may deposit `XTZ` into a `Fund`.
 
-The `Administrator` can perform vault liquidations and choose the baker for the fund.
+The `Administrator` can perform oven liquidations and choose the baker for the fund.
 
 The `Governor` can change the administrator and other contract references. The `Governor` can also disburse `XTZ` funds.
 

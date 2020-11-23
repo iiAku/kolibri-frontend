@@ -140,7 +140,7 @@ There are two main flows through the system:
 \* Optional calls
 
 There are also two "auxilary" calls which are made. These "auxilary" calls do not call back:
-1) `OvenProxy` always calls `OvenRegistry` to validate the caller is a known oven. `OvenRegistry` fails the call if the given vault was not trusted.
+1) `OvenProxy` always calls `OvenRegistry` to validate the caller is a known oven. `OvenRegistry` fails the call if the given oven was not trusted.
 2) `Minter` sometimes calls `Token` to mint or burn tokens. 
 
 ## Oracle
@@ -159,7 +159,7 @@ In the long term, this will be a multi-sig contract.
 
 ### Fund Administrator
 
-**Fund administrators** are able to administer the Developer and Stability funds with immediate effect. Specifically, they can set the delegate for these contracts, and they can direct the funds to call `liquidate` on valid Vault contracts. Fund Administrators cannot move funds from the dev fund. 
+**Fund administrators** are able to administer the Developer and Stability funds with immediate effect. Specifically, they can set the delegate for these contracts, and they can direct the funds to call `liquidate` on valid `Oven` contracts. Fund Administrators cannot move funds from the dev fund. 
 
 In the long term, this will be a multi-sig contract.
 
@@ -191,7 +191,7 @@ The Governor can elect to transfer funds from the developer or stability fund. T
 
 ## Long Term Features
 
-Kollibri is a minimum viable product and it is expected that the contract will upgrade over time. Kollibri is bult to be fully upgradeable, but `oven` code is immutable to protect funds of users. We present two future upgrades which could potentially require changes to vaults. 
+Kollibri is a minimum viable product and it is expected that the contract will upgrade over time. Kollibri is bult to be fully upgradeable, but `oven` code is immutable to protect funds of users. We present two future upgrades which could potentially require changes to ovens. 
 
 ### Value Limited Ovens
 

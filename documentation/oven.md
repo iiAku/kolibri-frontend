@@ -46,7 +46,7 @@ The `Oven` stores the following:
 - `borrowedTokens` (`nat`): The number of tokens borrowed against this `oven`.
 - `stabilityFeeTokens` (`int`): The number of tokens accrued in stability fees against borrowed tokens.
 - `interestIndex` (`int`): The local interest index for this oven.
-- `isLiquidated` (`bool`): Indicates if the vault is liquidated.
+- `isLiquidated` (`bool`): Indicates if the oven is liquidated.
 - `ovenProxyContractAddress` (`address`): The address of the `OvenProxy` which proxies all calls into the core.
 
 No storage parameters are governable.
