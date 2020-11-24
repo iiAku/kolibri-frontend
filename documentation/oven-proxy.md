@@ -91,3 +91,4 @@ The `OvenProxy` has the following entrypoints:
 - `setOvenRegistyContract`: Update the `OvenRegistry` contract. May only be called by the `Governor`.
 - `setOracleContract`: Update the `Oracle` contract. May only be called by the `Governor`.
 - `setMinterContract`: Update the `Minter` contract. May only be called by the `Governor`.
+- `setPauseGuardian`: Update the `PauseGuardian` contract. May only be called by the `Governor`.
