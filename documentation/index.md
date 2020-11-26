@@ -1,16 +1,16 @@
-# Kollibri
+# Kolibri
 
-Kollibri is a stable value asset built on CDPs of XTZ. 
+Kolibri is a stable value asset built on CDPs of XTZ. 
 
 ##  Background
 
-All units in the Kollibri system are expressed in units of 10^-18. For instance, 123 is 0.000000000000000123.
+All units in the Kolibri system are expressed in units of 10^-18. For instance, 123 is 0.000000000000000123.
 
 The `token` contract is an [FA 1.2](https://gitlab.com/tzip/tzip/blob/master/proposals/tzip-7/tzip-7.md) specified with 10^-18 decimals. The symbol for the token is `KUSD`. `KUSD` is soft pegged to the USD. 
 
 ## Overview
 
-Kollibri uses CDPs to collateralize a soft pegged stable value asset, `KUSD`. 
+Kolibri uses CDPs to collateralize a soft pegged stable value asset, `KUSD`. 
 
 Each CDP has four functions:
 - `Deposit`: Place `XTZ` into the CDP
@@ -22,7 +22,7 @@ Each CDP has four functions:
 
 A stability fee is applied to borrowed `KUSD`. It is accrued in terms of `KUSD`. It is percentage based fee applied to all outstanding `KUSD` (borrowed `KUSD` + stability fee)). Interest is assesses every minute (about every block on the Tezos chain). The stability fee is adjusted via governance to increase or decrease the incentives to borrow or repay `KUSD` if the asset loses a peg.
 
-Negative stability fees are not supported in Kollibri but may be added via a contract upgrade.
+Negative stability fees are not supported in Kolibri but may be added via a contract upgrade.
 
 ### Collateralization Ratio
 
@@ -33,7 +33,7 @@ Collateralization Ratio = ((XTZ in CDP * Price of XTZ/USD) / (Borrowed KUSD + St
 
 If a CDP drops below the **collateralization ratio**, then it is said to be **under collateralized**. CDP owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `KUSD` when the collateralization ratio drops. 
 
-The Kollibri system will prevent users from borrowing `KUSD` such that a CDP becomes under collateralized, or withdrawing `XTZ` to cause the CDP to become undercollateralized. However, the price of `XTZ` still fluctuates, which means CDP can become undercollateralized without user action.  
+The Kolibri system will prevent users from borrowing `KUSD` such that a CDP becomes under collateralized, or withdrawing `XTZ` to cause the CDP to become undercollateralized. However, the price of `XTZ` still fluctuates, which means CDP can become undercollateralized without user action.  
 
 ### Liquidation
 
@@ -63,7 +63,7 @@ Accrued stability and liquidation fees are deposited in two funds. The split is 
 
 The role of the **stability fund** is to be a liquidator of last resort. If the price of the outstanding `KUSD` is greater than the `XTZ` locked in the CDPs then a rational economic actor would not liquidate and the CDP is **under water**. This event should not occur since it is unlikely that CDP values would go from undercollateralized to underwater fast enough that rational actors would not liquidate. However, in a black swan event, the **stability fund** acts as a public good and can liquidated underwater CDPs to restore collateralization to the system. 
 
-The **developer fund** is a discretionary fund used to fund future developments to Kollibri. Distributions are determined via governance. 
+The **developer fund** is a discretionary fund used to fund future developments to Kolibri. Distributions are determined via governance. 
 
 ### Precision
 
@@ -101,7 +101,7 @@ When an `Oven` is originated, the `Minter` calculates the current `Global Intere
 
 #### Bakers
 
-The only contract in Kollibri which holds XTZ is the CDP contract. CDPs are controlled by a user and can set their own baker of their choosing. This prevents centralization and enables CDP owners to make individual and rational economic decisions for the protocol. 
+The only contract in Kolibri which holds XTZ is the CDP contract. CDPs are controlled by a user and can set their own baker of their choosing. This prevents centralization and enables CDP owners to make individual and rational economic decisions for the protocol. 
 
 ### Components
 
@@ -116,10 +116,14 @@ An `oven` rerpresents a CDP. The related contracts are:
 
 #### Core Logic
 
-The following three contracts compose core logic for Kollibri:
+
+![Oven Flow](oven-factory-flow.png)
+![Core Flow](core-flow.png)
+
+The following three contracts compose core logic for Kolibri:
 
 - `OvenProxy`: Is the first contract called by an `oven`. Validates that the `oven` is trusted, verifies the system is not paused, retrieves data from the `oracle`, and forwards all information to the `minter`.
-- `Minter`: Core logic for the Kollibri. Takes inputs (balances, commands, oracle data), performs validation, mints / burns tokens, moves tokens to the stability funds, and calls back with new state.
+- `Minter`: Core logic for the Kolibri. Takes inputs (balances, commands, oracle data), performs validation, mints / burns tokens, moves tokens to the stability funds, and calls back with new state.
 - `Token`: Provides token functionality, including minting and burning
 - `Fund`s: Provide implementations for the Developer fund and Stability Fund.
 - `Oracle`: provides XTZ/USD into the system from external sources. 
@@ -139,7 +143,7 @@ The following three contracts compose core logic for Kollibri:
 
 ## Upgradeability
 
-Kollibri is made of a set of contracts. Each contract is documented below:
+Kolibri is made of a set of contracts. Each contract is documented below:
 - [Oven](oven.md)
 - [OvenFactory](oven-factory.md)
 - [OvenProxy](oven-proxy.md)
@@ -159,7 +163,7 @@ Tezos uses queue based message passing which makes it hard to return data betwee
 
 ### Principles
 
-In general, Kollibri's data flow adheres to the following rules:
+In general, Kolibri's data flow adheres to the following rules:
 1) There should only be one end to end path through the system. 
 2) Calls which branch off this flow should terminate without modifying state in any calling contracts.
 2) Sometimes callbacks will be unavoidable; each flow should only have one callback outstanding at once to simplify logic.
@@ -179,15 +183,15 @@ There are also two "auxilary" calls which are made. These "auxilary" calls do no
 
 ## Oracle
 
-Kollibri needs accurate data to function. Data is provided via the [Harbinger Price Feed](https://github.com/tacoinfra/harbinger) via the `Oracle` contract. The `Oracle` contract is replaceable and can be replaced to pull from another data source if needed.
+Kolibri needs accurate data to function. Data is provided via the [Harbinger Price Feed](https://github.com/tacoinfra/harbinger) via the `Oracle` contract. The `Oracle` contract is replaceable and can be replaced to pull from another data source if needed.
 
 ## Governance
 
-There are a few governance roles in Kollibri.
+There are a few governance roles in Kolibri.
 
 ### Pause Guardian
 
-Kollibri is able to pause minting, borrowing and depositing (but not withdrawing) of tokens via a **Pause Guardian**. The guardian can pause the system immediately. The guardian cannot restart the system without a governance proposal.
+Kolibri is able to pause minting, borrowing and depositing (but not withdrawing) of tokens via a **Pause Guardian**. The guardian can pause the system immediately. The guardian cannot restart the system without a governance proposal.
 
 In the long term, this will be a multi-sig contract.
 
@@ -199,13 +203,13 @@ In the long term, this will be a multi-sig contract.
 
 ### Governor
 
-The **Governor** contract has four resposibilities in the Kollibri System:
+The **Governor** contract has four resposibilities in the Kolibri System:
 
 In the medium term, this will be a time-locked multi-sig contract. In the long term, this will be a DAO.
 
 #### Contract Upgrades
 
-The Governor may set `address` references in contract storage. For instance, to upgrade the `Oracle` contract in the Kollibri system an individual would deploy a new contract in the correct shape. Then the Governor would call `OvenProxy`'s `setOracleContractAddress` method with the address of the new `Oracle`.
+The Governor may set `address` references in contract storage. For instance, to upgrade the `Oracle` contract in the Kolibri system an individual would deploy a new contract in the correct shape. Then the Governor would call `OvenProxy`'s `setOracleContractAddress` method with the address of the new `Oracle`.
 
 All contract pointers are governable, *EXCEPT* for the pointer from an `Oven` to the `OvenProxy`. This is because `Oven` code holds user's funds and is immutable so that governance may never confiscate funds.
 
@@ -225,7 +229,7 @@ The Governor can elect to transfer funds from the developer or stability fund. T
 
 ## Long Term Features
 
-Kollibri is a minimum viable product and it is expected that the contract will upgrade over time. Kollibri is bult to be fully upgradeable, but `oven` code is immutable to protect funds of users. We present two future upgrades which could potentially require changes to ovens. 
+Kolibri is a minimum viable product and it is expected that the contract will upgrade over time. Kolibri is bult to be fully upgradeable, but `oven` code is immutable to protect funds of users. We present two future upgrades which could potentially require changes to ovens. 
 
 ### Value Limited Ovens
 
