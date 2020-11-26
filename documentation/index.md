@@ -65,6 +65,40 @@ The role of the **stability fund** is to be a liquidator of last resort. If the 
 
 The **developer fund** is a discretionary fund used to fund future developments to Kollibri. Distributions are determined via governance. 
 
+### Precision
+
+Internally, all values in Kolibri are represented as integers with precision of 10^-18. That is to say, the number 1.23 would be represented as
+1_230_000_000_000_000_000 in Kolibri. 
+
+Kolibri ignores precision greater than 10^-18 as the amount is believed to be neglibible.
+
+### Compound Interest Calculations
+
+Kolibri maintains a constant, called `stabilityFee` which caluclates interest. The stability fee is a fixed interest amount, calculated on a 60 second basis. GUIs should choose to display this interest amount in as an APY. 
+
+Rather than calculate comound interest, Kolibri uses a linear approximation to calculate interest. That is to say that if two time periods have elapsed
+then the interest calculation will be: 
+```
+newInterest = oldInterest * (1 + (numPeriods * stabilityFee))
+```
+
+Kolibri compounds interest for every call to the system. Given high enough usage, the system will be called at least every 60 seconds, which means interest will comound as expected. In periods of low usage, the interest will be linearly approximated, which is believed to be negligible in a system which represents numbers as small as 10^18.
+
+### Interest Calculations on Vaults
+
+Calculating interest on `n` vaults represents an unbounded computational problem, which is not feasible in a system like Tezos where you pay per unit of computation. To solve this, Kolibri introduces the idea of an `Interest Index`. 
+
+The `Minter` contains a `Global Interest Index`. This value is initially set to 1.
+Each `Oven` contains its own `Interest Index`. This value is set to the value of the `Global Interest Index` at origination time for the `Oven`.
+
+Whenever the `Minter` is invoked, it compounds the `Global Interest Index`, using the elapsed time, stability fee, and linear approximation technique described above. 
+
+When an `Oven` is originated, the `Minter` calculates the current `Global Interest Index` and gives it to the `Oven`. Whenever an `Oven` interacts with the `Minter`, the following process occurs:
+- `Minter` recalculates `Global Interest Index`
+- A ratio is calculated between the `Global Interest Index` and the `Oven`'s `Interest Index` to determine the interest the `Oven` has accured
+- The `Oven`'s `Interest Index` is updated to be the same as the `Global Interest Index`
+
+
 #### Bakers
 
 The only contract in Kollibri which holds XTZ is the CDP contract. CDPs are controlled by a user and can set their own baker of their choosing. This prevents centralization and enables CDP owners to make individual and rational economic decisions for the protocol. 
@@ -204,8 +238,3 @@ The `minter` contract models the stability rate as a natural number. However, `o
 ### Delegated Oven Control
 
 Some users may with to delegate control of their `oven`. `Oven`'s maintain an `owner` `address` and invocations will fail if `deposit`, `withdraw`, `borrow` or `repay` are called by someone besides the owner. A newer version of `oven`s could be deployed to contain a list of addresses which may administer it. 
-
-
-# TODO:
-- document interest index
-- document compound interest calculations.
