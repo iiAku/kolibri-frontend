@@ -191,7 +191,7 @@ There are a few governance roles in Kolibri.
 
 ### Pause Guardian
 
-Kolibri is able to pause minting, borrowing and depositing (but not withdrawing) of tokens via a **Pause Guardian**. The guardian can pause the system immediately. The guardian cannot restart the system without a governance proposal.
+Kolibri is able to pause borrowing, repaying, depositing and withdrawing of tokens via a **Pause Guardian**. The guardian can pause the system immediately. The guardian cannot restart the system without a governance proposal.
 
 In the long term, this will be a multi-sig contract.
 
