@@ -1,6 +1,6 @@
 # Kolibri
 
-Kolibri is a stable value asset built on CDPs of XTZ. 
+Kolibri is a stable value asset built on Collateralized Debt Positions (CDPs) of XTZ. 
 
 ##  Background
 
