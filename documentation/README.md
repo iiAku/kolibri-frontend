@@ -84,9 +84,9 @@ newInterest = oldInterest * (1 + (numPeriods * stabilityFee))
 
 Kolibri compounds interest for every call to the system. Given high enough usage, the system will be called at least every 60 seconds, which means interest will comound as expected. In periods of low usage, the interest will be linearly approximated, which is believed to be negligible in a system which represents numbers as small as 10^18.
 
-### Interest Calculations on Vaults
+### Interest Calculations on `Oven`s
 
-Calculating interest on `n` vaults represents an unbounded computational problem, which is not feasible in a system like Tezos where you pay per unit of computation. To solve this, Kolibri introduces the idea of an `Interest Index`. 
+Calculating interest on `n` ovens represents an unbounded computational problem, which is not feasible in a system like Tezos where you pay per unit of computation. To solve this, Kolibri introduces the idea of an `Interest Index`. 
 
 The `Minter` contains a `Global Interest Index`. This value is initially set to 1.
 Each `Oven` contains its own `Interest Index`. This value is set to the value of the `Global Interest Index` at origination time for the `Oven`.
