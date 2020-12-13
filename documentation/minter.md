@@ -2,14 +2,14 @@
 
 ## Overview
 
-The `Minter` contract provides core funtionality to the Kolibri ecosystem. 
+The `Minter` contract provides core functionality to the Kolibri ecosystem. 
 
 The `Minter` has three main functions:
-1) Track the global interest index for Kolibri
+1) Track the `Global Interest Index` for Kolibri
 2) Provide implementation logic for deposit/withdraw/borrow/repay/liquidate operations.
 3) Act as the `Minter` and `Burner` for the `Token` contract.
 
-`Interest Indices` and the interest accrual methodology is documented in the [System Overview](overview.md).
+The different `Interest Indices` and the interest accrual methodology are documented in the [Interest Calculation](README.md#interest-calculations-on-ovens) section of the [System Overview](README.md).
 
 The `Minter`'s functions can only be called by the `OvenProxy`. The `Minter` trusts all values that are passed in. 
 
@@ -56,7 +56,3 @@ The `Minter` has the following entrypoints:
 - `updateParams`: Update the stability fee, liquidation fee, or collateralization percentage. May only be called by the `Governor`.
 - `updateContracts`: Update addresses for the `Governor`, `Token`, `OvenProxy`, `Stability Fund` or `Developer Fund` contracts. May only be called by the `Governor`.
 - `updateTokenContractAdmin`: Update the administrator for the `Token` contract. May only be called by the `Governor`.
-
-## Possible Future Work
-
-A future version of the `Minter` may choose to convert 

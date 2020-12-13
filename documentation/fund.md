@@ -8,13 +8,13 @@ A `Fund` contract collects funds in `KUSD` and `XTZ` for later use.
 (1) Stability Fund: Acts as the liquidator of last resort
 (2) Developer Fund: Acts as an on-chain treasury to incentivize development.
 
-`Fund`s can liquidate an oven (and acquire `XTZ` from the liquidation) and they can also disperse that `XTZ`. 
+`Fund`s can liquidate an oven (and acquire `XTZ` from the liquidation), and they can also disperse that liquidated `XTZ`. 
 
 `Fund` contracts have two permissions on them:
 (1) `Administrator`: Can manage the `Fund`'s baker and instruct the fund to liquidate an `Oven`
 (2) `Governor`: Can swap `Governor`s, `Administrator`s and transfer `XTZ`
 
-Long term, `Administrator` should be a multi-sig or governance function controlled without a time delay, while `Governor` should be a higher priviledged multi-sig or DAO with a time lock.
+Long term, `Administrator` should be a multi-sig or governance function controlled without a time delay, while `Governor` should be a higher privileged multi-sig or DAO with a time lock.
 
 ### ACL Checking
 
@@ -44,7 +44,7 @@ The `Fund` contract stores the following:
 - `administratorContractAddress` (`address`): The `Administrator`. Used for ACL checking.
 - `ovenRegistryContractAddress` (`address`): The address of the `OvenRegistry`. Ensures that `liquidate` is only called on registered `Oven`s.
 
-All storage parameters are governable adn can be changed by `governorContractAddress`.
+All storage parameters are governable and can be changed by `governorContractAddress`.
 
 ## Entrypoints
 
