@@ -22,3 +22,24 @@ Any contract which interacts with the `Token` contract should have a governable 
 
 Kollibri tries to use this contract without modification to preserve security. Kollibri makes the following modifications:
 - Add a `default` entrypoint and disallow transfers if they contain value. This behavior is explicitly defined to make the restriction obvious to future engineers.
+- Add a "debt ceiling" that is configurable through governance.
+- Add a `governor` which can change the debt ceiling.
+
+### ACL Checking
+
+The `Token` contract exposes the following new methods, above the FA1.2 standard contract:
+- `setGovernorContract` and `setDebtCeiling` may only be called by the `Governor`.
+
+## Storage
+
+The `Token` contract exposes the following new storage fields, above the FA1.2 standard contract:
+- `governorContractAddress` (`address`): The address of the `Governor` contract, used for ACL checking
+- `debtCeiling` (`nat`): The debt ceiling. The token's `totalSupply` can never exceed the debt ceiling.
+
+Both storage tiems are governable. 
+
+## Entrypoints
+
+The `Token` contract exposes the following new methods, above the FA1.2 standard contract:
+- `setGovernorContract`: Update the `Governor` contract. May only be called by the `Governor`.
+- `setDebtCeiling`: Update the debt ceiling. May only be called by the `Governor`.

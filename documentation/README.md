@@ -81,6 +81,10 @@ The role of the **stability fund** is to be a liquidator of last resort. If the 
 
 The **developer fund** is a discretionary fund used to fund future developments to Kolibri. Distributions are determined via a planned governance mechanism. 
 
+### Debt Ceiling
+
+Kolibri maintains a debt ceiling that can be used as a lever to control supply and demand. The debt ceiling must be changed through governance.
+
 ### Precision
 
 Internally, all values in Kolibri are represented as integers with precision of `10^-18` (similar to a Wei within Ethereum). That is to say, the number `1.23` would be represented as
