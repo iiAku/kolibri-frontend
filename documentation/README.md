@@ -163,13 +163,14 @@ The following five contracts compose core logic for Kolibri:
 ## Upgradeability
 
 Kolibri is made of a set of contracts. Each contract is documented below:
+- [DevFund](dev-fund.md)
+- [Minter](minter.md)
+- [Oracle](oracle.md)
 - [Oven](oven.md)
 - [OvenFactory](oven-factory.md)
 - [OvenProxy](oven-proxy.md)
-- [Oracle](oracle.md)
-- [Minter](minter.md)
-- [Fund](fund.md)
 - [Oven Registry](oven-registry.md)
+- [StabilityFund](stability-fund.md)
 - [Token](token.md)
 
 These contracts communicate with each other by keeping pointers to each other. For instance, the `OvenProxy` Contract must communicate with the `Oracle` and `Minter` contracts. Both of these contracts are stored as `address`es in the `OvenProxy`'s storage. Thus, to change the implementation of the `Oracle` contract, one simply needs to change an `address` in `Oven` proxies storage.
