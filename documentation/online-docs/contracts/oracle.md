@@ -1,10 +1,8 @@
-# OracleContract
+## Oracle Contract
 
-## Overview
+The `Oracle` contract provides price data to the Kolibri ecosystem. It is implemented using a [Harbinger Price Feed](#/project-info/oracle/harbinger).
 
-The `Oracle` contract provides price data to the Kollibri ecosystem. It is implemented using a [Harbinger Price Feed](https://github.com/tacoinfra/harbinger).
-
-The `Oracle` contract calls to a `Harbinger Normalizer` contract. It sanity checks the return values, normalizes them for the Kollibri system, and returns them to the client. 
+The `Oracle` contract calls to a `Harbinger Normalizer` contract. It sanity checks the return values, normalizes them for the Kolibri system, and returns them to the client. 
 
 The current implementation uses a Coinbase Data Feed normalized by volume weighted average price (VWAP) with `n=6`.
 

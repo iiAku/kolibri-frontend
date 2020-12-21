@@ -2,13 +2,13 @@
 
 ## Overview
 
-An oven contract is a simple key-value store which holds data about a CDP and the CDP's collateral. Oven's provide their data and collateral into the Kollibri system and receive outputs and collateral from the Kollibri system in a callback to update their state.
+An oven contract is a simple key-value store which holds data about a CDP and the CDP's collateral. Oven's provide their data and collateral into the Kolibri system and receive outputs and collateral from the Kolibri system in a callback to update their state.
 
 ### Trusted Code
-Oven's are **not** upgradeable via governance and their code is trusted in the system. Allowing a governance upgrade to the Oven could modify behavior maliciously to steal funds. 
+Oven's are **not** upgradeable via governance, and their code is trusted in the system. Allowing a governance upgrade to the Oven could modify behavior maliciously to steal funds. 
 
 The only logic in `Oven`s is:
-1) Convert `mutez` (specified in 10^-6) to Kollibri's 10^-18 precision
+1) Convert `mutez` (specified in 10^-6) to Kolibri's 10^-18 precision
 2) ACL Checking
 
 ### ACL Checking
@@ -19,7 +19,7 @@ The `Oven` allows anyone to call the `default` (aka `deposit`) endpoint. This is
 
 ### Core Upgrade Path
 
-All `Oven`s must point to the core contract in order to operate with the Kollibri system. The core is upgradeable via governance, where a new core contract is deployed and other contracts point to it. Since `oven`s are immutable, they will always point to the same contract. 
+All `Oven`s must point to the core contract in order to operate with the Kolibri system. The core is upgradeable via governance, where a new core contract is deployed and other contracts point to it. Since `oven`s are immutable, they will always point to the same contract. 
 
 To solve this, an `OvenProxy` sits between all `Oven`s and the core contract. The `OvenProxy` can be upgraded to point at a new core contract, if needed. `Oven`s still point to the same `OvenProxy` and don't need to be modified. 
 
@@ -60,5 +60,5 @@ The `Oven` has the following entrypoints:
 - `repay`: Repay tokens borrowed against the collateral in the `Oven`.
 - `setDelegate`: Set (or clear) the delegate for the `Oven`.
 - `liquidate`: Initiate liquidation of the oven if it is under collateralized.
-- `updateState`: Receives a callback from Kollibri's core. This entrypoint may only be called by `ovenProxyContractAddress`.
+- `updateState`: Receives a callback from Kolibri's core. This entrypoint may only be called by `ovenProxyContractAddress`.
 

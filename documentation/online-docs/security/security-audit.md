@@ -1,0 +1,11 @@
+# Security Audit
+
+## Status
+The Kolibri project <span><strong class="has-text-danger">HAS NOT BEEN AUDITED YET</strong></span>. 
+
+Until then, we **do not** recommend that anyone puts any substantial amount of money into the system, and encourage people to try things out on testnet.
+
+We've implemented a governance-driven debt ceiling in the protocol to limit the amount of kUSD that can be created within the system, and once the review comes back (and we've remediated any necessary issues), we'll raise the debt ceiling gradually as we gain more confidence in the system as a whole.
+
+## Updates
+- **Dec 18, 2020** We have a review in the information-gathering phase with a reputable firm. Updates will be posted here as things progress. 

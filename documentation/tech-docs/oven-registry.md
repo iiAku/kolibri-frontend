@@ -2,17 +2,17 @@
 
 ## Overview
 
-The `OvenRegistry` contract provides a registry of `oven` contracts in the system. The root of trust in most Kollibri calls is that the call originated in an `oven` which is running code that `OvenFactory` deployed. `OvenRegistry` keeps track of those originated contracts to verify trust. 
+The `OvenRegistry` contract provides a registry of `oven` contracts in the system. The root of trust in most Kolibri calls is that the call originated in an `oven` which is running code that `OvenFactory` deployed. `OvenRegistry` keeps track of those originated contracts to verify trust. 
 
 At it's core, `OvenRegistry` is a map of `address` to `address`. The key is the `oven`'s address, and the value is the owner of the oven. Thus to determine if an contract is an `oven`, `OvenRegistry` simply checks if the contract's address is present as a key in the map.
 
 ### Callbacks
 
-`OvenRegistry` does not attempt to return data to the caller. Instead, it will simply fail the call if an `oven` is not whitelisted. This will cause all related contract calls to fail atomically in Tezos. This is in line with Kollibri's data flow priniciples.
+`OvenRegistry` does not attempt to return data to the caller. Instead, it will simply fail the call if an `oven` is not whitelisted. This will cause all related contract calls to fail atomically in Tezos. This is in line with Kolibri's data flow priniciples.
 
 ### Data Duplication
 
-Astute readers will realize that the `owner` field exists in both `oven` contracts and in the registry. Kollibri duplicates this data to provide maximum flexibility in the future for the core logic to be able to override ACL checks or perform their own ACL checks. Since both contracts maintain `owner` as immutable, it is not troublesome to keep them in sync. 
+Astute readers will realize that the `owner` field exists in both `oven` contracts and in the registry. Kolibri duplicates this data to provide maximum flexibility in the future for the core logic to be able to override ACL checks or perform their own ACL checks. Since both contracts maintain `owner` as immutable, it is not troublesome to keep them in sync. 
 
 #### Possible Future Work
 
