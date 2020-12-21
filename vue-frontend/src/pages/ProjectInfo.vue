@@ -74,7 +74,6 @@ export default {
           .value()
     },
     syncPage(){
-      console.log(this.$route.name, this.$route.params.folder, this.$route.params.page)
       if (
           // If we have a requested page that doesn't exist, redirect them to the intro
           (this.$route.name === 'ProjectInfo' || this.$route.name === 'ProjectInfoRoot') &&

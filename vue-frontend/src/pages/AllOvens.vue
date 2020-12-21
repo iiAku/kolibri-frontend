@@ -36,7 +36,6 @@ import Pagination from 'vue-bulma-paginate/src/components/Pagination';
 export default {
   name: 'AllOvens',
   async mounted(){
-    console.log(this.$route)
     if (this.$route.query.page){
       this.currentPage = parseInt(this.$route.query.page)
     }

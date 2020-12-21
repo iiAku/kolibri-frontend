@@ -2,8 +2,7 @@ import Vue from 'vue'
 
 import { WalletStates } from './enums'
 
-// import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network} from "@tessellatedgeometry/stablecoin-lib";
-import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network} from "../local-sdk";
+import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network} from "@tessellatedgeometry/stablecoin-lib";
 
 // const NODE_URL = 'https://tezos-dev.cryptonomic-infra.tech'
 // const NODE_URL = 'https://testnet-tezos.giganode.io'

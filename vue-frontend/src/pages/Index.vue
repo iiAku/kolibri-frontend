@@ -62,7 +62,6 @@ export default {
             this.$store.stabilityFee = fee
           })
     } else {
-      console.log(cachedAPY)
       this.$store.stabilityFee = new BigNumber(cachedAPY)
     }
 
@@ -103,7 +102,6 @@ export default {
         value: value,
         expiry: now.getTime() + ttl,
       }
-      console.log("storing item ", item)
       localStorage.setItem(key, JSON.stringify(item))
     }
   }

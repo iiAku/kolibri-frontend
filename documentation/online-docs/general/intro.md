@@ -86,8 +86,8 @@ An `Oven` represents a CDP. The related contracts are:
 
 #### Core Logic
 
-<div class="box"><img src="docs/oven-factory-flow.png" /></div>
-<div class="box"><img src="docs/core-flow.png" /></div>
+<div class="box"><img src="/docs/oven-factory-flow.png" /></div>
+<div class="box"><img src="/docs/core-flow.png" /></div>
 
 The following five contracts compose core logic for Kolibri:
 

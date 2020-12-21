@@ -19,7 +19,7 @@ module.exports = {
             .rule('markdown')
             .test(/\.md$/)
             .use('file-loader')
-                .loader('file-loader')
+                .loader('file-loader?name=docs/[name]-[hash:6].[ext]')
                 .end()
     }
 };

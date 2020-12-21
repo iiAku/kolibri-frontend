@@ -72,7 +72,7 @@
 import moment from "moment";
 import BigNumber from "bignumber.js";
 
-import { ConversionUtils } from '../../../sdk/build/src'
+import { ConversionUtils } from '@tessellatedgeometry/stablecoin-lib'
 import Popover from "@/components/Popover";
 
 export default {
