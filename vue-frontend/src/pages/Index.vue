@@ -43,32 +43,11 @@
 import Stats from "@/components/Stats";
 import Ovens from "@/components/Ovens";
 import ConnectPrompt from "@/components/ConnectPrompt";
-import BigNumber from 'bignumber.js';
 
 export default {
   name: 'Index',
   async created(){
-    this.$store.stableCoinClient.getOvenCount()
-        .then((count) => {
-          this.$store.ovenCount = count
-        })
-
-    // Cache our APY, which is expensive to calculate
-    const cachedAPY = this.getWithExpiry('apy')
-    if (cachedAPY === null){
-      this.$store.stableCoinClient.getStabilityFeeApy()
-          .then((fee) => {
-            this.setWithExpiry('apy', fee.toString(), 300 * 1000) // 5 min cache
-            this.$store.stabilityFee = fee
-          })
-    } else {
-      this.$store.stabilityFee = new BigNumber(cachedAPY)
-    }
-
-    this.$store.stableCoinClient.getRequiredCollateralizationRatio()
-        .then((rate) => {
-          this.$store.collateralRate = rate
-        })
+    
   },
   components: {
     ConnectPrompt,

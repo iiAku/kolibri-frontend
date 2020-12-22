@@ -7,7 +7,6 @@
     "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint"
   },
-  "dependencies": {},
   "devDependencies": {
     "@dicebear/avatars": "4.2.5",
     "@dicebear/avatars-bottts-sprites": "4.2.5",
@@ -17,6 +16,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "animate.css": "^4.1.1",
+    "axios": "^0.21.0",
     "babel-eslint": "^10.1.0",
     "bignumber.js": "^9.0.1",
     "bulma": "^0.9.1",
@@ -50,7 +50,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "vue/valid-template-root": "off"
+      "vue/valid-template-root": "off",
+      "no-debugger": "off"
     },
     "globals": {
       "BigInt": true

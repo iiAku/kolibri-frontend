@@ -11,10 +11,10 @@
 
         <!-- Right side -->
         <div class="level-right">
-          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="borrow()" class="button is-small is-primary has-text-weight-bold">↓ Borrow kUSD</button></p>
-          <p v-if="ovenData && parseInt(ovenData.borrowedTokens) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="payBack()" class="button is-small is-primary has-text-weight-bold">↑ Pay Back kUSD</button></p>
-          <p class="level-item"><button :disabled="pendingTransaction" @click="deposit()" class="button is-small is-primary has-text-weight-bold">↓ Deposit ꜩ</button></p>
-          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="withdraw()" class="button is-small is-primary has-text-weight-bold">↑ Withdraw ꜩ</button></p>
+          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="borrow()" class="button is-small is-primary has-text-weight-bold">Create kUSD</button></p>
+          <p v-if="ovenData && parseInt(ovenData.borrowedTokens) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="payBack()" class="button is-small is-primary has-text-weight-bold">Pay Back kUSD</button></p>
+          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="withdraw()" class="button is-small is-primary has-text-weight-bold">Withdraw ꜩ</button></p>
+          <p class="level-item"><button :disabled="pendingTransaction" @click="deposit()" class="button is-small is-primary has-text-weight-bold">Deposit ꜩ</button></p>
         </div>
       </nav>
     </div>
@@ -263,7 +263,7 @@ export default {
     }
   },
   components: {
-    Popover
+    Popover,
   },
 }
 </script>

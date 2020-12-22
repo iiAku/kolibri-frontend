@@ -23,6 +23,25 @@
         </div>
       </div>
     </nav>
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <div class="is-flex is-flex-direction-column is-align-items-center">
+          <p class="heading">All Tezos in Kolibri Ovens</p>
+          <p v-if="$store.balanceData === null" class="loader"></p>
+          <p v-else class="title">{{ numberWithCommas(($store.balanceData.totalBalance / Math.pow(10, 6)).toFixed(2)) }} <span class="subtitle">Ꜩ</span> </p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered">
+        <div class="is-flex is-flex-direction-column is-align-items-center">
+          <p class="heading">All kUSD in Kolibri Ovens</p>
+          <p v-if="$store.balanceData === null" class="loader"></p>
+          <p v-else class="title">{{ numberWithCommas($store.balanceData.totalTokens.toFixed(2)) }} <span class="subtitle">kUSD</span> </p>
+        </div>
+      </div>
+    </nav>
+
+    <hr>
+
     <div class="container price-container is-flex is-align-items-center is-justify-content-center">
       <h1 class="subtitle is-marginless has-text-weight-normal">Latest <a href="https://harbinger.live" target="_blank" rel="noopener">XTZ/USD Oracle</a> Price: </h1>
       <div class="price-data">
@@ -69,11 +88,13 @@
 </template>
 
 <script>
-import moment from "moment";
+import moment from "moment"
 import BigNumber from "bignumber.js";
 
 import { ConversionUtils } from '@tessellatedgeometry/stablecoin-lib'
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover"
+
+import axios from 'axios'
 
 export default {
   name: 'Stats',
@@ -82,6 +103,31 @@ export default {
     setInterval(() => {
       this.now = moment()
     }, 1000)
+
+    this.$store.stableCoinClient.getOvenCount()
+        .then((count) => {
+          this.$store.ovenCount = count
+        })
+
+    axios.get("https://kolibri-data.s3.amazonaws.com/apy.json")
+      .then((result) => {
+        this.$store.stabilityFee = new BigNumber(result.data.apy)
+      })
+
+    axios.get("https://kolibri-data.s3.amazonaws.com/totals.json")
+      .then((result) => {
+        const { totalBalance, totalTokens } = result.data
+        this.$store.balanceData = {
+          totalBalance: new BigNumber(totalBalance),
+          totalTokens: new BigNumber(totalTokens)
+        }
+      })
+
+    this.$store.stableCoinClient.getRequiredCollateralizationRatio()
+        .then((rate) => {
+          this.$store.collateralRate = rate
+        })
+
   },
   components: {
     Popover
@@ -92,6 +138,9 @@ export default {
     }
   },
   methods: {
+    numberWithCommas(str) {
+      return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    },
     formattedStabilityFee(){
       return ConversionUtils.shardToHumanReadablePercentage(this.$store.stabilityFee, 4)
     },

@@ -16,6 +16,7 @@ export default Vue.observable({
     stabilityFee: null,
     collateralRate: null,
     ownedOvens: null,
+    balanceData: null,
     wallet: null,
     walletAvailable: null,
     walletStates: WalletStates,

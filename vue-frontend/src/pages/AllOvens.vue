@@ -1,6 +1,6 @@
 <template>
   <section class="all-ovens hero is-fullheight is-align-items-center">
-    <div v-if="ovensData === null" class="loading-wrapper">
+    <div v-if="ovensData === null || $store.priceData === null" class="loading-wrapper">
       <div class="loader is-large is-primary"></div>
     </div>
     <div class="container oven-data is-fluid" v-else>
@@ -16,22 +16,24 @@
                 :buttonsMax="5"
                 queryParameter="page"
             />
-            <label v-if="hideEmptyOvens" class="checkbox">
+            <label class="checkbox">
               <input v-model="hideEmptyOvens" type="checkbox">
               Hide Empty Ovens?
             </label>
           </div>
         </div>
       </div>
-      <public-oven @is-empty="$set(emptyOvens, oven.ovenAddress, true)" :oven-owner="oven.ovenOwner" :oven-address="oven.ovenAddress" v-for="oven in currentChunk" :key="oven.ovenAddress" />
+      <public-oven :oven="oven" v-for="oven in currentChunk" :key="oven.ovenAddress" />
     </div>
   </section>
 </template>
 
 <script>
-import _ from 'lodash'
+import { chunk, filter } from 'lodash'
+import axios from 'axios'
 import PublicOven from "@/components/PublicOven";
 import Pagination from 'vue-bulma-paginate/src/components/Pagination';
+import BigNumber from 'bignumber.js';
 
 export default {
   name: 'AllOvens',
@@ -39,10 +41,21 @@ export default {
     if (this.$route.query.page){
       this.currentPage = parseInt(this.$route.query.page)
     }
-    if (this.$route.query.hideEmpty){
-      this.hideEmptyOvens = true
-    }
-    this.ovensData = await this.$store.stableCoinClient.getAllOvens()
+  
+    const response = await axios.get("https://kolibri-data.s3.amazonaws.com/oven-data.json")
+    
+    this.ovensData = response.data.allOvenData.map((oven) => {
+      let { ovenAddress, ovenOwner, ovenData } = oven
+
+      // Coerce back into bignumbers
+      ovenData.balance = new BigNumber(ovenData.balance)
+      ovenData.borrowedTokens = new BigNumber(ovenData.borrowedTokens)
+      ovenData.stabilityFee = new BigNumber(ovenData.stabilityFee)
+      ovenData.outstandingTokens = new BigNumber(ovenData.outstandingTokens)
+
+      // debugger;
+      return Object.assign(ovenData, { ovenAddress, ovenOwner })
+    })
   },
   data(){
     return {
@@ -63,23 +76,8 @@ export default {
       return this.activeVaults[this.currentPage - 1]
     },
     activeVaults(){
-      const emptyOvens = this.emptyOvens
-      return _(this.ovensData)
-          .sortBy((oven) => {
-            // Deprioritize the unit test owner
-            return oven.ovenOwner === "tz1YfB2H1NoZVUq4heHqrVX4oVp99yz8gwNq"
-          })
-          .filter((oven) => {
-            if (this.hideEmptyOvens) {
-              console.log("Empty:", emptyOvens)
-              if (oven.ovenAddress in emptyOvens){
-                return false
-              }
-            }
-            return true
-          })
-          .chunk(10)
-          .value()
+      let filteredOvens = this.hideEmptyOvens ? filter(this.ovensData, (oven) => oven.balance.toNumber() > 0) : this.ovensData
+      return chunk(filteredOvens, 10)
     }
   },
   components: {

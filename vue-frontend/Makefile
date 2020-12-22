@@ -1,5 +1,8 @@
-build:
+build-docker:
 	docker build -t vue-frontend .
+
+build:
+	docker run --rm -it -v $$(pwd)/../:/shared -p 8080:8080 vue-frontend bash -c 'cd /shared/vue-frontend/ && npm run build --report'
 
 serve:
 	docker run --rm -it -v $$(pwd)/../:/shared -p 8080:8080 vue-frontend bash -c 'cd /shared/vue-frontend/ && npm run serve'

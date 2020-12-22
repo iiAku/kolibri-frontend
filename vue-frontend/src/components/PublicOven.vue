@@ -5,34 +5,34 @@
         <!-- Left side -->
         <div class="level-left">
           <div class="level-item">
-            <h1 class="title is-5 is-family-monospace"><a target="_blank" rel="noopener" :href="`https://better-call.dev/delphinet/${ovenAddress}/`">{{ovenAddress}}</a></h1>
+            <h1 class="title is-5 is-family-monospace"><a target="_blank" rel="noopener" :href="`https://better-call.dev/delphinet/${oven.ovenAddress}/`">{{oven.ovenAddress}}</a></h1>
           </div>
         </div>
         <div class="level-right">
           <div class="level-item">
-            <h1 class="title is-5">Owner: <a target="_blank" rel="noopener" class="is-family-monospace" :href="`https://better-call.dev/delphinet/${ovenOwner}/`">{{ovenOwner}}</a></h1>
+            <h1 class="title is-5">Owner: <a target="_blank" rel="noopener" class="is-family-monospace" :href="`https://better-call.dev/delphinet/${oven.ovenOwner}/`">{{oven.ovenOwner}}</a></h1>
           </div>
         </div>
       </nav>
     </div>
 
-    <div v-if="ovenData !== null" class="oven-info">
+    <div class="oven-info">
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
-            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://delphinet.tzkt.io/${ovenData.baker}/delegators`">{{ ovenData.baker }}</a></strong></p>
-            <p class="heading">Collateral Utilization: <strong>{{ collatoralizedRate(ovenData.balance) }}%</strong>
+            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://delphinet.tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
+            <p class="heading">Collateral Utilization: <strong>{{ collatoralizedRate(oven.balance) }}%</strong>
               | Can borrow up to
               <popover extra-classes="small-price">
                 <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                  {{maxBorrowAmt(ovenData.balance)}} kUSD
+                  {{maxBorrowAmt(oven.balance)}} kUSD
                 </strong>
 
-                <strong class="price-has-popover">{{ maxBorrowAmt(ovenData.balance).toFixed(2) }} kUSD</strong>
+                <strong class="price-has-popover">{{ maxBorrowAmt(oven.balance).toFixed(2) }} kUSD</strong>
               </popover>
 
             <div class="allocation-info is-fullwidth">
-              <progress class="progress is-primary" :value="collatoralizedRate(ovenData.balance)" max="100">{{ collatoralizedRate(ovenData.balance) }}%</progress>
+              <progress class="progress is-primary" :value="collatoralizedRate(oven.balance)" max="100">{{ collatoralizedRate(oven.balance) }}%</progress>
             </div>
           </div>
         </div>
@@ -43,10 +43,10 @@
                 <p class="heading">Vault Value (USD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    ${{ ovenValue(ovenData.balance) }} USD
+                    ${{ ovenValue(oven.balance) }} USD
                   </strong>
 
-                  <strong class="price-has-popover">${{ ovenValue(ovenData.balance).toFixed(2) }} USD</strong>
+                  <strong class="price-has-popover">${{ ovenValue(oven.balance).toFixed(2) }} USD</strong>
                 </popover>
               </div>
             </div>
@@ -56,10 +56,10 @@
                 <p class="title is-6">
                   <popover extra-classes="small-price">
                     <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                      {{ (parseInt(ovenData.balance) / Math.pow(10, 6)) }} ꜩ
+                      {{ (parseInt(oven.balance) / Math.pow(10, 6)) }} ꜩ
                     </strong>
 
-                    <strong class="price-has-popover">{{ (parseInt(ovenData.balance) / Math.pow(10, 6)).toFixed(2) }} ꜩ</strong>
+                    <strong class="price-has-popover">{{ (parseInt(oven.balance) / Math.pow(10, 6)).toFixed(2) }} ꜩ</strong>
                   </popover>
                 </p>
               </div>
@@ -69,10 +69,10 @@
                 <p class="heading">Balance (KUSD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(ovenData.borrowedTokens) / Math.pow(10, 18)) }} kUSD
+                    {{ (parseInt(oven.borrowedTokens) / Math.pow(10, 18)) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(ovenData.borrowedTokens) / Math.pow(10, 18)).toFixed(2) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ (parseInt(oven.borrowedTokens) / Math.pow(10, 18)).toFixed(2) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -81,10 +81,10 @@
                 <p class="heading">Stability Fee</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(ovenData.stabilityFee) / Math.pow(10, 18)) }} kUSD
+                    {{ (parseInt(oven.stabilityFee) / Math.pow(10, 18)) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(ovenData.stabilityFee) / Math.pow(10, 18)).toFixed(6) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ (parseInt(oven.stabilityFee) / Math.pow(10, 18)).toFixed(6) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -92,24 +92,17 @@
         </div>
       </div>
     </div>
-    <div v-else class="loader-wrapper">
-      <h1 class="title is-marginless is-5">Loading Oven Data...</h1><div class="loader left-spaced"></div>
-    </div>
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
 import Mixins from "@/mixins";
 import Popover from "@/components/Popover";
 
 export default {
   name: 'PublicOven',
-  props: ['ovenAddress', 'ovenOwner'],
+  props: ['oven'],
   mixins: [Mixins],
-  async created(){
-    await this.updateOvenData()
-  },
   methods: {
     ovenValue(ovenBalance){
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
@@ -121,7 +114,7 @@ export default {
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
       let valueHalf = currentValue.dividedBy(2)
 
-      let borrowedTokens = this.ovenData.borrowedTokens.dividedBy(Math.pow(10, 18))
+      let borrowedTokens = this.oven.borrowedTokens.dividedBy(Math.pow(10, 18))
 
       return valueHalf.minus(borrowedTokens).dividedBy(100)
     },
@@ -131,36 +124,18 @@ export default {
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
       let valueHalf = currentValue.dividedBy(2)
 
-      let rate = this.ovenData.borrowedTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
+      let rate = this.oven.borrowedTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
 
       return rate.toFixed(2)
-    },
-    async updateOvenData(){
-      const keys = ['baker', 'balance', 'borrowedTokens', 'stabilityFee', 'outstandingTokens']
-
-      const values = await Promise.all([
-        this.ovenClient.getBaker(),
-        this.ovenClient.getBalance(),
-        this.ovenClient.getBorrowedTokens(),
-        this.ovenClient.getStabilityFees(),
-        this.ovenClient.getTotalOutstandingTokens(),
-      ])
-
-      this.ovenData = _.zipObject(keys, values)
-
-      if (this.ovenData.balance.toNumber() === 0) {
-        this.$emit('is-empty')
-      }
     },
   },
   data(){
     return {
-      ovenData: null
     }
   },
   computed: {
     ovenClient(){
-      return this.$store.getOvenClient(this.$store.wallet, this.ovenAddress)
+      return this.$store.getOvenClient(this.$store.wallet, this.oven.ovenAddress)
     }
   },
   components: {

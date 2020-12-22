@@ -1,10 +1,10 @@
 <template></template>
 
 <script>
-import {ThanosWallet} from "@thanos-wallet/dapp";
-import {WalletStates} from "@/enums";
+import { ThanosWallet } from "@thanos-wallet/dapp";
+import { WalletStates } from "@/enums";
 
-import {Network} from "@tessellatedgeometry/stablecoin-lib";
+import { Network } from "@tessellatedgeometry/stablecoin-lib";
 
 export default {
   name: 'WalletManager',
