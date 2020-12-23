@@ -33,6 +33,6 @@ export default Vue.observable({
         CONTRACTS.DELPHI.OVEN_FACTORY
     ),
     getOvenClient(wallet, ovenAddress){
-        return new OvenClient(NODE_URL, wallet, ovenAddress)
+        return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     }
 })
