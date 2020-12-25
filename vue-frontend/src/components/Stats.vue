@@ -75,7 +75,7 @@
           </div>
           <div slot="popup-content">
             <strong>
-              The price oracle seems to be lagging behind. If the oracle is more than 30 mins off, we disable some functionality within the ovens out of an abundance of caution.
+              The price oracle seems to be lagging behind. If the oracle is more than 30 mins off, some functionality within the ovens is disabled out of an abundance of caution.
             </strong>
           </div>
           <span>⚠️️{{ humanTime($store.priceData.time) }} Ago</span>

@@ -10,6 +10,12 @@ Vue.config.productionTip = false
 Vue.prototype.$store = store
 Vue.prototype.$eventBus = new Vue();
 
+Vue.directive('focus', {
+  inserted: function (el) {
+      el.focus()
+  }
+})
+
 window.ctx = store
 
 import VueSweetalert2 from 'vue-sweetalert2';

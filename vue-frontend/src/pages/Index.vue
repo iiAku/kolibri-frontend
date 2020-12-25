@@ -5,7 +5,17 @@
         <div class="column cta-column is-6 is-offset-3">
           <div class="columns">
             <div class="column left-column is-6-desktop is-flex is-justify-content-flex-end is-align-items-center is-flex-svg">
-              <img class="hummingbird animate__animated animate__fadeIn" src="../assets/hummingbird.svg" />
+              <transition
+                  enter-active-class="animate__animated animate__fadeIn animate__faster"
+                  leave-active-class="animate__animated animate__fadeOut animate__faster"
+                  mode="out-in"
+              >
+                <img @click="clickCount += 1" v-if='clickCount < 5' class="hummingbird" src="../assets/hummingbird.svg" />
+                <div v-else class="hummingbird-pixel-wrapper">
+                  <img class="hummingbird hummingbird-pixel" src="../assets/hummingbird-2.png" />
+                </div>
+              </transition>
+
             </div>
             <div class="column is-6 is-12-mobile is-flex is-justify-content-center is-flex-direction-column animate__animated animate__fadeIn animate">
               <h1 class="title has-text-weight-bold is-huge">Kolibri</h1>
@@ -32,7 +42,7 @@
       </div>
     </section>
 
-    <div class="animate__animated animate__fadeIn">
+    <div class="animate__animated animate__fadeIn ovens-wrapper">
       <ovens v-if="$store.wallet !== null" />
       <connect-prompt v-else />
     </div>
@@ -47,7 +57,12 @@ import ConnectPrompt from "@/components/ConnectPrompt";
 export default {
   name: 'Index',
   async created(){
-    
+
+  },
+  data(){
+    return {
+      clickCount: 0
+    }
   },
   components: {
     ConnectPrompt,
@@ -92,6 +107,12 @@ export default {
   .index{
     min-height: calc(100vh - 4rem - 5px);
     background: $light-grey;
+    position: relative;
+    z-index: 40;
+    .ovens-wrapper{
+      position: relative;
+      z-index: 2;
+    }
     .navbar{
       border-top: 5px solid $primary;
       padding: 0 .5rem;
@@ -102,12 +123,27 @@ export default {
     .navbar-brand{
       padding-right: 4.75rem; // Margin to center the navbar-start/middle stuff
     }
+    .hummingbird-pixel-wrapper{
+      width: 190px;
+      height: 192px;
+      transition: all 250ms ease-out;
+      text-align: center;
+      &:hover{
+        filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1));
+      }
+    }
     .hummingbird{
       max-height: 12rem;
       transition: all 250ms ease-out;
       &:hover{
         transform: scale(1.1);
         filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1));
+      }
+      &.hummingbird-pixel{
+        transform: rotate(11deg) scale(1.1);
+        &:hover{
+          transform: rotate(11deg) scale(1.2);
+        }
       }
     }
     h1.is-huge{

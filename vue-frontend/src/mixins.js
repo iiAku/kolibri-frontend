@@ -17,6 +17,66 @@ export default {
             }
 
             this.$swal(title, errString, 'error');
-        }
+        },
+        numberWithCommas(str) {
+            return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        },
+        borrowedTokens(ovenAddress){
+            if (!ovenAddress) { return 0 }
+            if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
+            if (!this.$store.ownedOvens[ovenAddress].borrowedTokens) { return 0 }
+            return this.$store.ownedOvens[ovenAddress].borrowedTokens
+        },
+        borrowedTokensFormatted(ovenAddress){
+            return this.borrowedTokens(ovenAddress).dividedBy(Math.pow(10, 18))
+        },
+        currentPrice(){
+            return this.$store.priceData.price
+        },
+        currentPriceFormatted(){
+            return this.currentPrice().dividedBy(Math.pow(10, 6))
+        },
+        ovenDollarValue(ovenAddress){
+            const currentHoldings = this.ovenBalanceFormatted(ovenAddress)
+            const currentPrice = this.currentPriceFormatted()
+            return currentPrice.multipliedBy(currentHoldings)
+        },
+        ovenDollarValuePlusDeposit(ovenAddress, depositAmount){
+            const currentHoldings = this.ovenBalanceFormatted(ovenAddress).plus(depositAmount)
+            const currentPrice = this.currentPriceFormatted()
+            return currentPrice.multipliedBy(currentHoldings)
+        },
+        ovenDollarValueMinusWithdraw(ovenAddress, withdrawAmount){
+            const currentHoldings = this.ovenBalanceFormatted(ovenAddress).minus(withdrawAmount)
+            const currentPrice = this.currentPriceFormatted()
+            return currentPrice.multipliedBy(currentHoldings)
+        },
+        maxBorrowAmtKUSD(ovenAddress){
+            const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
+            const ovenValue = this.ovenDollarValue(ovenAddress)
+            return ovenValue.dividedBy(2).minus(borrowedTokens)
+        },
+        collatoralizationWarningClasses(rate){
+            if (rate > 100){
+                return "is-danger"
+            } else if (rate > 90){
+                return "is-warning"
+            } else {
+                return "is-primary"
+            }
+        },
+        ovenBalance(ovenAddress){
+            if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
+            if (!this.$store.ownedOvens[ovenAddress].balance) { return 0 }
+            return this.$store.ownedOvens[ovenAddress].balance
+        },
+        ovenBalanceFormatted(ovenAddress){
+            return this.ovenBalance(ovenAddress).dividedBy(Math.pow(10, 6))
+        },
+        ovenClient(ovenAddress) {
+            return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
+        },
+    },
+    computed:{
     }
 }

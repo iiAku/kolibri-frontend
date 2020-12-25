@@ -11,22 +11,54 @@
 
         <!-- Right side -->
         <div class="level-right">
-          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="borrow()" class="button is-small is-primary has-text-weight-bold">Create kUSD</button></p>
-          <p v-if="ovenData && parseInt(ovenData.borrowedTokens) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="payBack()" class="button is-small is-primary has-text-weight-bold">Pay Back kUSD</button></p>
-          <p v-if="ovenData && parseInt(ovenData.balance) !== 0" class="level-item"><button :disabled="pendingTransaction" @click="withdraw()" class="button is-small is-primary has-text-weight-bold">Withdraw ꜩ</button></p>
-          <p class="level-item"><button :disabled="pendingTransaction" @click="deposit()" class="button is-small is-primary has-text-weight-bold">Deposit ꜩ</button></p>
+          <p class="level-item">
+            <button
+                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
+                @click="$emit('modal-open-requested', 'Borrow', ovenAddress)"
+                class="button is-small is-primary has-text-weight-bold"
+            >
+              Borrow kUSD
+            </button>
+          </p>
+          <p class="level-item">
+            <button
+                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.borrowedTokens) !== 0)"
+                @click="$emit('modal-open-requested', 'Repay', ovenAddress)"
+                class="button is-small is-primary has-text-weight-bold"
+            >
+              Pay Back kUSD
+            </button>
+          </p>
+          <p class="level-item">
+            <button
+                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
+                @click="$emit('modal-open-requested', 'Withdraw', ovenAddress)"
+                class="button is-small is-primary has-text-weight-bold"
+            >
+              Withdraw ꜩ
+            </button>
+          </p>
+          <p class="level-item">
+            <button
+                :disabled="pendingTransaction || updatingData || !ovenData"
+                @click="$emit('modal-open-requested', 'Deposit', ovenAddress)"
+                class="button is-small is-primary has-text-weight-bold"
+            >
+              Deposit ꜩ
+            </button>
+          </p>
         </div>
       </nav>
     </div>
 
     <div v-if="pendingTransaction" class="loader-wrapper">
       <h1 class="title is-marginless is-5">
-        <a v-if="pendingTransaction !== true" target="_blank" rel="noopener" :href="`https://better-call.dev/delphinet/opg/${pendingTransaction}/contents`">Transaction Pending...</a>
+        <a :title="pendingTransaction" v-if="pendingTransaction !== true" target="_blank" rel="noopener" :href="`https://better-call.dev/delphinet/opg/${pendingTransaction}/contents`">Transaction Pending...</a>
         <span v-else>Transaction Pending...</span>
       </h1>
       <div class="loader left-spaced"></div>
     </div>
-    <div v-else-if="ovenData !== null" class="oven-info">
+    <div v-else-if="ovenData !== null && !updatingData" class="oven-info">
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
@@ -50,7 +82,7 @@
           <nav class="level right-info is-mobile">
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Vault Value (USD)</p>
+                <p class="heading">Collateral Value (USD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
                     ${{ ovenValue(ovenData.balance) }} USD
@@ -119,6 +151,12 @@ export default {
   mixins: [Mixins],
   async created(){
     await this.updateOvenData()
+
+    this.$eventBus.$on("tx-submitted", (txResult, ovenAddress, verb) => {
+      if (this.ovenAddress === ovenAddress){
+        this.waitForTxAndRefresh(txResult, verb)
+      }
+    })
   },
   methods: {
     ovenValue(ovenBalance){
@@ -128,12 +166,14 @@ export default {
     maxBorrowAmt(ovenBalance){
       if (parseInt(ovenBalance) === 0) { return 0 }
 
-      let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
+      let currentValue = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
+                                .multipliedBy(ovenBalance.dividedBy(Math.pow(10, 6)))
+
       let valueHalf = currentValue.dividedBy(2)
 
       let borrowedTokens = this.ovenData.borrowedTokens.dividedBy(Math.pow(10, 18))
 
-      return valueHalf.minus(borrowedTokens).dividedBy(100)
+      return valueHalf.minus(borrowedTokens)
     },
     collatoralizedRate(ovenBalance){
       if (parseInt(ovenBalance) === 0) { return 0 }
@@ -149,11 +189,11 @@ export default {
       const keys = ['baker', 'balance', 'borrowedTokens', 'stabilityFee', 'outstandingTokens']
 
       const values = await Promise.all([
-        this.ovenClient.getBaker(),
-        this.ovenClient.getBalance(),
-        this.ovenClient.getBorrowedTokens(),
-        this.ovenClient.getStabilityFees(),
-        this.ovenClient.getTotalOutstandingTokens(),
+        this.ovenClient(this.ovenAddress).getBaker(),
+        this.ovenClient(this.ovenAddress).getBalance(),
+        this.ovenClient(this.ovenAddress).getBorrowedTokens(),
+        this.ovenClient(this.ovenAddress).getStabilityFees(),
+        this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
       ])
 
       this.$set(
@@ -162,105 +202,38 @@ export default {
           _.zipObject(keys, values)
       )
     },
-    async deposit(){
-      let count = Number(window.prompt("How many XTZ?"))
-
-      if (count === 0){ return }
-
+    async waitForTxAndRefresh(txResult, verb){
       try{
-        this.pendingTransaction = true;
-
-        let depositResult = await this.ovenClient.deposit(count * Math.pow(10, 6))
-
-        this.pendingTransaction = depositResult.opHash
-
-        await depositResult.confirmation(1)
-
-        console.log("Deposit Finished! Refreshing data", depositResult)
+        this.pendingTransaction = txResult.opHash
+        await txResult.confirmation(1)
+        this.updatingData = true
+        this.pendingTransaction = false
+        console.log("Deposit Finished! Refreshing data", txResult)
         await this.updateOvenData()
+        this.updatingData = false
       } catch(err) {
-        this.handleWalletError(err, "Unable to deposit", "We were unable to fulfil your deposit request.")
+        this.handleWalletError(err, `Unable to ${verb}`, `We were unable to fulfil your ${verb} request.`)
       } finally {
         this.pendingTransaction = false;
       }
     },
     async withdraw(){
-      let count = Number(window.prompt("How many XTZ?"))
-
-      if (count === 0){ return }
-
-      try{
-        this.pendingTransaction = true;
-        let withdrawResult = await this.ovenClient.withdraw(count * Math.pow(10, 6))
-
-        this.pendingTransaction = withdrawResult.opHash
-
-        await withdrawResult.confirmation(1)
-
-        console.log("Withdraw Finished! Refreshing data", withdrawResult)
-        await this.updateOvenData()
-      } catch(err) {
-        this.handleWalletError(err, "Unable to deposit", "We were unable to fulfil your deposit request.")
-      } finally {
-        this.pendingTransaction = false;
-      }
-
-    },
-    async borrow(){
-      let count = Number(window.prompt("How many kUSD?"))
-
-      if (count === 0){ return }
-
-      try{
-        this.pendingTransaction = true;
-        let borrowResult = await this.ovenClient.borrow(count * Math.pow(10, 18))
-
-        this.pendingTransaction = borrowResult.opHash
-
-        await borrowResult.confirmation(1)
-
-        console.log("Borrow Finished! Refreshing data", borrowResult)
-        await this.updateOvenData()
-      } catch(err) {
-        this.handleWalletError(err, "Unable to borrow", "We were unable to fulfil your borrow request.")
-      } finally {
-        this.pendingTransaction = false;
-      }
+      this.$emit('modal-open-requested', 'withdraw', this.ovenAddress)
     },
     async payBack(){
-      let count = Number(window.prompt("How many kUSD?"))
-
-      if (count === 0){ return }
-
-      try{
-        this.pendingTransaction = true;
-        let repayResult = await this.ovenClient.repay(count * Math.pow(10, 18))
-
-        this.pendingTransaction = repayResult.opHash
-
-        await repayResult.confirmation(1)
-
-        console.log("Repay Finished! Refreshing data", repayResult)
-        await this.updateOvenData()
-      } catch(err) {
-        this.handleWalletError(err, "Unable to borrow", "We were unable to fulfil your borrow request.")
-      } finally {
-        this.pendingTransaction = false;
-      }
+      this.$emit('modal-open-requested', 'pay-back', this.ovenAddress)
     },
   },
   data(){
     return {
       pendingTransaction: false,
+      updatingData: false,
     }
   },
   computed: {
     ovenData() {
       return this.$store.ownedOvens[this.ovenAddress]
     },
-    ovenClient(){
-      return this.$store.getOvenClient(this.$store.wallet, this.ovenAddress)
-    }
   },
   components: {
     Popover,
@@ -326,6 +299,9 @@ export default {
       progress{
         height: .75rem;
       }
+    }
+    .tx-hash{
+      font-size: .5rem;
     }
   }
 </style>

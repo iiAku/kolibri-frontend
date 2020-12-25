@@ -136,6 +136,8 @@ export default {
 .navbar{
   border-top: 5px solid $primary;
   padding: 0 .5rem;
+  position: relative;
+  z-index: 1;
   .wallet-info{
     margin-left: .5rem;
   }

@@ -1,5 +1,11 @@
 <template>
   <section class="section ovens">
+    <oven-manage-modal
+        @close-requested="closeModal()"
+        @change-page="modal.requestedPage = $event"
+        :current-page="modal.requestedPage"
+        :ovenAddress="modal.ovenAddress"
+        :opened="modal.opened" />
     <div class="columns">
       <div class="column is-10 is-offset-1">
         <div v-if="$store.ownedOvens === null" class="loader-wrapper">
@@ -11,7 +17,11 @@
           </div>
           <pending-oven :op-hash="opHash" v-for="(_, opHash) in pendingOvens" :key="opHash" />
           <div v-if="$store.ownedOvens !== null">
-            <oven :oven-address="oven[0]" v-for="oven in sortedOvens" :key="oven[0]" />
+            <oven
+                @modal-open-requested="openModal"
+                :oven-address="oven[0]"
+                v-for="oven in sortedOvens"
+                :key="oven[0]" />
           </div>
         </div>
       </div>
@@ -21,6 +31,7 @@
 
 <script>
 import Oven from "@/components/Oven"
+import OvenManageModal from "@/components/OvenManageModal"
 import Mixins from '@/mixins'
 
 import _ from 'lodash'
@@ -40,7 +51,12 @@ export default {
   },
   data() {
     return {
-      pendingOvens: {}
+      pendingOvens: {},
+      modal: {
+        opened: false,
+        requestedPage: null,
+        ovenAddress: null
+      },
     }
   },
   computed: {
@@ -57,6 +73,16 @@ export default {
     }
   },
   methods: {
+    closeModal(){
+      this.modal.opened = false
+      this.modal.ovenAddress = null
+      this.modal.requestedPage = null
+    },
+    openModal(page, ovenAddress){
+      this.modal.ovenAddress = ovenAddress
+      this.modal.requestedPage = page
+      this.modal.opened = true
+    },
     async createNewOven(){
       try{
         // {operationHash: "onzNdPPKogumPvkNF9qZjKChxjemqvNcCFMsvmdGY5CC7XH2K4M", ovenAddress: "KT1GXRYR5f5SvBvSBfNmbfxGAqgUwVPwmZLi"}
@@ -82,7 +108,8 @@ export default {
   },
   components: {
     Oven,
-    PendingOven
+    PendingOven,
+    OvenManageModal,
   },
 }
 </script>
