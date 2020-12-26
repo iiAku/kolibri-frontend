@@ -31,8 +31,9 @@ The `OvenFactory` stores the following:
 - `minterContractAddress` (`address`): The address of the `Minter` contract, used for ACL checking and to retrieve interest indices.
 - `state` (`nat`): The current state of the contract; see 'State Machine' above.
 - `makeOvenOwner` (`option(contract(address))`): A register that stores the owner of the new `Oven` when the `OvenFactory` is waiting for the interest index.
+- `initialDelegate` (`option key_hash`): The address of the initial delegate for all ovens.
 
-All contract pointers (`governorContractAddress`, `ovenRegistryContractAddress`, `ovenProxyContractAddress`, `minterContractAddress`) are governable and can be set by the `governorContractAddress`.
+All contract pointers (`governorContractAddress`, `ovenRegistryContractAddress`, `ovenProxyContractAddress`, `minterContractAddress`) are governable and can be set by the `Governor`. `initialDelegate` is also governable by the `Governor`.
 
 ## Entrypoints
 
@@ -44,3 +45,4 @@ The `OvenFactory` has the following entrypoints:
 - `setOvenRegistryContract`: Update the `ovenRegistryContractAddress`. This entrypoint may only be called by `governorContractAddress`.
 - `setOvenProxyContract`: Update the `ovenProxyContractAddress`. This entrypoint may only be called by `governorContractAddress`.
 - `setMinterContract`: Update the `minterContractAddress`. This entrypoint may only be called by `governorContractAddress`.
+- `setInitialDelegate`: Update the `initialDelegate`. This entrypoint may only be called by `governorContractAddress`.
