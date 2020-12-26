@@ -200,12 +200,12 @@ Kolibri is a minimum viable product, and it is expected that the contract will u
 
 ### Value Limited Ovens
 
-When the system starts, we may hard-code `Oven`s to limit the amount of collateral they will accept (in order to launch with a globally enforced risk tolerance until we have completed a security audit and remediated any findings). A future upgrade to `Oven` could remove this limitation.
+At system launch, `Oven`s will have a limit to the amount of collateral they may store (in order to launch with a globally enforced risk tolerance until we have completed a security audit and remediated any findings). This limitation is removeable via governance in the future.
 
 ### Negative Interest Rates
 
-The `minter` contract models the stability rate as a natural number. However, `oven` contracts model it as an `int`. This is so that an optional future upgrade of the `minter` contract can apply negative interest rates if so desired.
+The `Minter` contract models the stability rate as a natural number. However, `Oven` contracts model it as an `int`. This is so that an optional future upgrade of the `Minter` contract can apply negative interest rates if so desired.
 
 ### Delegated Oven Control
 
-Some users may with to delegate control of their `oven`. `Oven`'s maintain an `owner` `address` and invocations will fail if `deposit`, `withdraw`, `borrow` or `repay` are called by someone besides the owner. A newer version of `oven`s could be deployed to contain a list of addresses which may administer it. 
+Some users may with to delegate control of their `Oven`. `Oven`'s maintain an `owner` `address` and invocations will fail if `deposit`, `withdraw`, `borrow` or `repay` are called by someone besides the owner. A newer version of `oven`s could be deployed to contain a list of addresses which may administer it. 

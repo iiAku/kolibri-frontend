@@ -40,6 +40,7 @@ The `Minter` stores the following:
 - `liquidationFeePercent` (`nat`): An additional percentage fee collected for liquidations. Represented as an integer with 10^-18 precision, ex: 80_000_000_000_000_000 = 8% fee on liquidations.
 - `collateralizationPercentage` (`nat`): The required collateralization for a vault. Represented as an integer with 10^-18 precision, ex:
 200_000_000_000_000_000_000 = 200% = there must be $2 of `XTZ` backing every $1 of `KUSD`.
+- `ovenMax` (`option mutez`): The maximum amount of `XTZ` an oven may hold if the value is `Some`. If the value is `None` then there is no limit.
 
 All parameters are governable.
 
@@ -53,6 +54,6 @@ The `Minter` has the following entrypoints:
 - `deposit`: Deposit `XTZ` tokens into an `Oven`. May only be called by the `OvenProxy`.
 - `withdraw`: Withdraw `XTZ` tokens from an `Oven`. May only be called by the `OvenProxy`.
 - `liquidate`: Liquidate an under-collateralized `Oven`. May only be called by the `OvenProxy`.
-- `updateParams`: Update the stability fee, liquidation fee, or collateralization percentage. May only be called by the `Governor`.
+- `updateParams`: Update the stability fee, liquidation fee, collateralization percentage or oven max. May only be called by the `Governor`.
 - `updateContracts`: Update addresses for the `Governor`, `Token`, `OvenProxy`, `Stability Fund` or `Developer Fund` contracts. May only be called by the `Governor`.
 - `updateTokenContractAdmin`: Update the administrator for the `Token` contract. May only be called by the `Governor`.
