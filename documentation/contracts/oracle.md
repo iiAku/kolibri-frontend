@@ -40,15 +40,19 @@ The `Oracle` stores the following:
 - `harbingerContractAddress` (`address`): The address of the `Harbinger Price feed` contract. Used to request data and for ACL checking.
 - `state` (`nat`): The current state of the contract; see 'State Machine' above.
 - `clientCallback` (`option(contract(nat))`): A register that stores state when the `Oracle` is waiting for Harbinger data.
+- `governorContractAddress` (`address`): The address of the `Governor` contract. Used for ACL checking.
+- `maxDataDelaySec` (`nat`): The maximum acceptable age of data received from Harbinger, in seconds.
 
-There are no governable parameters in the `Oracle`.
+`governorContractAddress` and `maxDataDelaySec` are governable.
 
 ## Entrypoints
 
 The `Oracle` has the following entrypoints:
 - `getXtzUsdPrice`: Retrieve, sanity check, and normalize Harbinger data.
-- `getXtzUsdPrice_callback`: Callback to receive data from Harbinger.. This entrypoint may only be called by the `harbingerContractAddress.`
+- `getXtzUsdPrice_callback`: Callback to receive data from Harbinger. This entrypoint may only be called by the `harbingerContractAddress.`
 - `default`: No-op. Always fails to prevent transfer of XTZ into contract.
+- `setMaxDataDelaySec`: Set the maximum acceptable age of data recieved from Harbinger. May only be called by the `Governor`.
+- `setGovernorContract`: Set the `Governor` address. May only be called by the `Governor`.
 
 ## Possible Future Work
 
