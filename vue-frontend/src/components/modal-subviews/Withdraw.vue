@@ -12,6 +12,7 @@
                 v-focus
                 type="number"
                 min="0"
+                step="0.00000000000000001"
                 v-model.number="withdrawAmount"
                 class="input"
                 placeholder="1.2345" />
@@ -72,7 +73,8 @@
 </template>
 
 <script>
-import Mixins from "@/mixins";
+import Mixins from "@/mixins"
+import BigNumber from 'bignumber.js'
 
 export default {
   name: 'Withdraw',
@@ -106,7 +108,7 @@ export default {
     maxWithdrawAmount(){
       const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress) // kUSD
       const ovenValue = this.ovenDollarValue(this.ovenAddress) // USD
-      const collateralMax = ovenValue.dividedBy(2)
+      const collateralMax = ovenValue.dividedBy(this.currentPriceFormatted())
 
       return collateralMax.minus(borrowedTokens)
     },
@@ -123,14 +125,20 @@ export default {
       }
 
       if (this.ovenBalanceFormatted(this.ovenAddress).minus(withdrawAmount).isNegative()){
-        return Infinity
+        return new BigNumber(0)
       }
 
       const maxCollateralDollars = this.ovenDollarValueMinusWithdraw(this.ovenAddress, withdrawAmount).dividedBy(2)
 
       const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress)
 
-      return borrowedTokens.dividedBy(maxCollateralDollars).times(100)
+      let collatRate = borrowedTokens.dividedBy(maxCollateralDollars)
+
+      if (!collatRate.isFinite()){
+        collatRate = new BigNumber(0)
+      }
+
+      return collatRate.times(100)
     }
   },
 }

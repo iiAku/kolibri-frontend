@@ -76,6 +76,7 @@
 
 <script>
 import Mixins from "@/mixins";
+import BigNumber from 'bignumber.js'
 
 export default {
   name: 'Deposit',
@@ -95,7 +96,11 @@ export default {
     async deposit(){
       try{
         this.networkLoading = true
-        let depositResult = await this.ovenClient(this.ovenAddress).deposit(this.depositAmount * Math.pow(10, 6))
+        const depositAmtMutez = Math.trunc(this.depositAmount * Math.pow(10, 6))
+
+        let depositResult = await this
+                                    .ovenClient(this.ovenAddress)
+                                    .deposit(depositAmtMutez)
         this.$eventBus.$emit("tx-submitted", depositResult, this.ovenAddress, 'deposit')
         this.$emit('close-requested')
       } catch (e) {
@@ -119,7 +124,13 @@ export default {
 
       const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress)
 
-      return borrowedTokens.dividedBy(maxCollateral).times(100)
+      let collatRate = borrowedTokens.dividedBy(maxCollateral)
+
+      if (!collatRate.isFinite()) {
+        collatRate = new BigNumber(0)
+      }
+
+      return collatRate.times(100)
     }
   },
 }

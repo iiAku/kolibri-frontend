@@ -134,9 +134,7 @@ export default {
     }
   },
   computed: {
-    ovenClient(){
-      return this.$store.getOvenClient(this.$store.wallet, this.oven.ovenAddress)
-    }
+
   },
   components: {
     Popover

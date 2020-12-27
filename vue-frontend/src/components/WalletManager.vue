@@ -9,7 +9,9 @@ import { Network } from "@tessellatedgeometry/stablecoin-lib";
 export default {
   name: 'WalletManager',
   async mounted(){
-    this.$store.walletAvailable = await ThanosWallet.isAvailable();
+    setTimeout(async () => {
+      this.$store.walletAvailable = await ThanosWallet.isAvailable();
+    }, 100)
 
     this.$eventBus.$on('wallet-connect-request', this.connectWallet)
   },

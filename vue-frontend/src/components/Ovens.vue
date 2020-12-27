@@ -97,9 +97,9 @@ export default {
         const ovenAddress = results[0].metadata.internal_operation_results[2].result.originated_contracts[0]
 
         if (this.$store.ownedOvens === null) {
-          this.$store.ownedOvens = []
+          this.$set(this.$store, 'ownedOvens', {})
         }
-        this.$store.ownedOvens.unshift({[ovenAddress]: null})
+        this.$set(this.$store.ownedOvens, ovenAddress, null)
         this.$set(this.$store, 'ovenCount', this.$store.ovenCount + 1)
       } catch(err) {
         this.handleWalletError(err, "Unable To Create Oven", "We were unable to create your Oven!")
