@@ -45,7 +45,7 @@ const allDocs = (ctx => {
   let keys = ctx.keys();
   let values = keys.map(ctx);
   return keys.reduce((o, k, i) => { o[k] = values[i]; return o; }, {});
-})(require.context('../../../documentation', true, /.md$/));
+})(require.context('../../../documentation/public/', true, /.md$/));
 
 export default {
   name: 'ProjectInfo',
