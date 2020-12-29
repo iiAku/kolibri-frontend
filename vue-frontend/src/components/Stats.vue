@@ -54,14 +54,14 @@
       <span v-if="$store.priceData === null" class="loader is-small is-inline-block"></span>
       <strong v-else>
         <popover
-            v-if="duration($store.priceData.time) > (50 * 60 * 1000)"
+            v-if="duration($store.priceData.time) > (30 * 60 * 1000)"
         >
           <div slot="popup-title">
             <strong class="has-text-danger">⛔ Warning</strong>
           </div>
           <div slot="popup-content">
             <strong>
-              The price oracle has lagged behind longer than 30 minutes, so some we've disabled most contract functionality for safety.
+              The price oracle has lagged behind longer than 30 minutes, so most functionality has been disabled by the protocol.
             </strong>
           </div>
           <span class="has-text-danger">⛔️{{ humanTime($store.priceData.time) }} Ago</span>
