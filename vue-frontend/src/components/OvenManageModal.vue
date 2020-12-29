@@ -214,7 +214,6 @@ export default {
 @import '../assets/sass/globals';
 
 .modal-component{
-  z-index: 999999;
   animation-duration: 250ms;
   animation-timing-function: ease;
 

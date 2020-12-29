@@ -1,5 +1,8 @@
 <template>
   <div class="index">
+    <portal-target name="manage-modal" />
+    <portal-target name="delegate-modal" />
+
     <section class="cta">
       <div class="columns is-marginless">
         <div class="column cta-column is-6 is-offset-3">
@@ -111,7 +114,7 @@ export default {
     z-index: 40;
     .ovens-wrapper{
       position: relative;
-      z-index: 2;
+      z-index: 1;
     }
     .navbar{
       border-top: 5px solid $primary;
@@ -181,7 +184,7 @@ export default {
     }
     .info-section{
       position: relative;
-      z-index: 3;
+      z-index: 2;
       padding-top: 2rem;
       padding-bottom: 2rem;
       background: linear-gradient(0deg, $light-grey 50%, #FFFFFF 50%);

@@ -1,18 +1,22 @@
 <template>
   <section class="section ovens">
-    <oven-manage-modal
-        v-if="modal.manage.opened"
-        @close-requested="closeManageModal"
-        @change-page="modal.manage.requestedPage = $event"
-        :current-page="modal.manage.requestedPage"
-        :ovenAddress="modal.manage.ovenAddress"
-        :opened="modal.manage.opened" />
+    <portal to="manage-modal">
+      <oven-manage-modal
+          v-if="modal.manage.opened"
+          @close-requested="closeManageModal"
+          @change-page="modal.manage.requestedPage = $event"
+          :current-page="modal.manage.requestedPage"
+          :ovenAddress="modal.manage.ovenAddress"
+          :opened="modal.manage.opened" />
+    </portal>
 
-    <oven-delegate-modal
-        v-if="modal.delegate.opened"
-        @close-requested="closeDelegateModal"
-        :ovenAddress="modal.delegate.ovenAddress"
-        :opened="modal.delegate.opened" />
+    <portal to="delegate-modal">
+      <oven-delegate-modal
+          v-if="modal.delegate.opened"
+          @close-requested="closeDelegateModal"
+          :ovenAddress="modal.delegate.ovenAddress"
+          :opened="modal.delegate.opened" />
+    </portal>
 
     <div class="columns">
       <div class="column is-10 is-offset-1">

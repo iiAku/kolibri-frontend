@@ -21,6 +21,9 @@ window.ctx = store
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import PortalVue from 'portal-vue'
+Vue.use(PortalVue)
+
 new Vue({
   render: h => h(App),
   router
