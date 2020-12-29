@@ -181,7 +181,7 @@ export default {
     }
     .info-section{
       position: relative;
-      z-index: 1;
+      z-index: 3;
       padding-top: 2rem;
       padding-bottom: 2rem;
       background: linear-gradient(0deg, $light-grey 50%, #FFFFFF 50%);

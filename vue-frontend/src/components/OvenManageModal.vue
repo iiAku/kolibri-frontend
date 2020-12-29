@@ -44,168 +44,6 @@
               :ovenAddress="ovenAddress"
               :is="currentPage"
           />
-
-<!--          <div v-else-if="page === 'pay-back'">-->
-
-<!--            <div class="field is-horizontal">-->
-<!--              <div class="field-label is-normal">-->
-<!--                <label class="label">Amount:</label>-->
-<!--              </div>-->
-<!--              <div class="field-body">-->
-<!--                <div class="field has-addons">-->
-<!--                  <p class="control is-expanded">-->
-<!--                    <input v-on:keyup.enter="shouldAllowBorrow && borrow()" v-focus type="number" min="0" v-model.number="borrowAmount" class="input" placeholder="1.2345">-->
-<!--                  </p>-->
-<!--                  <p class="control">-->
-<!--                    <a class="button is-static has-text-weight-bold">-->
-<!--                      kUSD-->
-<!--                    </a>-->
-<!--                  </p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right is-marginless">-->
-<!--              <p class="heading">-->
-<!--                <strong>Current Holdings:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted.toFixed(2)) }} kUSD</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="heading">-->
-<!--                <strong>Max Withdraw Amount:</strong> <strong class="price-view">{{ numberWithCommas(maxBorrowAmt.toFixed(2)) }} kUSD</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-horizontal">-->
-<!--              <div class="field-label">-->
-<!--              </div>-->
-<!--              <div class="field-body is-align-items-center">-->
-<!--                <div class="field">-->
-<!--                  <p class="control">-->
-<!--                    <progress class="progress" :class="collatoralizationWarningClasses(collatoralizedRateAfterBorrowing)"  :value="collatoralizedRateAfterBorrowing.toFixed(2)" max="100"></progress>-->
-<!--                  </p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="heading">-->
-<!--                <strong>New Collatoral Utilization:</strong> <strong :class="collatoralizationWarningClasses(collatoralizedRateAfterBorrowing)" class="price-view">{{ collatoralizedRateAfterBorrowing.toFixed(2) }} %</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="control">-->
-<!--                <button-->
-<!--                  @click="borrow()"-->
-<!--                  :disabled="!shouldAllowBorrow"-->
-<!--                  class="button is-primary has-text-weight-bold"-->
-<!--                  :class="{'is-loading': networkLoading}"-->
-<!--                >-->
-<!--                  Borrow-->
-<!--                </button>-->
-<!--              </p>-->
-<!--            </div>-->
-
-<!--          </div>-->
-<!--          <div v-else-if="page === 'deposit'">-->
-<!--            <div class="field is-horizontal">-->
-<!--              <div class="field-label is-normal">-->
-<!--                <label class="label">Amount:</label>-->
-<!--              </div>-->
-<!--              <div class="field-body">-->
-<!--                <div class="field has-addons">-->
-<!--                  <p class="control is-expanded">-->
-<!--                    <input v-on:keyup.enter="depositAmount && depositAmount >= 0 && deposit()" v-focus type="number" min="0" v-model.number="depositAmount" class="input" placeholder="1.2345">-->
-<!--                  </p>-->
-<!--                  <p class="control">-->
-<!--                    <a class="button is-static has-text-weight-bold">-->
-<!--                      ꜩ-->
-<!--                    </a>-->
-<!--                  </p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="control">-->
-<!--                <strong>Deposit Value (approx):</strong> <strong class="price-view">{{ xtzToUSD(depositAmount) }}</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="control">-->
-<!--                <button-->
-<!--                  @click="deposit()"-->
-<!--                  :disabled="!depositAmount || depositAmount <= 0"-->
-<!--                  class="button is-primary has-text-weight-bold"-->
-<!--                  :class="{'is-loading': networkLoading}"-->
-<!--                >-->
-<!--                  Deposit-->
-<!--                </button>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div v-else-if="page === 'withdraw'">-->
-<!--            <div class="field is-horizontal">-->
-<!--              <div class="field-label is-normal">-->
-<!--                <label class="label">Amount:</label>-->
-<!--              </div>-->
-<!--              <div class="field-body">-->
-<!--                <div class="field has-addons">-->
-<!--                  <p class="control is-expanded">-->
-<!--                    <input v-on:keyup.enter="withdrawAmount && withdrawAmount >= 0 && withdrawAmount < ovenBalanceFormatted && withdraw()" v-focus type="number" min="0" v-model.number="withdrawAmount" class="input" placeholder="1.2345">-->
-<!--                  </p>-->
-<!--                  <p class="control">-->
-<!--                    <a class="button is-static has-text-weight-bold">-->
-<!--                      ꜩ-->
-<!--                    </a>-->
-<!--                  </p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right is-marginless">-->
-<!--              <p class="heading">-->
-<!--                <strong>Current Holdings:</strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted.toFixed(2)) }} ꜩ</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="heading">-->
-<!--                <strong>Max Withdraw Amount:</strong> <strong class="price-view">{{ numberWithCommas(maxWithdrawAmt.toFixed(2)) }} ꜩ</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="field is-horizontal">-->
-<!--              <div class="field-label">-->
-<!--              </div>-->
-<!--              <div class="field-body is-align-items-center">-->
-<!--                <div class="field">-->
-<!--                  <p class="control">-->
-<!--                    <progress class="progress" :class="collatoralizationWarningClasses(collatoralizedRateAfterWithdrawing)"  :value="collatoralizedRateAfterWithdrawing.toFixed(2)" max="100"></progress>-->
-<!--                  </p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="heading">-->
-<!--                <strong>New Collatoral Utilization:</strong> <strong :class="collatoralizationWarningClasses(collatoralizedRateAfterWithdrawing)" class="price-view">{{ collatoralizedRateAfterWithdrawing.toFixed(2) }} %</strong>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="control">-->
-<!--                <strong>Withdraw Value (approx):</strong> <strong class="price-view">{{ xtzToUSD(withdrawAmount) }}</strong>-->
-<!--              </p>-->
-<!--            </div> &ndash;&gt;-->
-<!--            <div class="field is-grouped is-grouped-right">-->
-<!--              <p class="control">-->
-<!--                <button-->
-<!--                  @click="withdraw()"-->
-<!--                  :disabled="!withdrawAmount || withdrawAmount <= 0 || withdrawAmount > ovenBalance"-->
-<!--                  class="button is-primary has-text-weight-bold"-->
-<!--                  :class="{'is-loading': networkLoading}"-->
-<!--                >-->
-<!--                  Withdraw-->
-<!--                </button>-->
-<!--              </p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div v-else>-->
-<!--            Error: This page, '{{ page }}' is unknown!-->
-<!--          </div>-->
-
         </div>
       </div>
       <button @click="close()" class="modal-close is-large" aria-label="close"></button>
@@ -279,7 +117,7 @@ export default {
     async deposit(){
       try{
         this.networkLoading = true
-        let depositResult = await this.ovenClient.deposit(this.depositAmount * Math.pow(10, 6))
+        let depositResult = await this.ovenClient(this.ovenAddress).deposit(this.depositAmount * Math.pow(10, 6))
         this.$eventBus.$emit("tx-submitted", depositResult, this.ovenAddress, 'deposit')
         this.close()
       } catch (e) {
@@ -291,7 +129,7 @@ export default {
     async withdraw(){
       try{
         this.networkLoading = true
-        let withdrawResult = await this.ovenClient.withdraw(this.withdrawAmount * Math.pow(10, 6))
+        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(this.withdrawAmount * Math.pow(10, 6))
         this.$eventBus.$emit("tx-submitted", withdrawResult, this.ovenAddress, 'withdraw')
         this.close()
       } catch (e) {
@@ -304,7 +142,7 @@ export default {
     async repay(){
       try{
         this.networkLoading = true
-        let repayResult = await this.ovenClient.repay(this.repayAmount * Math.pow(10, 18))
+        let repayResult = await this.ovenClient(this.ovenAddress).repay(this.repayAmount * Math.pow(10, 18))
         this.$eventBus.$emit("tx-submitted", repayResult, this.ovenAddress, 'repay')
         this.close()
       } catch (e) {

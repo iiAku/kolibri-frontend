@@ -48,6 +48,7 @@ export default {
     box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
     text-align: left;
     padding: 1rem;
+    text-transform: initial;
     .popper__arrow{
       border-color: transparent transparent #ebebeb transparent !important;
     }

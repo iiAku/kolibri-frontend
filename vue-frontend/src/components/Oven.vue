@@ -62,7 +62,25 @@
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
-            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://delphinet.tzkt.io/${ovenData.baker}/delegators`">{{ ovenData.baker }}</a></strong></p>
+            <p class="heading">Delegated Baker:
+              <strong v-if="ovenData.baker"><a class="address" @click="$emit('show-delegate-modal', ovenAddress)">{{ ovenData.baker }}</a></strong>
+
+              <popover v-else>
+                <div slot="popup-title">
+                  <strong class="has-text-danger">⚠️ Warning</strong>
+                </div>
+                <div slot="popup-content">
+                  <strong>
+                    This oven is currently <i>not</i> delegated to any baker, and is not
+                    <br>
+                    receiving staking rewards. Please <a @click="$emit('show-delegate-modal', ovenAddress)">click here</a> to delegate to a baker.
+                  </strong>
+                </div>
+                <strong class="has-text-danger">
+                  <a @click="$emit('show-delegate-modal', ovenAddress)">⚠️ Set a baker</a>
+                </strong>
+              </popover>
+            </p>
             <p class="heading">Collateral Utilization: <strong>{{ collatoralizedRate(ovenData.balance) }}%</strong>
               | Can borrow up to
               <popover extra-classes="small-price">
@@ -159,6 +177,9 @@ export default {
     })
   },
   methods: {
+    showDelegateModal(){
+
+    },
     ovenValue(ovenBalance){
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
       return currentValue.toNumber() / Math.pow(10, 2)
@@ -247,6 +268,9 @@ export default {
   .oven {
     padding: 0;
     width: 100%;
+    .address{
+      text-transform: initial;
+    }
     .oven-info{
       .columns{
         @include until($widescreen){

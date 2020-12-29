@@ -75,7 +75,7 @@
           </div>
           <div slot="popup-content">
             <strong>
-              The price oracle seems to be lagging behind. If the oracle is more than 30 mins off, some functionality within the ovens is disabled out of an abundance of caution.
+              The price oracle seems to be lagging behind. If the oracle is more than 30 mins off, some functionality within the ovens is disabled by the protocol out of an abundance of caution.
             </strong>
           </div>
           <span>⚠️️{{ humanTime($store.priceData.time) }} Ago</span>
@@ -104,30 +104,9 @@ export default {
       this.now = moment()
     }, 1000)
 
-    this.$store.stableCoinClient.getOvenCount()
-        .then((count) => {
-          this.$store.ovenCount = count
-        })
+    setInterval(this.updateStatsData, 30 * 1000)
 
-    axios.get("https://kolibri-data.s3.amazonaws.com/apy.json")
-      .then((result) => {
-        this.$store.stabilityFee = new BigNumber(result.data.apy)
-      })
-
-    axios.get("https://kolibri-data.s3.amazonaws.com/totals.json")
-      .then((result) => {
-        const { totalBalance, totalTokens } = result.data
-        this.$store.balanceData = {
-          totalBalance: new BigNumber(totalBalance),
-          totalTokens: new BigNumber(totalTokens)
-        }
-      })
-
-    this.$store.stableCoinClient.getRequiredCollateralizationRatio()
-        .then((rate) => {
-          this.$store.collateralRate = rate
-        })
-
+    this.updateStatsData()
   },
   components: {
     Popover
@@ -138,6 +117,32 @@ export default {
     }
   },
   methods: {
+    updateStatsData(){
+      console.log("Fetching stats data...")
+      this.$store.stableCoinClient.getOvenCount()
+          .then((count) => {
+            this.$store.ovenCount = count
+          })
+
+      axios.get("https://kolibri-data.s3.amazonaws.com/apy.json")
+          .then((result) => {
+            this.$store.stabilityFee = new BigNumber(result.data.apy)
+          })
+
+      axios.get("https://kolibri-data.s3.amazonaws.com/totals.json")
+          .then((result) => {
+            const { totalBalance, totalTokens } = result.data
+            this.$store.balanceData = {
+              totalBalance: new BigNumber(totalBalance),
+              totalTokens: new BigNumber(totalTokens)
+            }
+          })
+
+      this.$store.stableCoinClient.getRequiredCollateralizationRatio()
+          .then((rate) => {
+            this.$store.collateralRate = rate
+          })
+    },
     numberWithCommas(str) {
       return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     },
