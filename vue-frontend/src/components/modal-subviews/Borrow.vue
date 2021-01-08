@@ -73,6 +73,7 @@
 
 <script>
 import Mixins from "@/mixins";
+import BigNumber from "bignumber.js";
 
 export default {
   name: 'Borrow',
@@ -92,7 +93,8 @@ export default {
     async borrow(){
       try{
         this.networkLoading = true
-        let borrowResult = await this.ovenClient(this.ovenAddress).borrow(this.borrowAmount * Math.pow(10, 18))
+        const borrowAmt = new BigNumber(this.borrowAmount).multipliedBy(Math.pow(10, 18))
+        let borrowResult = await this.ovenClient(this.ovenAddress).borrow(borrowAmt.toFixed())
         this.$eventBus.$emit("tx-submitted", borrowResult, this.ovenAddress, 'borrow')
         this.$emit('close-requested')
       } catch (e) {

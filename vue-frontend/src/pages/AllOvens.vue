@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { chunk, filter } from 'lodash'
+import { chunk, reject } from 'lodash'
 import axios from 'axios'
 import PublicOven from "@/components/PublicOven";
 import Pagination from 'vue-bulma-paginate/src/components/Pagination';
@@ -41,9 +41,9 @@ export default {
     if (this.$route.query.page){
       this.currentPage = parseInt(this.$route.query.page)
     }
-  
+
     const response = await axios.get("https://kolibri-data.s3.amazonaws.com/oven-data.json")
-    
+
     this.ovensData = response.data.allOvenData.map((oven) => {
       let { ovenAddress, ovenOwner, ovenData } = oven
 
@@ -76,7 +76,7 @@ export default {
       return this.activeVaults[this.currentPage - 1]
     },
     activeVaults(){
-      let filteredOvens = this.hideEmptyOvens ? filter(this.ovensData, (oven) => oven.balance.toNumber() > 0) : this.ovensData
+      let filteredOvens = this.hideEmptyOvens ? reject(this.ovensData, (oven) => oven.balance.isLessThanOrEqualTo(0)) : this.ovensData
       return chunk(filteredOvens, 10)
     }
   },

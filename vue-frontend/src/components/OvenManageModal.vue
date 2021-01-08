@@ -59,8 +59,6 @@ import Repay from '@/components/modal-subviews/Repay';
 import Deposit from '@/components/modal-subviews/Deposit';
 import Withdraw from '@/components/modal-subviews/Withdraw';
 
-import BigNumber from 'bignumber.js'
-
 export default {
   name: 'OvenManageModal',
   mixins: [Mixins],
@@ -100,106 +98,8 @@ export default {
       this.$emit('close-requested')
       Object.assign(this.$data, this.$options.data())
     },
-    xtzToUSD(xtzCount){
-      if (!xtzCount || xtzCount <= 0){
-        return "-"
-      } else {
-        let price = this.$store.priceData.price
-                          .times(xtzCount)
-                          .div(Math.pow(10, 6))
-                          .toFixed(2);
-        return `$${this.numberWithCommas(price)}`
-      }
-    },
-    numberWithCommas(str) {
-      return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    },
-    async deposit(){
-      try{
-        this.networkLoading = true
-        let depositResult = await this.ovenClient(this.ovenAddress).deposit(this.depositAmount * Math.pow(10, 6))
-        this.$eventBus.$emit("tx-submitted", depositResult, this.ovenAddress, 'deposit')
-        this.close()
-      } catch (e) {
-        this.handleWalletError(e, "Unable not deposit", "There was an issue with the deposit request.")
-      } finally {
-        this.networkLoading = false
-      }
-    },
-    async withdraw(){
-      try{
-        this.networkLoading = true
-        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(this.withdrawAmount * Math.pow(10, 6))
-        this.$eventBus.$emit("tx-submitted", withdrawResult, this.ovenAddress, 'withdraw')
-        this.close()
-      } catch (e) {
-        this.handleWalletError(e, "Unable not withdraw", "There was an issue with the withdraw request.")
-      } finally {
-        this.networkLoading = false
-      }
-    },
-
-    async repay(){
-      try{
-        this.networkLoading = true
-        let repayResult = await this.ovenClient(this.ovenAddress).repay(this.repayAmount * Math.pow(10, 18))
-        this.$eventBus.$emit("tx-submitted", repayResult, this.ovenAddress, 'repay')
-        this.close()
-      } catch (e) {
-        this.handleWalletError(e, "Could not repay", "There was an issue with the repay request.")
-      } finally {
-        this.networkLoading = false
-      }
-    },
-    collatoralizationWarningClasses(rate){
-      if (rate > 100){
-        return "is-danger"
-      } else if (rate > 90){
-        return "is-warning"
-      } else {
-        return "is-primary"
-      }
-    },
   },
   computed: {
-    maxWithdrawAmt(){
-      return this.maxBorrowAmt.dividedBy(this.$store.priceData.price.dividedBy(Math.pow(10, 6)))
-    },
-    collatoralizedRateAfterBorrowing(){
-      if (this.ovenBalance === 0) { return 0 }
-
-      let currentValue = this.$store.priceData.price
-                                          .dividedBy(Math.pow(10, 6))
-                                          .multipliedBy(this.ovenBalanceFormatted)
-      let valueHalf = currentValue.dividedBy(2)
-
-      let borrowAmount = this.borrowAmount
-      if (!borrowAmount || borrowAmount < 0){ borrowAmount = "0" }
-
-      let totalTokens = this.borrowedTokens.plus(new BigNumber(borrowAmount).times(Math.pow(10, 18)))
-
-      let rate = totalTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 16))
-
-      return rate
-    },
-    collatoralizedRateAfterWithdrawing(){
-      // if (this.ovenBalance === 0) { return 0 }
-
-      // let currentValue = this.$store.priceData.price
-      //                                     .dividedBy(Math.pow(10, 6))
-      //                                     .multipliedBy(this.ovenBalanceFormatted - withdrawAmount)
-
-      // let valueHalf = currentValue.dividedBy(2)
-
-      // let withdrawAmount = this.withdrawAmount
-      // if (!withdrawAmount || withdrawAmount < 0){ withdrawAmount = "0" }
-
-      // let totalTokens = this.borrowedTokens.plus(new BigNumber(withdrawAmount).times(Math.pow(10, 18)))
-
-      // let rate = totalTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 16))
-
-      return 0
-    },
   },
   components: {
     Borrow,

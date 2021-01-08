@@ -94,7 +94,7 @@ export default {
     async withdraw(){
       try{
         this.networkLoading = true
-        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(parseInt(this.withdrawAmount * Math.pow(10, 6)))
+        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(new BigNumber(this.withdrawAmount).multipliedBy(Math.pow(10, 6)).toFixed())
         this.$eventBus.$emit("tx-submitted", withdrawResult, this.ovenAddress, 'withdraw')
         this.$emit('close-requested')
       } catch (e) {

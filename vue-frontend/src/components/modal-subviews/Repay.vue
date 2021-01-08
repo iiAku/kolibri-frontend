@@ -93,7 +93,8 @@ export default {
     async repay(){
       try{
         this.networkLoading = true
-        let repayResult = await this.ovenClient(this.ovenAddress).repay(this.repayAmount * Math.pow(10, 18))
+        const repayAmt = new BigNumber(this.repayAmount).multipliedBy(Math.pow(10, 18))
+        let repayResult = await this.ovenClient(this.ovenAddress).repay(repayAmt.toFixed())
         this.$eventBus.$emit("tx-submitted", repayResult, this.ovenAddress, 'repay')
         this.$emit('close-requested')
       } catch (e) {
@@ -106,8 +107,7 @@ export default {
   computed: {
     shouldAllowRepay(){
       if(!this.repayAmount || this.repayAmount <= 0) { return false }
-
-      return this.repayAmount <= this.borrowedTokensFormatted(this.ovenAddress).toNumber()
+      return new BigNumber(this.repayAmount).isLessThanOrEqualTo(this.borrowedTokensFormatted(this.ovenAddress))
     },
     collateralizedRateAfterRepaying(){
       let repayAmount = this.repayAmount

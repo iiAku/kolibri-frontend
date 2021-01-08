@@ -46,7 +46,7 @@
       <h1 class="subtitle is-marginless has-text-weight-normal">Latest <a href="https://harbinger.live" target="_blank" rel="noopener">XTZ/USD Oracle</a> Price: </h1>
       <div class="price-data">
         <p v-if="$store.priceData === null" class="loader is-small"></p>
-        <p v-else class="title is-5 is-marginless">${{ (parseInt($store.priceData.price) / (10 * 100000)).toFixed(2).toLocaleString() }}</p>
+        <p v-else class="title is-5 is-marginless">${{ ($store.priceData.price.dividedBy(Math.pow(10, 6))).toFixed(2).toLocaleString() }}</p>
       </div>
     </div>
     <p class="heading last-update-time">

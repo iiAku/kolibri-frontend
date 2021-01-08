@@ -85,10 +85,10 @@
               | Can borrow up to
               <popover extra-classes="small-price">
                 <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                  {{maxBorrowAmt(ovenData.balance)}} kUSD
+                  {{numberWithCommas(maxBorrowAmt(ovenData.balance))}} kUSD
                 </strong>
 
-                <strong class="price-has-popover">{{ maxBorrowAmt(ovenData.balance).toFixed(2) }} kUSD</strong>
+                <strong class="price-has-popover">{{ numberWithCommas(maxBorrowAmt(ovenData.balance).toFixed(2)) }} kUSD</strong>
               </popover>
 
             <div class="allocation-info is-fullwidth">
@@ -103,10 +103,10 @@
                 <p class="heading">Collateral Value (USD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    ${{ ovenValue(ovenData.balance) }} USD
+                    ${{ numberWithCommas(ovenValue(ovenData.balance)) }} USD
                   </strong>
 
-                  <strong class="price-has-popover">${{ ovenValue(ovenData.balance).toFixed(2) }} USD</strong>
+                  <strong class="price-has-popover">${{ numberWithCommas(ovenValue(ovenData.balance).toFixed(2)) }} USD</strong>
                 </popover>
               </div>
             </div>
@@ -116,10 +116,10 @@
                 <p class="title is-6">
                   <popover extra-classes="small-price">
                     <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                      {{ (parseInt(ovenData.balance) / Math.pow(10, 6)) }} ꜩ
+                      {{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} ꜩ
                     </strong>
 
-                    <strong class="price-has-popover">{{ (parseInt(ovenData.balance) / Math.pow(10, 6)).toFixed(2) }} ꜩ</strong>
+                    <strong class="price-has-popover">{{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} ꜩ</strong>
                   </popover>
                 </p>
               </div>
@@ -129,10 +129,10 @@
                 <p class="heading">Balance (KUSD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(ovenData.borrowedTokens) / Math.pow(10, 18)) }} kUSD
+                    {{ numberWithCommas(ovenData.borrowedTokens.dividedBy(Math.pow(10, 18))) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(ovenData.borrowedTokens) / Math.pow(10, 18)).toFixed(2) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ numberWithCommas(ovenData.borrowedTokens.dividedBy(Math.pow(10, 18)).toFixed(2)) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -141,10 +141,10 @@
                 <p class="heading">Stability Fee</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(ovenData.stabilityFee) / Math.pow(10, 18)) }} kUSD
+                    {{ numberWithCommas(ovenData.stabilityFee.dividedBy(Math.pow(10, 18))) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(ovenData.stabilityFee) / Math.pow(10, 18)).toFixed(6) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ numberWithCommas(ovenData.stabilityFee.dividedBy(Math.pow(10, 18)).toFixed(6)) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -177,12 +177,9 @@ export default {
     })
   },
   methods: {
-    showDelegateModal(){
-
-    },
     ovenValue(ovenBalance){
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
-      return currentValue.toNumber() / Math.pow(10, 2)
+      return currentValue.dividedBy(Math.pow(10, 2))
     },
     maxBorrowAmt(ovenBalance){
       if (parseInt(ovenBalance) === 0) { return 0 }

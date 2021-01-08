@@ -25,10 +25,10 @@
               | Can borrow up to
               <popover extra-classes="small-price">
                 <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                  {{maxBorrowAmt(oven.balance)}} kUSD
+                  {{ numberWithCommas(maxBorrowAmt(oven.balance)) }} kUSD
                 </strong>
 
-                <strong class="price-has-popover">{{ maxBorrowAmt(oven.balance).toFixed(2) }} kUSD</strong>
+                <strong class="price-has-popover">{{ numberWithCommas(maxBorrowAmt(oven.balance).toFixed(2)) }} kUSD</strong>
               </popover>
 
             <div class="allocation-info is-fullwidth">
@@ -43,10 +43,10 @@
                 <p class="heading">Vault Value (USD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    ${{ ovenValue(oven.balance) }} USD
+                    ${{ numberWithCommas(ovenValue(oven.balance)) }} USD
                   </strong>
 
-                  <strong class="price-has-popover">${{ ovenValue(oven.balance).toFixed(2) }} USD</strong>
+                  <strong class="price-has-popover">${{ numberWithCommas(ovenValue(oven.balance).toFixed(2)) }} USD</strong>
                 </popover>
               </div>
             </div>
@@ -56,10 +56,10 @@
                 <p class="title is-6">
                   <popover extra-classes="small-price">
                     <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                      {{ (parseInt(oven.balance) / Math.pow(10, 6)) }} ꜩ
+                      {{ numberWithCommas(oven.balance.dividedBy(Math.pow(10, 6))) }} ꜩ
                     </strong>
 
-                    <strong class="price-has-popover">{{ (parseInt(oven.balance) / Math.pow(10, 6)).toFixed(2) }} ꜩ</strong>
+                    <strong class="price-has-popover">{{ numberWithCommas(oven.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} ꜩ</strong>
                   </popover>
                 </p>
               </div>
@@ -69,10 +69,10 @@
                 <p class="heading">Balance (KUSD)</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(oven.borrowedTokens) / Math.pow(10, 18)) }} kUSD
+                    {{ numberWithCommas(oven.borrowedTokens.dividedBy(Math.pow(10, 18))) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(oven.borrowedTokens) / Math.pow(10, 18)).toFixed(2) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ numberWithCommas(oven.borrowedTokens.dividedBy(Math.pow(10, 18)).toFixed(2)) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -81,10 +81,10 @@
                 <p class="heading">Stability Fee</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ (parseInt(oven.stabilityFee) / Math.pow(10, 18)) }} kUSD
+                    {{ numberWithCommas(oven.stabilityFee.dividedBy(Math.pow(10, 18))) }} kUSD
                   </strong>
 
-                  <strong class="price-has-popover">{{ (parseInt(oven.stabilityFee) / Math.pow(10, 18)).toFixed(6) }} kUSD</strong>
+                  <strong class="price-has-popover">{{ numberWithCommas(oven.stabilityFee.dividedBy(Math.pow(10, 18)).toFixed(6)) }} kUSD</strong>
                 </popover>
               </div>
             </div>
@@ -106,7 +106,7 @@ export default {
   methods: {
     ovenValue(ovenBalance){
       let currentValue = this.$store.priceData.price.multipliedBy(ovenBalance).dividedBy(Math.pow(10, 10))
-      return currentValue.toNumber() / Math.pow(10, 2)
+      return currentValue.dividedBy(Math.pow(10, 2))
     },
     maxBorrowAmt(ovenBalance){
       if (parseInt(ovenBalance) === 0) { return 0 }

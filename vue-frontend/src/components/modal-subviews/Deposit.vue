@@ -96,7 +96,8 @@ export default {
     async deposit(){
       try{
         this.networkLoading = true
-        const depositAmtMutez = Math.trunc(this.depositAmount * Math.pow(10, 6))
+
+        const depositAmtMutez = new BigNumber(this.depositAmount).multipliedBy(Math.pow(10, 6)).toFixed()
 
         let depositResult = await this
                                     .ovenClient(this.ovenAddress)
