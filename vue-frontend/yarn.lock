@@ -1013,10 +1013,10 @@
     "bs58check" "^2.1.2"
     "buffer" "^5.6.0"
 
-"@tessellatedgeometry/stablecoin-lib@^1.3.5":
-  "integrity" "sha512-QfVeD8hKwMclT77S9iM/rFCyonIX8r4dgwZjhyX18MGNGfyJJg1W2Ua3zYMvq9Q8sGd2UikuJK4Zgy1pbpsk4w=="
-  "resolved" "https://registry.npmjs.org/@tessellatedgeometry/stablecoin-lib/-/stablecoin-lib-1.3.5.tgz"
-  "version" "1.3.5"
+"@tessellatedgeometry/stablecoin-lib@^1.3.6":
+  "integrity" "sha512-L7MfRIAsLY0HdoxQrXY5Sy0H6uCjXNHcqOLPVt814scDyO+C8+FwMKoVafKeya+ROmJrFAah9pbmTW8n3BJ8Ag=="
+  "resolved" "https://registry.npmjs.org/@tessellatedgeometry/stablecoin-lib/-/stablecoin-lib-1.3.6.tgz"
+  "version" "1.3.6"
   dependencies:
     "@taquito/signer" "^7.0.0 || ^7.0.0-beta"
     "@taquito/taquito" "^7.0.0 || ^7.0.0-beta"

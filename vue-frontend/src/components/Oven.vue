@@ -209,7 +209,7 @@ export default {
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
-        this.ovenClient(this.ovenAddress).getBorrowedTokens(),
+        this.$store.tokenClient.getBalance(this.$store.wallet.pkh),
         this.ovenClient(this.ovenAddress).getStabilityFees(),
         this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
       ])

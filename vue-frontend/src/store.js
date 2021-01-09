@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import { WalletStates } from './enums'
 
-import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network} from "@tessellatedgeometry/stablecoin-lib";
+import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient} from "@tessellatedgeometry/stablecoin-lib";
 
 // const NODE_URL = 'https://tezos-dev.cryptonomic-infra.tech'
 // const NODE_URL = 'https://testnet-tezos.giganode.io'
@@ -23,6 +23,7 @@ export default Vue.observable({
     walletState: WalletStates.DISCONNECTED,
     network: NETWORK,
     nodeURL: NODE_URL,
+    tokenClient: new TokenClient(NODE_URL, CONTRACTS.DELPHI.TOKEN),
     harbingerClient: new HarbingerClient(NODE_URL,
         CONTRACTS.DELPHI.HARBINGER_NORMALIZER
     ),
