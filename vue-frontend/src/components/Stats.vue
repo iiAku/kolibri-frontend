@@ -93,11 +93,13 @@ import BigNumber from "bignumber.js";
 
 import { ConversionUtils } from '@tessellatedgeometry/stablecoin-lib'
 import Popover from "@/components/Popover"
+import Mixins from "@/mixins";
 
 import axios from 'axios'
 
 export default {
   name: 'Stats',
+  mixins: [Mixins],
   created(){
     console.log("Stats component created")
     setInterval(() => {
@@ -142,9 +144,6 @@ export default {
           .then((rate) => {
             this.$store.collateralRate = rate
           })
-    },
-    numberWithCommas(str) {
-      return str.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     },
     formattedStabilityFee(){
       return ConversionUtils.shardToHumanReadablePercentage(this.$store.stabilityFee, 4)
