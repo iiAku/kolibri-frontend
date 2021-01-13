@@ -36,7 +36,7 @@ export default {
   .pending-oven {
     .oven-info{
       text-align: center;
-      padding: 3rem;
+      padding: 2rem;
       .title{
         padding-right: .75rem;
       }

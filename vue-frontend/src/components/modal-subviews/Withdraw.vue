@@ -27,7 +27,7 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Oven Holdings: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
+        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">

@@ -21,6 +21,7 @@ export default Vue.observable({
     walletAvailable: null,
     walletStates: WalletStates,
     walletState: WalletStates.DISCONNECTED,
+    walletBalance: null,
     network: NETWORK,
     nodeURL: NODE_URL,
     tokenClient: new TokenClient(NODE_URL, CONTRACTS.DELPHI.TOKEN),

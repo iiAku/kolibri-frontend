@@ -121,7 +121,9 @@ export default {
         this.$delete(this.pendingOvens, result.opHash)
 
         const results = await result.operationResults()
-        const ovenAddress = results[0].metadata.internal_operation_results[2].result.originated_contracts[0]
+        const ovenAddress = _.find(results[0].metadata.internal_operation_results, (operation) => {
+          return operation.kind === "origination"
+        }).result.originated_contracts[0]
 
         if (this.$store.ownedOvens === null) {
           this.$set(this.$store, 'ownedOvens', {})

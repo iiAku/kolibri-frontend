@@ -26,16 +26,19 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Current Holdings:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD</strong>
+        <strong>Borrowed kUSD:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Max Borrow Amount:</strong> <strong class="price-view">
+          {{ numberWithCommas(maxBorrowAmtKUSD(ovenAddress).toFixed(2)) }} kUSD
+        </strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
-        <strong>Max Borrow Amount:</strong> <strong class="price-view">
-          <a @click="borrowAmount = maxBorrowAmtKUSD(ovenAddress)">
-            {{ numberWithCommas(maxBorrowAmtKUSD(ovenAddress).toFixed(2)) }} kUSD
-          </a>
-        </strong>
+        <a @click="borrowAmount = maxBorrowAmtKUSD(ovenAddress).multipliedBy(0.8)" class="has-text-weight-bold">Max Safe (80%)</a>
       </p>
     </div>
     <div class="field is-horizontal">

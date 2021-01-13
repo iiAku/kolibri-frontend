@@ -120,7 +120,6 @@ export default {
   },
   methods: {
     updateStatsData(){
-      console.log("Fetching stats data...")
       this.$store.stableCoinClient.getOvenCount()
           .then((count) => {
             this.$store.ovenCount = count

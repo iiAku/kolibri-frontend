@@ -21,5 +21,8 @@ module.exports = {
             .use('file-loader')
                 .loader('file-loader?name=docs/[name]-[hash:6].[ext]')
                 .end()
-    }
+
+        config.output.filename('js/[name].[hash:8].js')
+        config.output.chunkFilename('js/[name].[hash:8].js')
+    },
 };

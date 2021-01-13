@@ -100,7 +100,7 @@
           <nav class="level right-info is-mobile">
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Collateral Value (USD)</p>
+                <p class="heading">Collateral Value</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
                     ${{ numberWithCommas(ovenValue(ovenData.balance)) }} USD
@@ -112,21 +112,19 @@
             </div>
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Balance (ꜩ)</p>
-                <p class="title is-6">
-                  <popover extra-classes="small-price">
+                <p class="heading">Balance</p>
+                <popover extra-classes="small-price">
                     <strong slot="popup-content" class="has-text-primary heading is-marginless">
                       {{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} ꜩ
                     </strong>
 
                     <strong class="price-has-popover">{{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} ꜩ</strong>
                   </popover>
-                </p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Balance (KUSD)</p>
+                <p class="heading">Borrowed Tokens</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
                     {{ numberWithCommas(ovenData.borrowedTokens.dividedBy(Math.pow(10, 18))) }} kUSD
@@ -141,7 +139,7 @@
                 <p class="heading">Stability Fee</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
-                    {{ numberWithCommas(ovenData.stabilityFee.dividedBy(Math.pow(10, 18))) }} kUSD
+                    {{ numberWithCommas(ovenData.stabilityFee.dividedBy(Math.pow(10, 18)).toFixed(8)) }} kUSD
                   </strong>
 
                   <strong class="price-has-popover">{{ numberWithCommas(ovenData.stabilityFee.dividedBy(Math.pow(10, 18)).toFixed(6)) }} kUSD</strong>
@@ -209,7 +207,7 @@ export default {
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
-        this.$store.tokenClient.getBalance(this.$store.wallet.pkh),
+        this.ovenClient(this.ovenAddress).getBorrowedTokens(),
         this.ovenClient(this.ovenAddress).getStabilityFees(),
         this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
       ])
@@ -228,6 +226,9 @@ export default {
         this.pendingTransaction = false
         console.log("Deposit Finished! Refreshing data", txResult)
         await this.updateOvenData()
+
+        this.$set(this.$store, 'walletBalance', await this.$store.tokenClient.getBalance(this.$store.wallet.pkh))
+
         this.updatingData = false
       } catch(err) {
         this.handleWalletError(err, `Unable to ${verb}`, `We were unable to fulfil your ${verb} request.`)

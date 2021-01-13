@@ -16,6 +16,9 @@ export default {
     this.$eventBus.$on('wallet-connect-request', this.connectWallet)
   },
   methods: {
+    async updateBalance(){
+      this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.wallet.pkh)
+    },
     async connectWallet(){
       console.log("Connecting wallet!")
       this.$store.walletState = WalletStates.CONNECTING
@@ -24,9 +27,13 @@ export default {
         name: Network.Delphi,
         rpc: this.$store.nodeURL
       })
-        .then(() => {
+        .then(async () => {
           this.$store.walletState = WalletStates.CONNECTED
           this.$store.wallet = wallet
+
+          // Update wallet balances for kUSD
+          await this.updateBalance()
+          setInterval(this.updateBalance, 60 * 1000)
         })
         .catch((err) => {
           console.log("Errored :( ")

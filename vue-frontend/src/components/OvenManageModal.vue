@@ -7,7 +7,7 @@
       <div @click="close()" class="modal-background"></div>
       <div class="modal-content">
         <div class="box">
-          <div class="tabs is-centered is-toggle">
+          <div v-if="ovenBalance(ovenAddress) > 0" class="tabs is-centered is-toggle">
             <ul>
               <li
                 v-if="ovenBalance(ovenAddress) > 0"
@@ -38,7 +38,7 @@
               </li>
             </ul>
           </div>
-
+          <h1 v-else class="title is-4">Deposit ꜩ</h1>
           <component
               @close-requested="close()"
               :ovenAddress="ovenAddress"

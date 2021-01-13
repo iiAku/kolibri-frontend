@@ -26,14 +26,19 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Current Holdings:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD</strong>
+        <strong>Borrowed kUSD:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Wallet Holdings:</strong> <strong class="price-view">{{ numberWithCommas($store.walletBalance.dividedBy(Math.pow(10, 18)).toFixed(2)) }} kUSD</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <strong>Max Payback Amount:</strong> <strong class="price-view">
-        <a @click="repayAmount = borrowedTokensFormatted(ovenAddress)">
-          {{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD
+        <a @click="repayAmount = maxPaybackAmt">
+          {{ numberWithCommas(maxPaybackAmt.toFixed(2)) }} kUSD
         </a>
       </strong>
       </p>
@@ -108,6 +113,13 @@ export default {
     shouldAllowRepay(){
       if(!this.repayAmount || this.repayAmount <= 0) { return false }
       return new BigNumber(this.repayAmount).isLessThanOrEqualTo(this.borrowedTokensFormatted(this.ovenAddress))
+    },
+    maxPaybackAmt(){
+      if (this.walletBalanceFormatted().isLessThanOrEqualTo(this.borrowedTokensFormatted(this.ovenAddress))) {
+        return this.walletBalanceFormatted()
+      } else {
+        return this.borrowedTokensFormatted(this.ovenAddress)
+      }
     },
     collateralizedRateAfterRepaying(){
       let repayAmount = this.repayAmount

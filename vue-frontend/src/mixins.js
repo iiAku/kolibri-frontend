@@ -32,6 +32,12 @@ export default {
         borrowedTokensFormatted(ovenAddress){
             return this.borrowedTokens(ovenAddress).dividedBy(Math.pow(10, 18))
         },
+        walletBalance(){
+            return this.$store.walletBalance
+        },
+        walletBalanceFormatted(){
+            return this.walletBalance().dividedBy(Math.pow(10, 18))
+        },
         currentPrice(){
             return this.$store.priceData.price
         },
