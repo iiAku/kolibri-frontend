@@ -27,13 +27,11 @@ jobs:
       image: cimg/python:3.9.1-node
     steps:
     - uses: actions/checkout@v2
-    - run:
-      name: "Install SmartPy"
-      command: |
+    - name: "Install SmartPy"
+      run: |
         sh <(curl -s https://smartpy.io/releases/20201222-65067da80037a151c726ae887cc2a24d02eca2b0/cli/install.sh) local-install ~/smartpy-cli
-    - run:
-      name: "Build and Test Smart Contracts"
-      command: |
+    - name: "Build and Test Smart Contracts"
+      run: |
         cd smart_contracts
         ./compile.sh
 
