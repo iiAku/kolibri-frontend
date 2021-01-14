@@ -23,11 +23,10 @@ jobs:
 
   build_and_test_smart_contracts:
     runs-on: ubuntu-latest
-    container:
-      image: cimg/python:3.9.1-node
-      options: --user 1001
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - uses: actions/setup-python@v2
     - name: "Install SmartPy"
       run: |
         curl -s https://smartpy.io/releases/20201222-65067da80037a151c726ae887cc2a24d02eca2b0/cli/install.sh | sh -s -- local-install ~/smartpy-cli
@@ -38,10 +37,9 @@ jobs:
 
   lint_and_build_deploy_scripts:
     runs-on: ubuntu-latest
-    container:
-      image: circleci/node:12
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
     - name: "Install Dependencies"
       run: |
         sudo apt install build-essential git libusb-1.0-0 libusb-1.0-0-dev
@@ -54,11 +52,9 @@ jobs:
 
   lint_and_build_sdk:
     runs-on: ubuntu-latest
-    container:
-      image: circleci/node:12
-      options: --user 1001
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
     - name: "Build, Lint and Test SDK"
       run: |
         cd sdk
@@ -68,11 +64,9 @@ jobs:
 
   build_frontend:
     runs-on: ubuntu-latest
-    container:
-      image: circleci/node:12
-      options: --user 1001
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
     - name: "Build Front End"
       run: |
         cd vue-frontend
