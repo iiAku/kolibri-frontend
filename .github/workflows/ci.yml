@@ -30,7 +30,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: "Install SmartPy"
       run: |
-        curl -s https://smartpy.io/releases/20201222-65067da80037a151c726ae887cc2a24d02eca2b0/cli/install.sh | sh local-install ~/smartpy-cli
+        curl -s https://smartpy.io/releases/20201222-65067da80037a151c726ae887cc2a24d02eca2b0/cli/install.sh | sh -s -- local-install ~/smartpy-cli
     - name: "Build and Test Smart Contracts"
       run: |
         cd smart_contracts
