@@ -54,6 +54,12 @@
         </div>
       </div>
     </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Current Collateral Utilization:</strong>
+        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+      </p>
+    </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
@@ -98,7 +104,7 @@ export default {
     async repay(){
       try{
         this.networkLoading = true
-        const repayAmt = new BigNumber(this.repayAmount).multipliedBy(Math.pow(10, 18))
+        const repayAmt = new BigNumber(this.repayAmount).decimalPlaces(18).multipliedBy(Math.pow(10, 18))
         let repayResult = await this.ovenClient(this.ovenAddress).repay(repayAmt.toFixed())
         this.$eventBus.$emit("tx-submitted", repayResult, this.ovenAddress, 'repay')
         this.$emit('close-requested')

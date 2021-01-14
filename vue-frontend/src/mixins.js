@@ -62,7 +62,7 @@ export default {
         maxBorrowAmtKUSD(ovenAddress){
             const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
             const ovenValue = this.ovenDollarValue(ovenAddress)
-            return ovenValue.dividedBy(2).minus(borrowedTokens)
+            return ovenValue.dividedBy(2).minus(borrowedTokens).decimalPlaces(18)
         },
         collatoralizationWarningClasses(rate){
             if (rate > 100){
@@ -72,6 +72,13 @@ export default {
             } else {
                 return "is-primary"
             }
+        },
+        currentCollateralRate(ovenAddress){
+            const maxCollateral = this.ovenDollarValue(ovenAddress).dividedBy(2)
+
+            const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
+
+            return borrowedTokens.dividedBy(maxCollateral).times(100)
         },
         ovenBalance(ovenAddress){
             if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
