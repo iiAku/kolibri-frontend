@@ -41,7 +41,6 @@ jobs:
     container:
       image: circleci/node:12
     steps:
-    - run: sudo chown -R $USER:$USER .
     - uses: actions/checkout@v2
     - name: "Install Dependencies"
       run: |
