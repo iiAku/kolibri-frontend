@@ -40,8 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: circleci/node:12
-      options: --user 1001
     steps:
+    - run: sudo chown -R $USER:$USER /home/github/actions-runner/_work/Hover-Labs/kolibri
     - uses: actions/checkout@v2
     - name: "Install Dependencies"
       run: |
@@ -71,8 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: circleci/node:12
+      options: --user 1001
     steps:
-    - run: sudo chown -R $USER:$USER /home/github/actions-runner/_work/kolibri
     - uses: actions/checkout@v2
     - name: "Build Front End"
       run: |
