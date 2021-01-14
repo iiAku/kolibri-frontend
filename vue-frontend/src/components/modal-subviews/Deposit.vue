@@ -47,6 +47,12 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
+        <strong>Current Collateral Utilization:</strong>
+        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
         <strong>New Collateral Utilization:</strong>
         <strong v-if="depositAmount" :class="collatoralizationWarningClasses(collateralizedRateAfterDeposit)" class="price-view">{{ collateralizedRateAfterDeposit.toFixed(2) }}%</strong>
         <strong v-else class="price-view"> - </strong>
@@ -97,7 +103,7 @@ export default {
       try{
         this.networkLoading = true
 
-        const depositAmtMutez = new BigNumber(this.depositAmount).multipliedBy(Math.pow(10, 6)).toFixed()
+        const depositAmtMutez = new BigNumber(this.depositAmount).decimalPlaces(6).multipliedBy(Math.pow(10, 6)).toFixed()
 
         let depositResult = await this
                                     .ovenClient(this.ovenAddress)

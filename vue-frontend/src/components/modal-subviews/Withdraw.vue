@@ -50,6 +50,12 @@
         </div>
       </div>
     </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Current Collateral Utilization:</strong>
+        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+      </p>
+    </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
@@ -94,7 +100,7 @@ export default {
     async withdraw(){
       try{
         this.networkLoading = true
-        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(new BigNumber(this.withdrawAmount).multipliedBy(Math.pow(10, 6)).toFixed())
+        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(new BigNumber(this.withdrawAmount).decimalPlaces(6).multipliedBy(Math.pow(10, 6)).toFixed())
         this.$eventBus.$emit("tx-submitted", withdrawResult, this.ovenAddress, 'withdraw')
         this.$emit('close-requested')
       } catch (e) {
@@ -108,9 +114,12 @@ export default {
     maxWithdrawAmount(){
       const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress) // kUSD
       const ovenValue = this.ovenDollarValue(this.ovenAddress) // USD
-      const collateralMax = ovenValue.dividedBy(this.currentPriceFormatted())
 
-      return collateralMax.minus(borrowedTokens)
+      return ovenValue.dividedBy(2)
+          .minus(borrowedTokens)
+          .dividedBy(this.currentPriceFormatted())
+          .times(2)
+          .times(0.90) // FIXME Dirty hack to prevent from going under collat
     },
     shouldAllowWithdraw(){
       if(!this.withdrawAmount || this.withdrawAmount <= 0) { return false }

@@ -38,7 +38,8 @@
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
-        <a @click="borrowAmount = maxBorrowAmtKUSD(ovenAddress).multipliedBy(0.8)" class="has-text-weight-bold">Max Safe (80%)</a>
+        <a v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt)" @click="borrowAmount = maxSafeAmt" class="has-text-weight-bold">Max Safe (80%)</a>
+        <span class="has-text-weight-bold" v-else>⚠️ You are >80% collateralized, which is not recommended!</span>
       </p>
     </div>
     <div class="field is-horizontal">
@@ -51,6 +52,12 @@
           </p>
         </div>
       </div>
+    </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Current Collateral Utilization:</strong>
+        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+      </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
@@ -96,7 +103,7 @@ export default {
     async borrow(){
       try{
         this.networkLoading = true
-        const borrowAmt = new BigNumber(this.borrowAmount).multipliedBy(Math.pow(10, 18))
+        const borrowAmt = new BigNumber(this.borrowAmount).decimalPlaces(18).multipliedBy(Math.pow(10, 18))
         let borrowResult = await this.ovenClient(this.ovenAddress).borrow(borrowAmt.toFixed())
         this.$eventBus.$emit("tx-submitted", borrowResult, this.ovenAddress, 'borrow')
         this.$emit('close-requested')
@@ -108,9 +115,19 @@ export default {
     },
   },
   computed: {
+    maxSafeAmt(){
+      return this.ovenDollarValue(this.ovenAddress)
+                 .dividedBy(2)
+                 .multipliedBy(0.8)
+                 .minus(this.borrowedTokensFormatted(this.ovenAddress))
+                 .decimalPlaces(18)
+    },
     shouldAllowBorrow(){
       if(!this.borrowAmount || this.borrowAmount <= 0) { return false }
-      return this.borrowAmount <= this.maxBorrowAmtKUSD(this.ovenAddress).toNumber()
+      return this.borrowAmount <= this.maxBorrowAmtKUSD(this.ovenAddress).decimalPlaces(18).toNumber()
+    },
+    borrowAmtNumber(){
+      return this.borrowAmount ? new BigNumber(this.borrowAmount) : new BigNumber(0)
     },
     collateralizedRateAfterBorrowing(){
       let borrowAmount = this.borrowAmount

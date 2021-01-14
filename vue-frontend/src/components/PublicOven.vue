@@ -40,7 +40,7 @@
           <nav class="level right-info">
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Vault Value (USD)</p>
+                <p class="heading">Collateral Value</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
                     ${{ numberWithCommas(ovenValue(oven.balance)) }} USD
@@ -52,7 +52,7 @@
             </div>
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Balance (ꜩ)</p>
+                <p class="heading">Balance</p>
                 <p class="title is-6">
                   <popover extra-classes="small-price">
                     <strong slot="popup-content" class="has-text-primary heading is-marginless">
@@ -66,7 +66,7 @@
             </div>
             <div class="level-item has-text-centered">
               <div class="is-flex is-flex-direction-column is-align-items-center">
-                <p class="heading">Balance (KUSD)</p>
+                <p class="heading">Borrowed Tokens</p>
                 <popover extra-classes="small-price">
                   <strong slot="popup-content" class="has-text-primary heading is-marginless">
                     {{ numberWithCommas(oven.borrowedTokens.dividedBy(Math.pow(10, 18))) }} kUSD
