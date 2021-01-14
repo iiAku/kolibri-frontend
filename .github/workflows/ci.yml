@@ -74,6 +74,8 @@ jobs:
         npm run build
 
     - uses: cloudflare/wrangler-action@1.2.0
+      env:
+        USER: root
       with:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         workingDirectory: 'vue-frontend'
