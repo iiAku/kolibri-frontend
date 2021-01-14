@@ -1,0 +1,12 @@
+account_id = "496ea6f6559820c64e0b6f776d64731f"
+name = "kolibri-finance"
+type = "webpack"
+workers_dev = true
+site = { bucket = "./dist" }
+
+[env.production]
+# The ID of the domain to deploying to
+zone_id = "211e36c6e111bb2821f93495fb73b4f6"
+
+# The route pattern your Workers application will be served at
+route = "testnet.kolibri.finance/*"

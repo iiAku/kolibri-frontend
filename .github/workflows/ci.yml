@@ -72,10 +72,11 @@ jobs:
         cd vue-frontend
         npm i
         npm run build
-    - uses: actions/upload-artifact@v2
+
+    - uses: cloudflare/wrangler-action@1.2.0
       with:
-        name: build-results
-        path: vue-frontend/dist/ # or path/to/artifact       
+        apiToken: ${{ secrets.CF_API_TOKEN }}
+        workingDirectory: 'vue-frontend'
 
   notify_complete:
     runs-on: ubuntu-latest
