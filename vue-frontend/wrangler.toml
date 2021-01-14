@@ -4,7 +4,7 @@ type = "webpack"
 workers_dev = true
 site = { bucket = "./dist" }
 
-[env.production]
+[env.testnet]
 # The ID of the domain to deploying to
 zone_id = "211e36c6e111bb2821f93495fb73b4f6"
 
