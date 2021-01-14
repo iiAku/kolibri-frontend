@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cimg/python:3.9.1-node
+      options: --user 1001
     steps:
     - uses: actions/checkout@v2
     - name: "Install SmartPy"
