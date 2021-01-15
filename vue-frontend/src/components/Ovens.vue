@@ -121,7 +121,12 @@ export default {
         this.$delete(this.pendingOvens, result.opHash)
 
         const results = await result.operationResults()
-        const ovenAddress = _.find(results[0].metadata.internal_operation_results, (operation) => {
+
+        const creationResult = _.find(results, (result) => {
+          return result.kind === 'transaction'
+        })
+
+        const ovenAddress = _.find(creationResult.metadata.internal_operation_results, (operation) => {
           return operation.kind === "origination"
         }).result.originated_contracts[0]
 
