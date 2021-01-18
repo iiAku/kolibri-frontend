@@ -85,7 +85,10 @@
                 </strong>
               </popover>
             </p>
-            <p class="heading">Collateral Utilization: <strong>{{ collatoralizedRate(ovenData.balance) }}%</strong>
+            <p class="heading">Collateral Utilization:
+              <strong v-if="collatoralizedRate(ovenData.balance) < 80">{{ collatoralizedRate(ovenData.balance) }}%</strong>
+              <strong v-else-if="collatoralizedRate(ovenData.balance) < 100" class="has-text-warning">{{ collatoralizedRate(ovenData.balance) }}%</strong>
+              <strong v-else class="has-text-danger">{{ collatoralizedRate(ovenData.balance) }}%</strong>
               | Can borrow up to
               <popover extra-classes="small-price">
                 <strong slot="popup-content" class="has-text-primary heading is-marginless">
@@ -96,7 +99,9 @@
               </popover>
 
             <div class="allocation-info is-fullwidth">
-              <progress class="progress is-primary" :value="collatoralizedRate(ovenData.balance)" max="100">{{ collatoralizedRate(ovenData.balance) }}%</progress>
+              <progress v-if="collatoralizedRate(ovenData.balance) < 80" class="progress is-primary" :value="collatoralizedRate(ovenData.balance)" max="100">{{ collatoralizedRate(ovenData.balance) }}%</progress>
+              <progress v-else-if="collatoralizedRate(ovenData.balance) < 100" class="progress is-warning" :value="collatoralizedRate(ovenData.balance)" max="100">{{ collatoralizedRate(ovenData.balance) }}%</progress>
+              <progress v-else class="progress is-danger" :value="collatoralizedRate(ovenData.balance)" max="100">{{ collatoralizedRate(ovenData.balance) }}%</progress>
             </div>
           </div>
         </div>

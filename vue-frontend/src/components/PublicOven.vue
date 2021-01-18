@@ -24,7 +24,10 @@
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
             <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://delphinet.tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
-            <p class="heading">Collateral Utilization: <strong>{{ collatoralizedRate(oven.balance) }}%</strong>
+            <p class="heading">Collateral Utilization:
+              <strong v-if="collatoralizedRate(oven.balance) < 80">{{ collatoralizedRate(oven.balance) }}%</strong>
+              <strong v-else-if="collatoralizedRate(oven.balance) < 100" class="has-text-warning">{{ collatoralizedRate(oven.balance) }}%</strong>
+              <strong v-else class="has-text-danger">{{ collatoralizedRate(oven.balance) }}%</strong>
               | Can borrow up to
               <popover extra-classes="small-price">
                 <strong slot="popup-content" class="has-text-primary heading is-marginless">
@@ -35,7 +38,9 @@
               </popover>
 
             <div class="allocation-info is-fullwidth">
-              <progress class="progress is-primary" :value="collatoralizedRate(oven.balance)" max="100">{{ collatoralizedRate(oven.balance) }}%</progress>
+              <progress v-if="collatoralizedRate(oven.balance) < 80" class="progress is-primary" :value="collatoralizedRate(oven.balance)" max="100">{{ collatoralizedRate(oven.balance) }}%</progress>
+              <progress v-else-if="collatoralizedRate(oven.balance) < 100" class="progress is-warning" :value="collatoralizedRate(oven.balance)" max="100">{{ collatoralizedRate(oven.balance) }}%</progress>
+              <progress v-else class="progress is-danger" :value="collatoralizedRate(oven.balance)" max="100">{{ collatoralizedRate(oven.balance) }}%</progress>
             </div>
           </div>
         </div>

@@ -85,6 +85,9 @@ export default {
           .toPairs()
           .orderBy(
               (oven) => {
+                if (oven[1] && oven[1].isLiquidated) {
+                  return -1
+                }
                 return oven[1] !== null ? parseInt(oven[1].balance) : 0
               },
               'desc'
