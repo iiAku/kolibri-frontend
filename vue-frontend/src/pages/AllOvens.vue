@@ -16,10 +16,16 @@
                 :buttonsMax="5"
                 queryParameter="page"
             />
-            <label class="checkbox">
-              <input v-model="hideEmptyOvens" type="checkbox">
-              Hide Empty Ovens?
-            </label>
+            <div class="is-flex is-justify-content-space-evenly">
+              <label class="checkbox">
+                <input v-model="hideEmptyOvens" type="checkbox">
+                Hide Empty Ovens?
+              </label>
+              <label class="checkbox">
+                <input v-model="hideLiquidatedOvens" type="checkbox">
+                Hide Liquidated Ovens?
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -29,7 +35,7 @@
 </template>
 
 <script>
-import { chunk, reject } from 'lodash'
+import _ from 'lodash'
 import axios from 'axios'
 import PublicOven from "@/components/PublicOven";
 import Pagination from 'vue-bulma-paginate/src/components/Pagination';
@@ -64,6 +70,7 @@ export default {
       currentPage: 1,
       emptyOvens: {},
       hideEmptyOvens: false,
+      hideLiquidatedOvens: false,
     }
   },
   watch: {
@@ -76,8 +83,21 @@ export default {
       return this.activeVaults[this.currentPage - 1]
     },
     activeVaults(){
-      let filteredOvens = this.hideEmptyOvens ? reject(this.ovensData, (oven) => oven.balance.isLessThanOrEqualTo(0)) : this.ovensData
-      return chunk(filteredOvens, 10)
+      return _(this.ovensData)
+                .reject((oven) => {
+                  if (this.hideEmptyOvens) {
+                    return oven.balance.isLessThanOrEqualTo(0)
+                  }
+                  return false
+                })
+                .reject((oven) => {
+                  if (this.hideLiquidatedOvens) {
+                    return oven.isLiquidated
+                  }
+                  return false
+                })
+                .chunk(10)
+                .value()
     }
   },
   components: {

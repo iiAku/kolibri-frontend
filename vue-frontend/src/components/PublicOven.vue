@@ -17,6 +17,9 @@
     </div>
 
     <div class="oven-info">
+      <div v-if="oven.isLiquidated" class="liquidated-warning">
+        <h1 class="title is-4 has-text-white">This Oven Has Been <router-link rel="noopener" target="_blank" :to="{name: 'ProjectInfo', params: {folder: 'liquidation', page: 'overview'}}">Liquidated</router-link></h1>
+      </div>
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">

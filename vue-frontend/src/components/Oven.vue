@@ -13,7 +13,7 @@
         <div class="level-right">
           <p class="level-item">
             <button
-                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
+                :disabled="isLiquidated || pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
                 @click="$emit('modal-open-requested', 'Borrow', ovenAddress)"
                 class="button is-small is-primary has-text-weight-bold"
             >
@@ -22,7 +22,7 @@
           </p>
           <p class="level-item">
             <button
-                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.borrowedTokens) !== 0)"
+                :disabled="isLiquidated || pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.borrowedTokens) !== 0)"
                 @click="$emit('modal-open-requested', 'Repay', ovenAddress)"
                 class="button is-small is-primary has-text-weight-bold"
             >
@@ -31,7 +31,7 @@
           </p>
           <p class="level-item">
             <button
-                :disabled="pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
+                :disabled="isLiquidated || pendingTransaction || updatingData || !(ovenData && parseInt(ovenData.balance) !== 0)"
                 @click="$emit('modal-open-requested', 'Withdraw', ovenAddress)"
                 class="button is-small is-primary has-text-weight-bold"
             >
@@ -40,7 +40,7 @@
           </p>
           <p class="level-item">
             <button
-                :disabled="pendingTransaction || updatingData || !ovenData"
+                :disabled="isLiquidated || pendingTransaction || updatingData || !ovenData"
                 @click="$emit('modal-open-requested', 'Deposit', ovenAddress)"
                 class="button is-small is-primary has-text-weight-bold"
             >
@@ -59,6 +59,10 @@
       <div class="loader left-spaced"></div>
     </div>
     <div v-else-if="ovenData !== null && !updatingData" class="oven-info">
+
+      <div v-if="isLiquidated" class="liquidated-warning">
+        <h1 class="title is-4 has-text-white">This Oven Has Been <router-link rel="noopener" target="_blank" :to="{name: 'ProjectInfo', params: {folder: 'liquidation', page: 'overview'}}">Liquidated</router-link></h1>
+      </div>
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
@@ -202,7 +206,7 @@ export default {
       return rate.toFixed(2)
     },
     async updateOvenData(){
-      const keys = ['baker', 'balance', 'borrowedTokens', 'stabilityFee', 'outstandingTokens']
+      const keys = ['baker', 'balance', 'borrowedTokens', 'stabilityFee', 'outstandingTokens', 'isLiquidated']
 
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
@@ -210,6 +214,7 @@ export default {
         this.ovenClient(this.ovenAddress).getBorrowedTokens(),
         this.ovenClient(this.ovenAddress).getStabilityFees(),
         this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
+        this.ovenClient(this.ovenAddress).isLiquidated(),
       ])
 
       this.$set(
@@ -253,7 +258,10 @@ export default {
     ovenData() {
       return this.$store.ownedOvens[this.ovenAddress]
     },
-  },
+    isLiquidated() {
+      return this.ovenData && this.ovenData.isLiquidated
+    }
+},
   components: {
     Popover,
   },
@@ -270,9 +278,23 @@ export default {
       text-transform: initial;
     }
     .oven-info{
+      position: relative;
       .columns{
         @include until($widescreen){
           flex-direction: column;
+        }
+      }
+      .liquidated-warning{
+        display: flex;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        background: #000000cf;
+        color: white;
+        a:hover{
+          color: lighten($primary, 20%);
         }
       }
     }
