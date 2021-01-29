@@ -20,7 +20,7 @@
 
     <div class="columns">
       <div class="column is-10 is-offset-1">
-        <div v-if="$store.ownedOvens === null" class="loader-wrapper">
+        <div v-if="$store.ownedOvens === null" class="ovens-are-loading loader-wrapper">
           <div class="loader is-primary is-large"></div>
         </div>
         <div v-else class="oven-info">
@@ -55,13 +55,11 @@ export default {
   name: 'Ovens',
   mixins: [Mixins],
   async created(){
-    let ownedOvens = (await this.$store.stableCoinClient.ovensOwnedByAddress(this.$store.wallet.pkh))
-                        .reduce((acc, ovenAddress) => {
-                          acc[ovenAddress] = null
-                          return acc
-                        }, {})
-
-    this.$set(this.$store, 'ownedOvens', ownedOvens)
+    await this.updateOvens()
+    this.$eventBus.$on('refresh-all-ovens', async () => {
+      this.$set(this.$store, 'ownedOvens', null)
+      await this.updateOvens()
+    })
   },
   data() {
     return {
@@ -96,6 +94,14 @@ export default {
     }
   },
   methods: {
+    async updateOvens(){
+      let ownedOvens = (await this.$store.stableCoinClient.ovensOwnedByAddress(this.$store.wallet.permission.pkh))
+          .reduce((acc, ovenAddress) => {
+            acc[ovenAddress] = null
+            return acc
+          }, {})
+      this.$set(this.$store, 'ownedOvens', ownedOvens)
+    },
     openDeleagateModal(ovenAddress){
       this.modal.delegate.opened = true
       this.modal.delegate.ovenAddress = ovenAddress
@@ -157,6 +163,9 @@ export default {
   .ovens {
     background: $light-grey;
     padding: 0 1.5rem 2rem;
+    .ovens-are-loading{
+      padding: 4.25rem;
+    }
     .panel-block{
       background: white;
     }

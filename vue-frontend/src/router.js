@@ -7,6 +7,8 @@ import Index from '@/pages/Index'
 import ProjectInfo from "@/pages/ProjectInfo";
 import AllOvens from "@/pages/AllOvens";
 import NotFound from "@/pages/NotFound";
+import TOS from "@/pages/TOS";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 const routes = [
     {
@@ -28,6 +30,16 @@ const routes = [
         path: '/all-ovens',
         name: 'AllOvens',
         component: AllOvens
+    },
+    {
+        path: '/terms-of-service',
+        name: 'TOS',
+        component: TOS
+    },
+    {
+        path: '/privacy-policy',
+        name: 'PrivacyPolicy',
+        component: PrivacyPolicy
     },
     { path: "*", component: NotFound }
 ]

@@ -423,11 +423,7 @@ export default {
         console.log("Deposit Finished! Refreshing data", txResult);
         await this.updateOvenData();
 
-        this.$set(
-          this.$store,
-          "walletBalance",
-          await this.$store.tokenClient.getBalance(this.$store.wallet.pkh)
-        );
+        this.$set(this.$store, 'walletBalance', await this.$store.tokenClient.getBalance(this.$store.wallet.permission.pkh))
 
         this.updatingData = false;
       } catch (err) {

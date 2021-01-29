@@ -1,19 +1,57 @@
+import { find } from 'lodash'
+import { ContractErrors } from '@hover-labs/kolibri-js'
+
+const errorMap = {
+    Unknown: "An unknown error has occurred!",
+    NotOven: "The Oven you're interacting with isn't registered in the OvenRegistry.",
+    NotOvenProxy: "An unknown error has occurred!",
+    NotOracle: "An unknown error has occurred!",
+    NotGovernor: "An unknown error has occurred!",
+    NotMinter: "An unknown error has occurred!",
+    NotOwner: "An unknown error has occurred!",
+    NotOvenFactory: "An unknown error has occurred!",
+    NotAdmin: "An unknown error has occurred!",
+    NotPauseGuardian: "An unknown error has occurred!",
+    NotUnderCollateralized: "This oven is not below liquidation threshold, and cannot be liquidated.",
+    OvenUnderCollateralized: "This transaction failed because it would've left the oven under-collateralized.",
+    BadState: "An unknown error has occurred!",
+    BadDestination: "An unknown error has occurred!",
+    WrongAsset: "An unknown error has occurred!",
+    AmountNotAllowed: "An unknown error has occurred!",
+    Liquidated: "This oven is already liquidated, so we can't interact with it!",
+    StaleData: "The oracle data is older than 30 mins, so the system is paused until the oracle is updated.",
+    Paused: "The system is currently paused, either for maintenance or due to some issue.",
+    CannotReceiveFunds: "An unknown error has occurred!",
+    DebtCeiling: "This transaction would've pushed the system above the global debt ceiling.",
+    OvenMaximumExceeded: "Oven debt ceiling thing",
+    TokenNoTransferPermission: "An unknown error has occurred!",
+    TokenInsufficientBalance: "An unknown error has occurred!",
+    TokenUnsafeAllowanceChange: "An unknown error has occurred!",
+    TokenNotAdministrator: "An unknown error has occurred!",
+}
+
 export default {
     methods: {
         handleWalletError(err, title, message) {
             console.error("Error with wallet operation: ", err)
-            let errString = message + "<br>"
 
-            if (err.message === 'STALE_DATA') {
-                errString += `<pre class="has-text-left">The Oracle data is too old to safely process your request!</pre>`
+            let errString = message
+
+            const properError = find(err.errors, (error) => {
+                return error.with !== undefined
+            })
+
+            if (properError !== undefined){
+                debugger;
+                const errorCode = parseInt(properError.with.int)
+                let parsedError = ContractErrors[errorCode]
+                errString += `(<b>Error Code: ${errorCode}</b>)<br><br>`
+                errString += `<p>${errorMap[parsedError]}</p>`
             } else {
-                errString += `<pre class="has-text-left">${JSON.stringify(err, null, 2)}</pre>`
-            }
-
-            // debugger; // eslint-disable-line no-debugger
-
-            if (err.stack) {
-                errString += `<pre class="has-text-left">${err.stack}</pre>`
+                errString += `<br><pre class="has-text-left">${JSON.stringify(err, null, 2)}</pre>`
+                if (err.stack){
+                    errString += `<pre class="has-text-left">${err.stack}</pre>`
+                }
             }
 
             this.$swal(title, errString, 'error');
@@ -78,9 +116,24 @@ export default {
 
             const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
 
+            // If we have no xtz in the oven, don't try to divide by 0
+            if (maxCollateral.isZero()) {
+                return 0
+            }
+
             return borrowedTokens.dividedBy(maxCollateral).times(100)
         },
-        ovenBalance(ovenAddress) {
+        collatoralizedRateForOven(oven){
+            if (parseInt(oven.balance) === 0) { return 0 }
+
+            let currentValue = this.$store.priceData.price.multipliedBy(oven.balance).dividedBy(Math.pow(10, 10))
+            let valueHalf = currentValue.dividedBy(2)
+
+            let rate = oven.borrowedTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
+
+            return rate.toFixed(2)
+        },
+        ovenBalance(ovenAddress){
             if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
             if (!this.$store.ownedOvens[ovenAddress].balance) { return 0 }
             return this.$store.ownedOvens[ovenAddress].balance

@@ -21,7 +21,6 @@ export default {
   },
   methods:{
     updatePriceInfo(){
-      // debugger; // eslint-disable-line no-debugger
       this.$store.harbingerClient.getPriceData()
           .then((priceData) => {
             this.$store.priceData = priceData;

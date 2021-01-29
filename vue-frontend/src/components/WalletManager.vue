@@ -7,40 +7,50 @@ import { WalletStates } from "@/enums";
 import { Network } from "@hover-labs/kolibri-js";
 
 export default {
-  name: "WalletManager",
-  async mounted() {
-    setTimeout(async () => {
-      this.$store.walletAvailable = await ThanosWallet.isAvailable();
-    }, 100);
+  name: 'WalletManager',
+  async mounted(){
+    ThanosWallet.onAvailabilityChange((available) => {
+      this.$store.walletAvailable = available
+    })
 
-    this.$eventBus.$on("wallet-connect-request", this.connectWallet);
+    this.$eventBus.$on('wallet-connect-request', this.connectWallet)
+    this.$eventBus.$on('wallet-reconnect-request', this.reconnectWallet)
+  },
+  data(){
+    return {
+      updateTimer: null
+    }
   },
   methods: {
-    async updateBalance() {
-      this.$store.walletBalance = await this.$store.tokenClient.getBalance(
-        this.$store.wallet.pkh
-      );
+    async updateBalance(){
+      this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.wallet.permission.pkh)
+    },
+    async reconnectWallet(){
+      console.log("Reconnecting wallet!")
+      try {
+        await this.$store.wallet.reconnect(this.$store.network)
+        await this.updateBalance()
+        this.$eventBus.$emit('refresh-all-ovens')
+      } catch (e) {
+        if (e.name !== 'NotGrantedThanosWalletError') {
+          throw e
+        }
+      }
     },
     async connectWallet() {
       console.log("Connecting wallet!");
       this.$store.walletState = WalletStates.CONNECTING;
       const wallet = new ThanosWallet("Kolibri");
-      await wallet
-        .connect({
-          name: Network.Delphi,
-          rpc: this.$store.nodeURL,
-        })
+      await wallet.connect(Network.Delphi)
         .then(async () => {
           this.$store.walletState = WalletStates.CONNECTED;
           this.$store.wallet = wallet;
 
           // Update wallet balances for kUSD
-          await this.updateBalance();
-          setInterval(this.updateBalance, 60 * 1000);
+          await this.updateBalance()
+          this.updateTimer = setInterval(this.updateBalance, 60 * 1000)
         })
         .catch((err) => {
-          console.log("Errored :( ");
-          console.error(err);
           // Use sweetalert2
           this.$swal(
             "Could Not Connect",

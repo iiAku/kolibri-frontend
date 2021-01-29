@@ -67,7 +67,9 @@
             <div class="avatar"><div class="image is-48x48" v-html="avatarSvg()"></div></div>
             <div class="wallet-info">
               <p class="has-text-weight-bold has-text-right">
-                {{ truncateChars($store.wallet.pkh, 18) }}
+                <a @click="$eventBus.$emit('wallet-reconnect-request')">
+                  {{ truncateChars($store.wallet.permission.pkh, 18) }}
+                </a>
               </p>
               <p class="heading has-text-right">Network: <strong>{{ $store.network }}</strong></p>
             </div>
@@ -116,7 +118,7 @@ export default {
           fullStr.substr(fullStr.length - backChars);
     },
     avatarSvg(){
-      return avatars.create(this.$store.wallet.pkh.toString(), {
+      return avatars.create(this.$store.wallet.permission.pkh.toString(), {
         width: 48,
         height: 48,
         margin: 4,

@@ -16,14 +16,20 @@
                 :buttonsMax="5"
                 queryParameter="page"
             />
-            <div class="is-flex is-justify-content-space-evenly">
+            <div class="is-flex is-justify-content-space-evenly little-padding">
               <label class="checkbox">
                 <input v-model="hideEmptyOvens" type="checkbox">
-                Hide Empty Ovens?
+                Hide Empty Ovens
               </label>
               <label class="checkbox">
                 <input v-model="hideLiquidatedOvens" type="checkbox">
-                Hide Liquidated Ovens?
+                Hide Liquidated Ovens
+              </label>
+            </div>
+            <div class="is-flex is-justify-content-space-evenly">
+              <label class="checkbox">
+                <input v-model="orderByCollateralization" type="checkbox">
+                Order Ovens By Collateralization
               </label>
             </div>
           </div>
@@ -40,9 +46,11 @@ import axios from 'axios'
 import PublicOven from "@/components/PublicOven";
 import Pagination from 'vue-bulma-paginate/src/components/Pagination';
 import BigNumber from 'bignumber.js';
+import Mixins from '../mixins';
 
 export default {
   name: 'AllOvens',
+  mixins: [Mixins],
   async mounted(){
     if (this.$route.query.page){
       this.currentPage = parseInt(this.$route.query.page)
@@ -71,6 +79,7 @@ export default {
       emptyOvens: {},
       hideEmptyOvens: false,
       hideLiquidatedOvens: false,
+      orderByCollateralization: false,
     }
   },
   watch: {
@@ -96,6 +105,12 @@ export default {
                   }
                   return false
                 })
+                .sortBy((oven) => {
+                  if (this.orderByCollateralization){
+                    return -1 * parseFloat(this.collatoralizedRateForOven(oven))
+                  }
+                  return 0
+                })
                 .chunk(10)
                 .value()
     }
@@ -113,6 +128,9 @@ export default {
   @import '../assets/sass/globals';
   .all-ovens{
     background: $light-grey;
+    .little-padding{
+      padding-bottom: 0.5rem;
+    }
     .oven-data{
       padding-top: 0 !important;
     }

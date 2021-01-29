@@ -10,4 +10,5 @@ We've implemented a governance-driven debt ceiling in the protocol to limit the 
 ## Updates
 - **Dec 18, 2020** We have a review in the information-gathering phase with a reputable firm. Updates will be posted here as things progress. 
 - **Jan 13, 2020** We have a start date and rough timeline for the review - code review will start *January 18* and end on *February 12*. We'll have a report in-hand by *February 17* and will work to remedy any issues that arise!
-
+- **Jan 18, 2020** The review has kicked off, and will complete in 3 weeks.
+- **Jan 28, 2020** We had a check-in with the review team with no issues reported so far.

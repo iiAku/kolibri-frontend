@@ -49,6 +49,8 @@
       <ovens v-if="$store.wallet !== null" />
       <connect-prompt v-else />
     </div>
+
+    <hover-labs-footer />
   </div>
 </template>
 
@@ -56,6 +58,7 @@
 import Stats from "@/components/Stats";
 import Ovens from "@/components/Ovens";
 import ConnectPrompt from "@/components/ConnectPrompt";
+import HoverLabsFooter from "@/components/HoverLabsFooter";
 
 export default {
   name: 'Index',
@@ -70,7 +73,8 @@ export default {
   components: {
     ConnectPrompt,
     Ovens,
-    Stats
+    Stats,
+    HoverLabsFooter
   },
   methods: {
 
@@ -88,6 +92,7 @@ export default {
     .ovens-wrapper{
       position: relative;
       z-index: 1;
+      padding-bottom: 1.5rem;
     }
     .navbar{
       border-top: 5px solid $primary;

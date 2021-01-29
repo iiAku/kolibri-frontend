@@ -34,7 +34,7 @@ export default {
   @import '../assets/sass/globals';
   .connect-prompt {
     background: $light-grey;
-    padding: 2rem;
+    padding: 2rem 2rem 4rem;
     text-align: center;
   }
 </style>
