@@ -76,8 +76,8 @@ The `paused` boolean can be set to true by the `Pause Guardian`.
 
 The `OvenProxy` has the following entrypoints:
 - `default`: No-op. Always fails to prevent transfer of XTZ into contract.
-- `borrow`: Borrow `KUSD` against collateral in an `Oven`. May only be called by an `Oven` contract.
-- `repay`: Repay borrowed `KUSD`. May only be called by an `Oven` contract.
+- `borrow`: Borrow `kUSD` against collateral in an `Oven`. May only be called by an `Oven` contract.
+- `repay`: Repay borrowed `kUSD`. May only be called by an `Oven` contract.
 - `deposit`: Deposit `XTZ` into an `Oven`. May only be called by an `Oven` contract.
 - `withdraw`: Withdraw `XTZ` from an `Oven`. May only be called by an `Oven` contract.
 - `liquidate`: Liquidate an `Oven`.  May only be called by an `Oven` contract.

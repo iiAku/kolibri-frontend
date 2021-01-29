@@ -6,21 +6,21 @@ Kolibri is an XTZ-based stablecoin built on Collateralized Debt Positions (CDPs)
 
 All units in the Kolibri system are expressed in units of 10^-18. For instance, `123` is `0.000000000000000123`.
 
-The `token` contract is an [FA 1.2](https://gitlab.com/tzip/tzip/blob/master/proposals/tzip-7/tzip-7.md) specified with `10^-18` decimals (similar to a Wei unit within Ethereum). The symbol for the token is `KUSD`. `KUSD` is soft pegged to the USD, and maintains its peg by using CDPs to attempt to balance the price to $1.
+The `token` contract is an [FA 1.2](https://gitlab.com/tzip/tzip/blob/master/proposals/tzip-7/tzip-7.md) specified with `10^-18` decimals (similar to a Wei unit within Ethereum). The symbol for the token is `kUSD`. `kUSD` is soft pegged to the USD, and maintains its peg by using CDPs to attempt to balance the price to $1.
 
 ### Overview
 
-Kolibri uses CDPs (referred to as an `Oven`) to collateralize a soft pegged USD-stable value asset, `KUSD`.
+Kolibri uses CDPs (referred to as an `Oven`) to collateralize a soft pegged USD-stable value asset, `kUSD`.
 
 Each `Oven` has four functions:
 - `Deposit`: Place `XTZ` into the `Oven`
 - `Withdraw`: Remove `XTZ` from the `Oven`
-- `Borrow`: Borrow `KUSD` against the `Oven` using XTZ as collateral
-- `Repay`: Repay `KUSD` that was borrowed against the `Oven`.
+- `Borrow`: Borrow `kUSD` against the `Oven` using XTZ as collateral
+- `Repay`: Repay `kUSD` that was borrowed against the `Oven`.
 
 ### Stability Fee
 
-A stability fee is applied to borrowed `KUSD`. It is accrued in terms of `KUSD`. It is percentage based fee applied to all outstanding `KUSD` (borrowed `KUSD` + stability fee). Interest is assessed every minute (about every block on the Tezos chain). The stability fee is adjusted via governance to increase or decrease the incentives to borrow or repay `KUSD` if the asset loses a peg.
+A stability fee is applied to borrowed `kUSD`. It is accrued in terms of `kUSD`. It is percentage based fee applied to all outstanding `kUSD` (borrowed `kUSD` + stability fee). Interest is assessed every minute (about every block on the Tezos chain). The stability fee is adjusted via governance to increase or decrease the incentives to borrow or repay `kUSD` if the asset loses a peg.
 
 Negative stability fees are not supported in Kolibri but may be added in the future via a contract upgrade.
 
@@ -28,12 +28,12 @@ Negative stability fees are not supported in Kolibri but may be added in the fut
 
 In order to remain solvent, an `Oven` must maintain a minimum **collateralization ratio**. The collateralization ratio is computed as:
 ```
-Collateralization Ratio = ((XTZ in Oven` * Price of XTZ/USD) / (Borrowed KUSD + Stability Fees)) * 100 
+Collateralization Ratio = ((XTZ in Oven` * Price of XTZ/USD) / (Borrowed kUSD + Stability Fees)) * 100 
 ```
 
-If a `Oven` drops below the **collateralization ratio**, then it is said to be **under collateralized**. `Oven` owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `KUSD` when the collateralization ratio drops.
+If a `Oven` drops below the **collateralization ratio**, then it is said to be **under collateralized**. `Oven` owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `kUSD` when the collateralization ratio drops.
 
-The Kolibri system will prevent users from borrowing `KUSD` such that an `Oven` becomes under collateralized, or withdrawing `XTZ` to cause the `Oven` to become undercollateralized. However, the price of `XTZ` still fluctuates, which means an `Oven` can become undercollateralized without user action. At that point, a liquidation process kicks in to restore stability to the system.
+The Kolibri system will prevent users from borrowing `kUSD` such that an `Oven` becomes under collateralized, or withdrawing `XTZ` to cause the `Oven` to become undercollateralized. However, the price of `XTZ` still fluctuates, which means an `Oven` can become undercollateralized without user action. At that point, a liquidation process kicks in to restore stability to the system.
 
 ### Precision
 
@@ -103,7 +103,7 @@ The following five contracts compose core logic for Kolibri:
 
 `Oven`s track the following information:
 - `owner`: the owner of the `Oven`
-- `borrowedTokens`: The number of `KUSD` borrowed against the `Oven`
+- `borrowedTokens`: The number of `kUSD` borrowed against the `Oven`
 - `stabilityFeeTokens`: The number of tokens accrued in stability fees
 
 1) They reject all calls for `deposit`, `withdraw`, `borrow` and `repay` which are not from their `owner`.

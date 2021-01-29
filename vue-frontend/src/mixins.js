@@ -1,6 +1,6 @@
 export default {
     methods: {
-        handleWalletError(err, title, message){
+        handleWalletError(err, title, message) {
             console.error("Error with wallet operation: ", err)
             let errString = message + "<br>"
 
@@ -12,7 +12,7 @@ export default {
 
             // debugger; // eslint-disable-line no-debugger
 
-            if (err.stack){
+            if (err.stack) {
                 errString += `<pre class="has-text-left">${err.stack}</pre>`
             }
 
@@ -23,75 +23,75 @@ export default {
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return parts.join(".");
         },
-        borrowedTokens(ovenAddress){
+        borrowedTokens(ovenAddress) {
             if (!ovenAddress) { return 0 }
             if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
             if (!this.$store.ownedOvens[ovenAddress].borrowedTokens) { return 0 }
             return this.$store.ownedOvens[ovenAddress].borrowedTokens
         },
-        borrowedTokensFormatted(ovenAddress){
+        borrowedTokensFormatted(ovenAddress) {
             return this.borrowedTokens(ovenAddress).dividedBy(Math.pow(10, 18))
         },
-        walletBalance(){
+        walletBalance() {
             return this.$store.walletBalance
         },
-        walletBalanceFormatted(){
+        walletBalanceFormatted() {
             return this.walletBalance().dividedBy(Math.pow(10, 18))
         },
-        currentPrice(){
+        currentPrice() {
             return this.$store.priceData.price
         },
-        currentPriceFormatted(){
+        currentPriceFormatted() {
             return this.currentPrice().dividedBy(Math.pow(10, 6))
         },
-        ovenDollarValue(ovenAddress){
+        ovenDollarValue(ovenAddress) {
             const currentHoldings = this.ovenBalanceFormatted(ovenAddress)
             const currentPrice = this.currentPriceFormatted()
             return currentPrice.multipliedBy(currentHoldings)
         },
-        ovenDollarValuePlusDeposit(ovenAddress, depositAmount){
+        ovenDollarValuePlusDeposit(ovenAddress, depositAmount) {
             const currentHoldings = this.ovenBalanceFormatted(ovenAddress).plus(depositAmount)
             const currentPrice = this.currentPriceFormatted()
             return currentPrice.multipliedBy(currentHoldings)
         },
-        ovenDollarValueMinusWithdraw(ovenAddress, withdrawAmount){
+        ovenDollarValueMinusWithdraw(ovenAddress, withdrawAmount) {
             const currentHoldings = this.ovenBalanceFormatted(ovenAddress).minus(withdrawAmount)
             const currentPrice = this.currentPriceFormatted()
             return currentPrice.multipliedBy(currentHoldings)
         },
-        maxBorrowAmtKUSD(ovenAddress){
+        maxBorrowAmtkUSD(ovenAddress) {
             const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
             const ovenValue = this.ovenDollarValue(ovenAddress)
             return ovenValue.dividedBy(2).minus(borrowedTokens).decimalPlaces(18)
         },
-        collatoralizationWarningClasses(rate){
-            if (rate > 100){
+        collatoralizationWarningClasses(rate) {
+            if (rate > 100) {
                 return "is-danger"
-            } else if (rate > 90){
+            } else if (rate > 90) {
                 return "is-warning"
             } else {
                 return "is-primary"
             }
         },
-        currentCollateralRate(ovenAddress){
+        currentCollateralRate(ovenAddress) {
             const maxCollateral = this.ovenDollarValue(ovenAddress).dividedBy(2)
 
             const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
 
             return borrowedTokens.dividedBy(maxCollateral).times(100)
         },
-        ovenBalance(ovenAddress){
+        ovenBalance(ovenAddress) {
             if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
             if (!this.$store.ownedOvens[ovenAddress].balance) { return 0 }
             return this.$store.ownedOvens[ovenAddress].balance
         },
-        ovenBalanceFormatted(ovenAddress){
+        ovenBalanceFormatted(ovenAddress) {
             return this.ovenBalance(ovenAddress).dividedBy(Math.pow(10, 6))
         },
         ovenClient(ovenAddress) {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
     },
-    computed:{
+    computed: {
     }
 }

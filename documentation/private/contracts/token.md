@@ -12,7 +12,7 @@ The token contract was copied verbatim from [SmartPy's implementation](http://sm
 
 Details of the `token` contract are omitted since the FA1.2 standard is well understood and described extensively elsewhere. Instead, we opt to discuss specifics in the Kolibri system. 
 
-The `token` contract controls the `KUSD` tokens. Tokens are specified in 10^18 precision, as are all values in Kolibri. The administrator of the token contract is the `minter` contract, who controls minting and burning of `KUSD` tokens based on it's own internal logic. 
+The `token` contract controls the `kUSD` tokens. Tokens are specified in 10^18 precision, as are all values in Kolibri. The administrator of the token contract is the `minter` contract, who controls minting and burning of `kUSD` tokens based on it's own internal logic. 
 
 # Upgrade Path
 

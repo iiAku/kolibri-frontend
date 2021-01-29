@@ -8,44 +8,56 @@
         <div class="field has-addons">
           <p class="control is-expanded">
             <input
-                v-on:keyup.enter="shouldAllowWithdraw && withdraw()"
-                v-focus
-                type="number"
-                min="0"
-                step="0.00000000000000001"
-                v-model.number="withdrawAmount"
-                class="input"
-                placeholder="1.2345" />
+              v-on:keyup.enter="shouldAllowWithdraw && withdraw()"
+              v-focus
+              type="number"
+              min="0"
+              step="0.00000000000000001"
+              v-model.number="withdrawAmount"
+              class="input"
+              placeholder="1.2345"
+            />
           </p>
           <p class="control">
-            <a class="button is-static has-text-weight-bold">
-              ꜩ
-            </a>
+            <a class="button is-static has-text-weight-bold"> ꜩ </a>
           </p>
         </div>
       </div>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
+        <strong>Oven Collateral: </strong>
+        <strong class="price-view"
+          >{{
+            numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2))
+          }}
+          ꜩ</strong
+        >
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
-        <strong>Max Withdraw Amount:</strong> <strong class="price-view">
-        <a @click="withdrawAmount = maxWithdrawAmount">
-          {{ numberWithCommas(maxWithdrawAmount.toFixed(2)) }} ꜩ
-        </a>
-      </strong>
+        <strong>Max Withdraw Amount:</strong>
+        <strong class="price-view">
+          <a @click="withdrawAmount = maxWithdrawAmount">
+            {{ numberWithCommas(maxWithdrawAmount.toFixed(2)) }} ꜩ
+          </a>
+        </strong>
       </p>
     </div>
     <div class="field is-horizontal">
-      <div class="field-label">
-      </div>
+      <div class="field-label"></div>
       <div class="field-body is-align-items-center">
         <div class="field">
           <p class="control">
-            <progress class="progress" :class="collatoralizationWarningClasses(collateralizedRateAfterWithdraw)"  :value="collateralizedRateAfterWithdraw.toFixed(2)" max="100"></progress>
+            <progress
+              class="progress"
+              :class="
+                collatoralizationWarningClasses(collateralizedRateAfterWithdraw)
+              "
+              :value="collateralizedRateAfterWithdraw.toFixed(2)"
+              max="100"
+            ></progress>
           </p>
         </div>
       </div>
@@ -53,23 +65,32 @@
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
         <strong>Current Collateral Utilization:</strong>
-        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+        <strong class="price-view"
+          >{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong
+        >
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
-        <strong v-if="withdrawAmount" :class="collatoralizationWarningClasses(collateralizedRateAfterWithdraw)" class="price-view">{{ collateralizedRateAfterWithdraw.toFixed(2) }}%</strong>
+        <strong
+          v-if="withdrawAmount"
+          :class="
+            collatoralizationWarningClasses(collateralizedRateAfterWithdraw)
+          "
+          class="price-view"
+          >{{ collateralizedRateAfterWithdraw.toFixed(2) }}%</strong
+        >
         <strong v-else class="price-view"> - </strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="control">
         <button
-            @click="withdraw()"
-            :disabled="!shouldAllowWithdraw"
-            class="button is-primary has-text-weight-bold"
-            :class="{'is-loading': networkLoading}"
+          @click="withdraw()"
+          :disabled="!shouldAllowWithdraw"
+          class="button is-primary has-text-weight-bold"
+          :class="{ 'is-loading': networkLoading }"
         >
           Withdraw
         </button>
@@ -79,85 +100,107 @@
 </template>
 
 <script>
-import Mixins from "@/mixins"
-import BigNumber from 'bignumber.js'
+import Mixins from "@/mixins";
+import BigNumber from "bignumber.js";
 
 export default {
-  name: 'Withdraw',
+  name: "Withdraw",
   mixins: [Mixins],
   props: {
     ovenAddress: {
-      type: String
-    }
+      type: String,
+    },
   },
   data: function () {
     return {
       withdrawAmount: null,
       networkLoading: false,
-    }
+    };
   },
   methods: {
-    async withdraw(){
-      try{
-        this.networkLoading = true
-        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(new BigNumber(this.withdrawAmount).decimalPlaces(6).multipliedBy(Math.pow(10, 6)).toFixed())
-        this.$eventBus.$emit("tx-submitted", withdrawResult, this.ovenAddress, 'withdraw')
-        this.$emit('close-requested')
+    async withdraw() {
+      try {
+        this.networkLoading = true;
+        let withdrawResult = await this.ovenClient(this.ovenAddress).withdraw(
+          new BigNumber(this.withdrawAmount)
+            .decimalPlaces(6)
+            .multipliedBy(Math.pow(10, 6))
+            .toFixed()
+        );
+        this.$eventBus.$emit(
+          "tx-submitted",
+          withdrawResult,
+          this.ovenAddress,
+          "withdraw"
+        );
+        this.$emit("close-requested");
       } catch (e) {
-        this.handleWalletError(e, "Unable to withdraw", "There was an issue with the withdraw request.")
+        this.handleWalletError(
+          e,
+          "Unable to withdraw",
+          "There was an issue with the withdraw request."
+        );
       } finally {
-        this.networkLoading = false
+        this.networkLoading = false;
       }
     },
   },
   computed: {
-    maxWithdrawAmount(){
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress) // kUSD
-      const ovenValue = this.ovenDollarValue(this.ovenAddress) // USD
+    maxWithdrawAmount() {
+      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress); // kUSD
+      const ovenValue = this.ovenDollarValue(this.ovenAddress); // USD
 
-      return ovenValue.dividedBy(2)
-          .minus(borrowedTokens)
-          .dividedBy(this.currentPriceFormatted())
-          .times(2)
-          .times(0.999999) // FIXME Dirty hack to prevent from going under collat
+      return ovenValue
+        .dividedBy(2)
+        .minus(borrowedTokens)
+        .dividedBy(this.currentPriceFormatted())
+        .times(2)
+        .times(0.999999); // FIXME Dirty hack to prevent from going under collat
     },
-    shouldAllowWithdraw(){
-      if(!this.withdrawAmount || this.withdrawAmount <= 0) { return false }
+    shouldAllowWithdraw() {
+      if (!this.withdrawAmount || this.withdrawAmount <= 0) {
+        return false;
+      }
 
-      return this.withdrawAmount <= this.maxWithdrawAmount
+      return this.withdrawAmount <= this.maxWithdrawAmount;
     },
 
-    collateralizedRateAfterWithdraw(){
-      let withdrawAmount = this.withdrawAmount
-      if (!withdrawAmount || withdrawAmount <= 0){
-        withdrawAmount = 0
+    collateralizedRateAfterWithdraw() {
+      let withdrawAmount = this.withdrawAmount;
+      if (!withdrawAmount || withdrawAmount <= 0) {
+        withdrawAmount = 0;
       }
 
-      if (this.ovenBalanceFormatted(this.ovenAddress).minus(withdrawAmount).isNegative()){
-        return new BigNumber(0)
+      if (
+        this.ovenBalanceFormatted(this.ovenAddress)
+          .minus(withdrawAmount)
+          .isNegative()
+      ) {
+        return new BigNumber(0);
       }
 
-      const maxCollateralDollars = this.ovenDollarValueMinusWithdraw(this.ovenAddress, withdrawAmount).dividedBy(2)
+      const maxCollateralDollars = this.ovenDollarValueMinusWithdraw(
+        this.ovenAddress,
+        withdrawAmount
+      ).dividedBy(2);
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress)
+      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress);
 
-      let collatRate = borrowedTokens.dividedBy(maxCollateralDollars)
+      let collatRate = borrowedTokens.dividedBy(maxCollateralDollars);
 
-      if (!collatRate.isFinite()){
-        collatRate = new BigNumber(0)
+      if (!collatRate.isFinite()) {
+        collatRate = new BigNumber(0);
       }
 
-      return collatRate.times(100)
-    }
+      return collatRate.times(100);
+    },
   },
-}
+};
 </script>
 
 <style type="text/scss" lang="scss">
-@import '../../assets/sass/globals';
+@import "../../assets/sass/globals";
 
-.withdraw{
-
+.withdraw {
 }
-
 </style>

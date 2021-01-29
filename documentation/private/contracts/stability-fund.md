@@ -2,9 +2,9 @@
 
 ## Overview
 
-A `StabilityFund` contract collects funds in `KUSD` and `XTZ` for later use. It acts as the "Liquidator of Last Resort" and can be instructed to liquidate undercollateralized `Oven`s.
+A `StabilityFund` contract collects funds in `kUSD` and `XTZ` for later use. It acts as the "Liquidator of Last Resort" and can be instructed to liquidate undercollateralized `Oven`s.
 
-`StabilityFund`s can liquidate an oven (and acquire `XTZ` from the liquidation), and they can also disburse their `KUSD` and liquidated `XTZ`. 
+`StabilityFund`s can liquidate an oven (and acquire `XTZ` from the liquidation), and they can also disburse their `kUSD` and liquidated `XTZ`. 
 
 `StabilityFund` is an extension of [`DevFund`](dev-fund.md), and all properties of a `DevFund` also apply to the `StabilityFund`.
 
@@ -19,7 +19,7 @@ Any contract which needs to interact with a `StabilityFund` should have a govern
 If a new `StabilityFund` contract is needed then:
 (1) A new `StabilityFund` contract would be deployed
 (2) The `Governor` would update every contract that interacts with the `StabilityFund` to point to the new `StabilityFund`.
-(3) The `Governor` would transfer existing `KUSD` and `XTZ` to the new `StabilityFund`
+(3) The `Governor` would transfer existing `kUSD` and `XTZ` to the new `StabilityFund`
 
 ### State Machine
 

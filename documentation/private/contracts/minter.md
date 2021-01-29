@@ -39,7 +39,7 @@ The `Minter` stores the following:
 - `stabilityDevFundSplit` (`nat`): The percentage of fees that go to the Developer Fund. Represented as an integer with 10^-18 precision, ex: 100_000_000_000_000_000 = 10% of all fees are given to the Developer fund, and the other 90% are given to the Stability Fund.
 - `liquidationFeePercent` (`nat`): An additional percentage fee collected for liquidations. Represented as an integer with 10^-18 precision, ex: 80_000_000_000_000_000 = 8% fee on liquidations.
 - `collateralizationPercentage` (`nat`): The required collateralization for a vault. Represented as an integer with 10^-18 precision, ex:
-200_000_000_000_000_000_000 = 200% = there must be $2 of `XTZ` backing every $1 of `KUSD`.
+200_000_000_000_000_000_000 = 200% = there must be $2 of `XTZ` backing every $1 of `kUSD`.
 - `ovenMax` (`option mutez`): The maximum amount of `XTZ` an oven may hold if the value is `Some`. If the value is `None` then there is no limit.
 
 All parameters are governable.
@@ -49,8 +49,8 @@ All parameters are governable.
 The `Minter` has the following entrypoints:
 - `getInterestIndex`: Calculate the `Global Interest Index` and return it to the caller.
 - `default`: No-op, implemented to avoid stranding of funds.
-- `borrow`: Borrow `KUSD` tokens against an `Oven`'s collateral. May only be called by the `OvenProxy`.
-- `repay`: Repay `KUSD` tokens borrowed against an `Oven`'s collateral. May only be called by the `OvenProxy`.
+- `borrow`: Borrow `kUSD` tokens against an `Oven`'s collateral. May only be called by the `OvenProxy`.
+- `repay`: Repay `kUSD` tokens borrowed against an `Oven`'s collateral. May only be called by the `OvenProxy`.
 - `deposit`: Deposit `XTZ` tokens into an `Oven`. May only be called by the `OvenProxy`.
 - `withdraw`: Withdraw `XTZ` tokens from an `Oven`. May only be called by the `OvenProxy`.
 - `liquidate`: Liquidate an under-collateralized `Oven`. May only be called by the `OvenProxy`.

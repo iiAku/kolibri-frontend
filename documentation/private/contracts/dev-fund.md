@@ -2,9 +2,9 @@
 
 ## Overview
 
-A `DevFund` contract collects funds in `KUSD` and `XTZ` for later use. 
+A `DevFund` contract collects funds in `kUSD` and `XTZ` for later use. 
 
-The `DevFund` can disburse any `XTZ` and `KUSD` it contains.
+The `DevFund` can disburse any `XTZ` and `kUSD` it contains.
 
 The `DevFund` contracts have two permissions on them:
 (1) `Administrator`: Can manage the `Fund`'s baker
@@ -17,7 +17,7 @@ Long term, `Administrator` should be a multi-sig or governance function controll
 Anyone may deposit `XTZ` into a `DevFund`.
 
 The `Administrator` can choose the baker for the `DevFund`.
-The `Governor` can change the administrator and other contract references. The `Governor` can also disburse `KUSD` and `XTZ` funds.
+The `Governor` can change the administrator and other contract references. The `Governor` can also disburse `kUSD` and `XTZ` funds.
 
 ### Core Upgrade Path
 
@@ -26,7 +26,7 @@ Any contract which needs to interact with a `DevFund` should have a governable r
 If a new `DevFund` contract is needed then:
 (1) A new `DevFund` contract would be deployed
 (2) The `Governor` would update every contract that interacts with the `DevFund` to point to the new `DevFund`.
-(3) The `Governor` would transfer existing `KUSD` and `XTZ` to the new `DevFund`
+(3) The `Governor` would transfer existing `kUSD` and `XTZ` to the new `DevFund`
 
 ### State Machine
 

@@ -8,47 +8,68 @@
         <div class="field has-addons">
           <p class="control is-expanded">
             <input
-                v-on:keyup.enter="shouldAllowBorrow && borrow()"
-                v-focus
-                type="number"
-                min="0"
-                v-model.number="borrowAmount"
-                class="input"
-                placeholder="1.2345" />
+              v-on:keyup.enter="shouldAllowBorrow && borrow()"
+              v-focus
+              type="number"
+              min="0"
+              v-model.number="borrowAmount"
+              class="input"
+              placeholder="1.2345"
+            />
           </p>
           <p class="control">
-            <a class="button is-static has-text-weight-bold">
-              kUSD
-            </a>
+            <a class="button is-static has-text-weight-bold"> kUSD </a>
           </p>
         </div>
       </div>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Borrowed kUSD:</strong> <strong class="price-view">{{ numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2)) }} kUSD</strong>
+        <strong>Borrowed kUSD:</strong>
+        <strong class="price-view"
+          >{{
+            numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2))
+          }}
+          kUSD</strong
+        >
       </p>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Max Borrow Amount:</strong> <strong class="price-view">
-          {{ numberWithCommas(maxBorrowAmtKUSD(ovenAddress).toFixed(2)) }} kUSD
+        <strong>Max Borrow Amount:</strong>
+        <strong class="price-view">
+          {{ numberWithCommas(maxBorrowAmtkUSD(ovenAddress).toFixed(2)) }} kUSD
         </strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
-        <a v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt)" @click="borrowAmount = maxSafeAmt" class="has-text-weight-bold">Max Safe (80%)</a>
-        <span class="has-text-weight-bold" v-else>⚠️ You are >80% collateralized, which is not recommended!</span>
+        <a
+          v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt)"
+          @click="borrowAmount = maxSafeAmt"
+          class="has-text-weight-bold"
+          >Max Safe (80%)</a
+        >
+        <span class="has-text-weight-bold" v-else
+          >⚠️ You are >80% collateralized, which is not recommended!</span
+        >
       </p>
     </div>
     <div class="field is-horizontal">
-      <div class="field-label">
-      </div>
+      <div class="field-label"></div>
       <div class="field-body is-align-items-center">
         <div class="field">
           <p class="control">
-            <progress class="progress" :class="collatoralizationWarningClasses(collateralizedRateAfterBorrowing)"  :value="collateralizedRateAfterBorrowing.toFixed(2)" max="100"></progress>
+            <progress
+              class="progress"
+              :class="
+                collatoralizationWarningClasses(
+                  collateralizedRateAfterBorrowing
+                )
+              "
+              :value="collateralizedRateAfterBorrowing.toFixed(2)"
+              max="100"
+            ></progress>
           </p>
         </div>
       </div>
@@ -56,23 +77,32 @@
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
         <strong>Current Collateral Utilization:</strong>
-        <strong class="price-view">{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong>
+        <strong class="price-view"
+          >{{ currentCollateralRate(ovenAddress).toFixed(2) }}%</strong
+        >
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
-        <strong v-if="borrowAmount && borrowAmount > 0" :class="collatoralizationWarningClasses(collateralizedRateAfterBorrowing)" class="price-view">{{ collateralizedRateAfterBorrowing.toFixed(2) }}%</strong>
+        <strong
+          v-if="borrowAmount && borrowAmount > 0"
+          :class="
+            collatoralizationWarningClasses(collateralizedRateAfterBorrowing)
+          "
+          class="price-view"
+          >{{ collateralizedRateAfterBorrowing.toFixed(2) }}%</strong
+        >
         <strong v-else class="price-view">-</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="control">
         <button
-            @click="borrow()"
-            :disabled="!shouldAllowBorrow"
-            class="button is-primary has-text-weight-bold"
-            :class="{'is-loading': networkLoading}"
+          @click="borrow()"
+          :disabled="!shouldAllowBorrow"
+          class="button is-primary has-text-weight-bold"
+          :class="{ 'is-loading': networkLoading }"
         >
           Borrow
         </button>
@@ -86,70 +116,91 @@ import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
 
 export default {
-  name: 'Borrow',
+  name: "Borrow",
   mixins: [Mixins],
   props: {
     ovenAddress: {
-      type: String
-    }
+      type: String,
+    },
   },
   data: function () {
     return {
       borrowAmount: null,
       networkLoading: false,
-    }
+    };
   },
   methods: {
-    async borrow(){
-      try{
-        this.networkLoading = true
-        const borrowAmt = new BigNumber(this.borrowAmount).decimalPlaces(18).multipliedBy(Math.pow(10, 18))
-        let borrowResult = await this.ovenClient(this.ovenAddress).borrow(borrowAmt.toFixed())
-        this.$eventBus.$emit("tx-submitted", borrowResult, this.ovenAddress, 'borrow')
-        this.$emit('close-requested')
+    async borrow() {
+      try {
+        this.networkLoading = true;
+        const borrowAmt = new BigNumber(this.borrowAmount)
+          .decimalPlaces(18)
+          .multipliedBy(Math.pow(10, 18));
+        let borrowResult = await this.ovenClient(this.ovenAddress).borrow(
+          borrowAmt.toFixed()
+        );
+        this.$eventBus.$emit(
+          "tx-submitted",
+          borrowResult,
+          this.ovenAddress,
+          "borrow"
+        );
+        this.$emit("close-requested");
       } catch (e) {
-        this.handleWalletError(e, "Unable to borrow", "There was an issue with the borrow request.")
+        this.handleWalletError(
+          e,
+          "Unable to borrow",
+          "There was an issue with the borrow request."
+        );
       } finally {
-        this.networkLoading = false
+        this.networkLoading = false;
       }
     },
   },
   computed: {
-    maxSafeAmt(){
+    maxSafeAmt() {
       return this.ovenDollarValue(this.ovenAddress)
-                 .dividedBy(2)
-                 .multipliedBy(0.8)
-                 .minus(this.borrowedTokensFormatted(this.ovenAddress))
-                 .decimalPlaces(18)
+        .dividedBy(2)
+        .multipliedBy(0.8)
+        .minus(this.borrowedTokensFormatted(this.ovenAddress))
+        .decimalPlaces(18);
     },
-    shouldAllowBorrow(){
-      if(!this.borrowAmount || this.borrowAmount <= 0) { return false }
-      return this.borrowAmount <= this.maxBorrowAmtKUSD(this.ovenAddress).decimalPlaces(18).toNumber()
+    shouldAllowBorrow() {
+      if (!this.borrowAmount || this.borrowAmount <= 0) {
+        return false;
+      }
+      return (
+        this.borrowAmount <=
+        this.maxBorrowAmtkUSD(this.ovenAddress).decimalPlaces(18).toNumber()
+      );
     },
-    borrowAmtNumber(){
-      return this.borrowAmount ? new BigNumber(this.borrowAmount) : new BigNumber(0)
+    borrowAmtNumber() {
+      return this.borrowAmount
+        ? new BigNumber(this.borrowAmount)
+        : new BigNumber(0);
     },
-    collateralizedRateAfterBorrowing(){
-      let borrowAmount = this.borrowAmount
-      if (!borrowAmount || borrowAmount <= 0){
-        borrowAmount = 0
+    collateralizedRateAfterBorrowing() {
+      let borrowAmount = this.borrowAmount;
+      if (!borrowAmount || borrowAmount <= 0) {
+        borrowAmount = 0;
       }
 
-      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2)
+      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2);
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress)
+      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress);
 
-      return borrowedTokens.plus(borrowAmount).dividedBy(maxCollateral).times(100)
-    }
+      return borrowedTokens
+        .plus(borrowAmount)
+        .dividedBy(maxCollateral)
+        .times(100);
+    },
   },
-}
+};
 </script>
 
 <style type="text/scss" lang="scss">
-@import '../../assets/sass/globals';
+@import "../../assets/sass/globals";
 
-.borrow{
-
+.borrow {
 }
-
 </style>

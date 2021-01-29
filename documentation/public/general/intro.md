@@ -4,17 +4,17 @@ Kolibri is an Tezos based stablecoin built on Collateralized Debt Positions (CDP
 
 ### Overview
 
-Kolibri uses CDPs (referred to as an `Oven`) to collateralize a soft pegged USD-stable value asset, `KUSD`.
+Kolibri uses CDPs (referred to as an `Oven`) to collateralize a soft pegged USD-stable value asset, `kUSD`.
 
 Each `Oven` has four functions:
 - `Deposit`: Place `XTZ` into the `Oven`
 - `Withdraw`: Remove `XTZ` from the `Oven`
-- `Borrow`: Borrow `KUSD` against the `Oven` using XTZ as collateral
-- `Repay`: Repay `KUSD` that was borrowed against the `Oven`.
+- `Borrow`: Borrow `kUSD` against the `Oven` using XTZ as collateral
+- `Repay`: Repay `kUSD` that was borrowed against the `Oven`.
 
 ### Stability Fee
 
-A stability fee is applied to borrowed `KUSD`. It is accrued in terms of `KUSD`. It is percentage based fee applied to all outstanding `KUSD` (borrowed `KUSD` + stability fee). Interest is assessed every minute (about every block on the Tezos chain). The stability fee is adjusted via governance to increase or decrease the incentives to borrow or repay `KUSD` if the asset loses a peg.
+A stability fee is applied to borrowed `kUSD`. It is accrued in terms of `kUSD`. It is percentage based fee applied to all outstanding `kUSD` (borrowed `kUSD` + stability fee). Interest is assessed every minute (about every block on the Tezos chain). The stability fee is adjusted via governance to increase or decrease the incentives to borrow or repay `kUSD` if the asset loses a peg.
 
 Negative stability fees are not supported in Kolibri but may be added in the future via a contract upgrade.
 
@@ -22,12 +22,12 @@ Negative stability fees are not supported in Kolibri but may be added in the fut
 
 In order to remain solvent, an `Oven` must maintain a minimum **collateralization ratio**. The collateralization ratio is computed as:
 ```
-Collateralization Ratio = ((XTZ in Oven` * Price of XTZ/USD) / (Borrowed KUSD + Stability Fees)) * 100 
+Collateralization Ratio = ((XTZ in Oven` * Price of XTZ/USD) / (Borrowed kUSD + Stability Fees)) * 100 
 ```
 
-If a `Oven` drops below the **collateralization ratio**, then it is said to be **under collateralized**. `Oven` owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `KUSD` when the collateralization ratio drops.
+If a `Oven` drops below the **collateralization ratio**, then it is said to be **under collateralized**. `Oven` owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `kUSD` when the collateralization ratio drops.
 
-The Kolibri system will prevent users from borrowing `KUSD` such that an `Oven` becomes under collateralized, or withdrawing `XTZ` to cause the `Oven` to become undercollateralized. However, the price of `XTZ` still fluctuates, which means an `Oven` can become undercollateralized without user action. At that point, a liquidation process kicks in to restore stability to the system.
+The Kolibri system will prevent users from borrowing `kUSD` such that an `Oven` becomes under collateralized, or withdrawing `XTZ` to cause the `Oven` to become undercollateralized. However, the price of `XTZ` still fluctuates, which means an `Oven` can become undercollateralized without user action. At that point, a liquidation process kicks in to restore stability to the system.
 
 ### Compound Interest Calculations
 
