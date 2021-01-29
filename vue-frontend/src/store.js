@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import { WalletStates } from './enums'
 
-import {CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient} from "@tessellatedgeometry/stablecoin-lib";
+import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient } from "@hover-labs/kolibri-js";
 
 // const NODE_URL = 'https://tezos-dev.cryptonomic-infra.tech'
 // const NODE_URL = 'https://testnet-tezos.giganode.io'
@@ -34,7 +34,7 @@ export default Vue.observable({
         CONTRACTS.DELPHI.MINTER,
         CONTRACTS.DELPHI.OVEN_FACTORY
     ),
-    getOvenClient(wallet, ovenAddress){
+    getOvenClient(wallet, ovenAddress) {
         return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     }
 })

@@ -4,7 +4,7 @@
 import { ThanosWallet } from "@thanos-wallet/dapp";
 import { WalletStates } from "@/enums";
 
-import { Network } from "@tessellatedgeometry/stablecoin-lib";
+import { Network } from "@hover-labs/kolibri-js";
 
 export default {
   name: "WalletManager",

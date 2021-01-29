@@ -120,7 +120,7 @@
 import moment from "moment";
 import BigNumber from "bignumber.js";
 
-import { ConversionUtils } from "@tessellatedgeometry/stablecoin-lib";
+import { ConversionUtils } from '@hover-labs/kolibri-js'
 import Popover from "@/components/Popover";
 import Mixins from "@/mixins";
 

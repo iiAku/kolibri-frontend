@@ -16,5 +16,5 @@ deploy-gh-pages:
 	cd dist && git init
 	cd dist && git add .
 	cd dist && git commit -m "Github Pages Build"
-	cd dist && git remote add origin git@github.com:TessellatedGeometry/tai.git
+	cd dist && git remote add origin git@github.com:hover-labs/kolibri.git
 	cd dist && git push --force origin master:gh-pages

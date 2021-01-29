@@ -64,7 +64,7 @@ import Mixins from "@/mixins"
 import axios from 'axios'
 import _ from 'lodash'
 import BakerInfo from "@/components/BakerInfo";
-import { CONTRACTS } from "@tessellatedgeometry/stablecoin-lib";
+import { CONTRACTS } from "@hover-labs/kolibri-js";
 
 export default {
   name: 'OvenDelegateModal',
