@@ -147,7 +147,7 @@ export default {
   },
   computed: {
     maxWithdrawAmount() {
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress); // kUSD
+      const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress); // kUSD
       const ovenValue = this.ovenDollarValue(this.ovenAddress); // USD
 
       return ovenValue
@@ -184,7 +184,7 @@ export default {
         withdrawAmount
       ).dividedBy(2);
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress);
+      const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 
       let collatRate = borrowedTokens.dividedBy(maxCollateralDollars);
 

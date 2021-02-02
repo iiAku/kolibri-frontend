@@ -147,7 +147,7 @@
                   >
                     {{
                       numberWithCommas(
-                        oven.borrowedTokens.dividedBy(Math.pow(10, 18))
+                        oven.outstandingTokens.dividedBy(Math.pow(10, 18))
                       )
                     }}
                     kUSD
@@ -156,7 +156,7 @@
                   <strong class="price-has-popover"
                     >{{
                       numberWithCommas(
-                        oven.borrowedTokens
+                        oven.outstandingTokens
                           .dividedBy(Math.pow(10, 18))
                           .toFixed(2)
                       )
@@ -227,7 +227,7 @@ export default {
         .dividedBy(Math.pow(10, 10));
       let valueHalf = currentValue.dividedBy(2);
 
-      let borrowedTokens = this.oven.borrowedTokens.dividedBy(Math.pow(10, 18));
+      let borrowedTokens = this.oven.outstandingTokens.dividedBy(Math.pow(10, 18));
 
       return valueHalf.minus(borrowedTokens).dividedBy(100);
     },
@@ -241,7 +241,7 @@ export default {
         .dividedBy(Math.pow(10, 10));
       let valueHalf = currentValue.dividedBy(2);
 
-      let rate = this.oven.borrowedTokens
+      let rate = this.oven.outstandingTokens
         .dividedBy(valueHalf)
         .dividedBy(Math.pow(10, 14));
 

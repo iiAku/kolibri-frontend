@@ -38,7 +38,7 @@
                 isLiquidated ||
                 pendingTransaction ||
                 updatingData ||
-                !(ovenData && parseInt(ovenData.borrowedTokens) !== 0)
+                !(ovenData && parseInt(ovenData.outstandingTokens) !== 0)
               "
               @click="$emit('modal-open-requested', 'Repay', ovenAddress)"
               class="button is-small is-primary has-text-weight-bold"
@@ -368,7 +368,7 @@ export default {
 
       let valueHalf = currentValue.dividedBy(2);
 
-      let borrowedTokens = this.ovenData.borrowedTokens.dividedBy(
+      let borrowedTokens = this.ovenData.outstandingTokens.dividedBy(
         Math.pow(10, 18)
       );
 
@@ -384,7 +384,7 @@ export default {
         .dividedBy(Math.pow(10, 10));
       let valueHalf = currentValue.dividedBy(2);
 
-      let rate = this.ovenData.borrowedTokens
+      let rate = this.ovenData.outstandingTokens
         .dividedBy(valueHalf)
         .dividedBy(Math.pow(10, 14));
 
@@ -439,7 +439,7 @@ export default {
       // this.$set(this.$store.ownedOvens[this.ovenAddress], 'stabilityFee', initialStabilityFee)
       // this.$set(this.$store.ownedOvens[this.ovenAddress], 'outstandingTokens', initialTokens)
 
-      if (!this.$store.ownedOvens[this.ovenAddress].borrowedTokens.isZero()){
+      if (!this.$store.ownedOvens[this.ovenAddress].outstandingTokens.isZero()){
         this.tickInterval = setInterval(() => {
           if (this.$store.simpleStabilityFee !== null) {
             let newStabilityFee = rate.multipliedBy(oven.stabilityFee)

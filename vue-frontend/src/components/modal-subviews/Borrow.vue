@@ -162,7 +162,7 @@ export default {
       return this.ovenDollarValue(this.ovenAddress)
         .dividedBy(2)
         .multipliedBy(0.8)
-        .minus(this.borrowedTokensFormatted(this.ovenAddress))
+        .minus(this.outstandingTokensFormatted(this.ovenAddress))
         .decimalPlaces(18);
     },
     shouldAllowBorrow() {
@@ -187,7 +187,7 @@ export default {
 
       const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2);
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress);
+      const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 
       return borrowedTokens
         .plus(borrowAmount)

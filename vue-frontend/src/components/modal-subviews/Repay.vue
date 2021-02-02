@@ -28,7 +28,7 @@
         <strong>Borrowed kUSD:</strong>
         <strong class="price-view"
           >{{
-            numberWithCommas(borrowedTokensFormatted(ovenAddress).toFixed(2))
+            numberWithCommas(outstandingTokensFormatted(ovenAddress).toFixed(2))
           }}
           kUSD</strong
         >
@@ -163,18 +163,18 @@ export default {
         return false;
       }
       return new BigNumber(this.repayAmount).isLessThanOrEqualTo(
-        this.borrowedTokensFormatted(this.ovenAddress)
+        this.outstandingTokensFormatted(this.ovenAddress)
       );
     },
     maxPaybackAmt() {
       if (
         this.walletBalanceFormatted().isLessThanOrEqualTo(
-          this.borrowedTokensFormatted(this.ovenAddress)
+          this.outstandingTokensFormatted(this.ovenAddress)
         )
       ) {
         return this.walletBalanceFormatted();
       } else {
-        return this.borrowedTokensFormatted(this.ovenAddress);
+        return this.outstandingTokensFormatted(this.ovenAddress);
       }
     },
     collateralizedRateAfterRepaying() {
@@ -185,7 +185,7 @@ export default {
 
       const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2);
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress);
+      const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 
       let newTokenCount = borrowedTokens.minus(repayAmount);
 

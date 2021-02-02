@@ -129,7 +129,7 @@ export default {
 
       const maxCollateral = this.ovenDollarValuePlusDeposit(this.ovenAddress, depositAmount).dividedBy(2)
 
-      const borrowedTokens = this.borrowedTokensFormatted(this.ovenAddress)
+      const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress)
 
       let collatRate = borrowedTokens.dividedBy(maxCollateral)
 

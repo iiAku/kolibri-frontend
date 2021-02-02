@@ -70,6 +70,9 @@ export default {
         borrowedTokensFormatted(ovenAddress) {
             return this.borrowedTokens(ovenAddress).dividedBy(Math.pow(10, 18))
         },
+        outstandingTokensFormatted(ovenAddress) {
+            return this.outstandingTokens(ovenAddress).dividedBy(Math.pow(10, 18))
+        },
         walletBalance() {
             return this.$store.walletBalance
         },
@@ -98,7 +101,7 @@ export default {
             return currentPrice.multipliedBy(currentHoldings)
         },
         maxBorrowAmtkUSD(ovenAddress) {
-            const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
+            const borrowedTokens = this.outstandingTokensFormatted(ovenAddress)
             const ovenValue = this.ovenDollarValue(ovenAddress)
             return ovenValue.dividedBy(2).minus(borrowedTokens).decimalPlaces(18)
         },
@@ -114,7 +117,7 @@ export default {
         currentCollateralRate(ovenAddress) {
             const maxCollateral = this.ovenDollarValue(ovenAddress).dividedBy(2)
 
-            const borrowedTokens = this.borrowedTokensFormatted(ovenAddress)
+            const borrowedTokens = this.outstandingTokensFormatted(ovenAddress)
 
             // If we have no xtz in the oven, don't try to divide by 0
             if (maxCollateral.isZero()) {
@@ -129,7 +132,7 @@ export default {
             let currentValue = this.$store.priceData.price.multipliedBy(oven.balance).dividedBy(Math.pow(10, 10))
             let valueHalf = currentValue.dividedBy(2)
 
-            let rate = oven.borrowedTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
+            let rate = oven.outstandingTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
 
             return rate.toFixed(2)
         },
