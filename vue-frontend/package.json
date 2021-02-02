@@ -10,7 +10,7 @@
   "devDependencies": {
     "@dicebear/avatars": "4.2.5",
     "@dicebear/avatars-bottts-sprites": "4.2.5",
-    "@hover-labs/kolibri-js": "^1.0.0",
+    "@hover-labs/kolibri-js": "^1.1.0",
     "@sweetalert2/theme-bulma": "^4.0.1",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
