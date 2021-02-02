@@ -3,6 +3,24 @@
     <portal-target name="manage-modal" />
     <portal-target name="delegate-modal" />
 
+    <div v-if="showWarning && !$store.isTestnet" class="prerelease-warning is-flex is-justify-content-center">
+      <div class="notification is-warning">
+        <button @click="showWarning = false" class="delete"></button>
+        <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>100 XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our
+        <router-link
+            rel="noopener"
+            target="_blank"
+            :to="{
+              name: 'ProjectInfo',
+              params: { folder: 'security', page: 'security-audit' },
+            }"
+        >
+          audit report status page
+        </router-link>
+        for more details.
+      </div>
+    </div>
+
     <section class="cta">
       <div class="columns is-marginless">
         <div class="column cta-column is-6 is-offset-3">
@@ -31,6 +49,7 @@
         </div>
       </div>
     </section>
+
     <section class="info-section animate__animated animate__fadeIn">
       <div class="container">
         <div class="columns is-marginless is-centered">
@@ -67,7 +86,8 @@ export default {
   },
   data(){
     return {
-      clickCount: 0
+      clickCount: 0,
+      showWarning: true
     }
   },
   components: {
@@ -89,6 +109,14 @@ export default {
     background: $light-grey;
     position: relative;
     z-index: 40;
+    .prerelease-warning{
+      background: white;
+      padding: 1rem;
+      margin: 0;
+      .notification{
+        max-width: 75vw;
+      }
+    }
     .ovens-wrapper{
       position: relative;
       z-index: 1;

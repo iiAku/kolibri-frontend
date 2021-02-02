@@ -6,9 +6,21 @@ import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, Toke
 
 // const NODE_URL = 'https://tezos-dev.cryptonomic-infra.tech'
 // const NODE_URL = 'https://testnet-tezos.giganode.io'
-const NODE_URL = 'https://rpctest.tzbeta.net'
 
-const NETWORK = Network.Delphi
+let NETWORK, NODE_URL, NETWORK_CONTRACTS
+let isTestnet = false
+if (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'testnet.kolibri.finance') {
+    NODE_URL = 'https://rpctest.tzbeta.net'
+    NETWORK = Network.Delphi
+    NETWORK_CONTRACTS = CONTRACTS.DELPHI
+    isTestnet = true
+} else {
+    NODE_URL = 'https://rpc.tzbeta.net'
+    NETWORK = Network.Mainnet
+    // NETWORK_CONTRACTS = CONTRACTS.MAINNET
+}
 
 export default Vue.observable({
     priceData: null,
@@ -24,17 +36,18 @@ export default Vue.observable({
     walletBalance: null,
     network: NETWORK,
     nodeURL: NODE_URL,
-    tokenClient: new TokenClient(NODE_URL, CONTRACTS.DELPHI.TOKEN),
+    tokenClient: new TokenClient(NODE_URL, NETWORK_CONTRACTS.TOKEN),
     harbingerClient: new HarbingerClient(NODE_URL,
-        CONTRACTS.DELPHI.HARBINGER_NORMALIZER
+        NETWORK_CONTRACTS.HARBINGER_NORMALIZER
     ),
     stableCoinClient: new StableCoinClient(NODE_URL,
         NETWORK,
-        CONTRACTS.DELPHI.OVEN_REGISTRY,
-        CONTRACTS.DELPHI.MINTER,
-        CONTRACTS.DELPHI.OVEN_FACTORY
+        NETWORK_CONTRACTS.OVEN_REGISTRY,
+        NETWORK_CONTRACTS.MINTER,
+        NETWORK_CONTRACTS.OVEN_FACTORY
     ),
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
-    }
+    },
+    isTestnet
 })
