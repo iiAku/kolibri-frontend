@@ -9,6 +9,7 @@ import AllOvens from "@/pages/AllOvens";
 import NotFound from "@/pages/NotFound";
 import TOS from "@/pages/TOS";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import SigningTool from "@/pages/SigningTool";
 
 const routes = [
     {
@@ -40,6 +41,11 @@ const routes = [
         path: '/privacy-policy',
         name: 'PrivacyPolicy',
         component: PrivacyPolicy
+    },
+    {
+        path: '/signing-tool',
+        name: 'SigningTool',
+        component: SigningTool
     },
     { path: "*", component: NotFound }
 ]

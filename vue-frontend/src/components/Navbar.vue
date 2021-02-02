@@ -99,7 +99,6 @@ export default {
     return {
       menuOpen: false,
       WalletStates,
-      avatars
     }
   },
   methods: {

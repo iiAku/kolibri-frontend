@@ -21,6 +21,7 @@
     "bignumber.js": "^9.0.1",
     "bulma": "^0.9.1",
     "clickout-event": "^1.0.2",
+    "conseiljs": "^5.0.6-3",
     "core-js": "^3.6.5",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
