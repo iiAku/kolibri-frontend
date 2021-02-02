@@ -1,35 +1,37 @@
 <template>
   <section class="all-ovens hero is-fullheight is-align-items-center">
+    <div
+        v-if="ovensData !== null && $store.priceData !== null"
+        class="floating-paginator animate__animated animate__fadeInUp">
+      <Pagination
+          class="is-centered"
+          :itemsTotal="activeVaults.length"
+          :itemsPerPage="1"
+          :currentPage="currentPage"
+          url="AllOvens"
+          :buttonsMax="5"
+          queryParameter="page"
+      />
+    </div>
     <div v-if="ovensData === null || $store.priceData === null" class="loading-wrapper">
       <div class="loader is-large is-primary"></div>
     </div>
     <div class="container oven-data is-fluid" v-else>
       <div class="columns is-centered">
-        <div class="column is-half">
-          <div class="box paginator-widget">
-            <Pagination
-                class="is-centered"
-                :itemsTotal="activeVaults.length"
-                :itemsPerPage="1"
-                :currentPage="currentPage"
-                url="AllOvens"
-                :buttonsMax="5"
-                queryParameter="page"
-            />
-            <div class="is-flex is-justify-content-space-evenly little-padding">
+        <div class="column is-three-quarters">
+          <div class="paginator-widget">
+            <div class="is-flex is-justify-content-space-evenly">
               <label class="checkbox">
                 <input v-model="hideEmptyOvens" type="checkbox">
-                Hide Empty Ovens
+                Hide Empty Ovens?
               </label>
               <label class="checkbox">
                 <input v-model="hideLiquidatedOvens" type="checkbox">
-                Hide Liquidated Ovens
+                Hide Liquidated Ovens?
               </label>
-            </div>
-            <div class="is-flex is-justify-content-space-evenly">
               <label class="checkbox">
                 <input v-model="orderByCollateralization" type="checkbox">
-                Order Ovens By Collateralization
+                Order Ovens By Collateralization?
               </label>
             </div>
           </div>
@@ -128,6 +130,15 @@ export default {
   @import '../assets/sass/globals';
   .all-ovens{
     background: $light-grey;
+    .floating-paginator{
+      position: fixed;
+      bottom: 0;
+      z-index: 999;
+      background: white;
+      padding: .5rem;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+    }
     .little-padding{
       padding-bottom: 0.5rem;
     }
@@ -135,9 +146,7 @@ export default {
       padding-top: 0 !important;
     }
     .paginator-widget{
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      padding: 1rem;
+      margin-top: 1.5rem;
       .paginator-list {
         flex-wrap: nowrap;
       }
