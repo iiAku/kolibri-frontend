@@ -442,8 +442,9 @@ export default {
       if (!this.$store.ownedOvens[this.ovenAddress].borrowedTokens.isZero()){
         this.tickInterval = setInterval(() => {
           if (this.$store.simpleStabilityFee !== null) {
-            this.$set(this.$store.ownedOvens[this.ovenAddress], 'stabilityFee', rate.multipliedBy(oven.stabilityFee))
-            this.$set(this.$store.ownedOvens[this.ovenAddress], 'outstandingTokens', rate.multipliedBy(oven.outstandingTokens))
+            let newStabilityFee = rate.multipliedBy(oven.stabilityFee)
+            this.$set(oven, 'stabilityFee', newStabilityFee)
+            this.$set(oven, 'outstandingTokens', oven.borrowedTokens.plus(newStabilityFee))
           }
         }, TIMEOUT)
       }
