@@ -37,7 +37,7 @@
   .hover-footer{
     padding: 3rem;
     .hover-logo{
-      
+
       img{
         max-width: 12rem;
         max-height: 15rem;

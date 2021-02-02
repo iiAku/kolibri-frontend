@@ -268,7 +268,7 @@
                   >
                     {{
                       numberWithCommas(
-                        ovenData.borrowedTokens.dividedBy(Math.pow(10, 18))
+                        ovenData.outstandingTokens.dividedBy(Math.pow(10, 18)).toFixed(12)
                       )
                     }}
                     kUSD
@@ -277,7 +277,7 @@
                   <strong class="price-has-popover"
                     >{{
                       numberWithCommas(
-                        ovenData.borrowedTokens
+                        ovenData.outstandingTokens
                           .dividedBy(Math.pow(10, 18))
                           .toFixed(2)
                       )
@@ -301,7 +301,7 @@
                       numberWithCommas(
                         ovenData.stabilityFee
                           .dividedBy(Math.pow(10, 18))
-                          .toFixed(8)
+                          .toFixed(12)
                       )
                     }}
                     kUSD
@@ -335,6 +335,7 @@
 import _ from "lodash";
 import Mixins from "@/mixins";
 import Popover from "@/components/Popover";
+import BigNumber from "bignumber.js";
 
 export default {
   name: "Oven",
@@ -390,6 +391,12 @@ export default {
       return rate.toFixed(2);
     },
     async updateOvenData() {
+      if (this.tickInterval !== null){
+        console.log("Clearing previous stability fee updater")
+        clearInterval(this.tickInterval)
+        this.tickInterval = null
+      }
+
       const keys = [
         "baker",
         "balance",
@@ -403,7 +410,7 @@ export default {
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
         this.ovenClient(this.ovenAddress).getBorrowedTokens(),
-        this.ovenClient(this.ovenAddress).getStabilityFees(),
+        this.ovenClient(this.ovenAddress).getStabilityFees(this.now),
         this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
         this.ovenClient(this.ovenAddress).isLiquidated(),
       ]);
@@ -413,6 +420,33 @@ export default {
         this.ovenAddress,
         _.zipObject(keys, values)
       );
+
+      const one = new BigNumber(Math.pow(10, 18))
+      const TIMEOUT = 100 // ms
+      const rate = this.$store.simpleStabilityFee.dividedBy((1 / 100) * 60).plus(one).dividedBy(one)
+      // let elapsedFromStart = new Date() - this.now
+      const oven = this.$store.ownedOvens[this.ovenAddress]
+
+      // let initialStabilityFee = oven.stabilityFee
+      // let initialTokens = oven.outstandingTokens
+      // console.log(initialStabilityFee, initialTokens, elapsedFromStart)
+      //
+      // for (let i = 0; i < (elapsedFromStart / 1000) / TIMEOUT; i++){
+      //   initialStabilityFee = rate.multipliedBy(initialStabilityFee)
+      //   initialTokens = rate.multipliedBy(initialTokens)
+      // }
+      //
+      // this.$set(this.$store.ownedOvens[this.ovenAddress], 'stabilityFee', initialStabilityFee)
+      // this.$set(this.$store.ownedOvens[this.ovenAddress], 'outstandingTokens', initialTokens)
+
+      if (!this.$store.ownedOvens[this.ovenAddress].borrowedTokens.isZero()){
+        this.tickInterval = setInterval(() => {
+          if (this.$store.simpleStabilityFee !== null) {
+            this.$set(this.$store.ownedOvens[this.ovenAddress], 'stabilityFee', rate.multipliedBy(oven.stabilityFee))
+            this.$set(this.$store.ownedOvens[this.ovenAddress], 'outstandingTokens', rate.multipliedBy(oven.outstandingTokens))
+          }
+        }, TIMEOUT)
+      }
     },
     async waitForTxAndRefresh(txResult, verb) {
       try {
@@ -447,6 +481,8 @@ export default {
     return {
       pendingTransaction: false,
       updatingData: false,
+      tickInterval: null,
+      now: new Date()
     };
   },
   computed: {
@@ -474,6 +510,9 @@ export default {
   }
   .oven-info {
     position: relative;
+    &> .buttons{
+      margin-bottom: 2rem;
+    }
     .columns {
       @include until($widescreen) {
         flex-direction: column;

@@ -82,7 +82,8 @@ import HoverLabsFooter from "@/components/HoverLabsFooter";
 export default {
   name: 'Index',
   async created(){
-
+    this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
+    this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
   },
   data(){
     return {

@@ -34,6 +34,8 @@ export default Vue.observable({
     walletStates: WalletStates,
     walletState: WalletStates.DISCONNECTED,
     walletBalance: null,
+    simpleStabilityFee: null,
+    maxOvenValue: null,
     network: NETWORK,
     nodeURL: NODE_URL,
     tokenClient: new TokenClient(NODE_URL, NETWORK_CONTRACTS.TOKEN),
