@@ -4,8 +4,8 @@
       <div class="columns">
         <div class="column">
           <div class="hover-logo is-flex is-flex-direction-column is-align-items-flex-end">
-            <img class="brahman" src="../assets/brahman.svg" />
-            <img class="shadow" src="../assets/brahman-shadow.svg" />
+            <img class="logo" src="../assets/hover-logo.svg" />
+            <img class="shadow" src="../assets/shadow.svg" />
           </div>
         </div>
         <div class="column is-flex-direction-column is-align-items-flex-start has-text-left is-flex is-justify-content-center">
@@ -37,15 +37,19 @@
   .hover-footer{
     padding: 3rem;
     .hover-logo{
+      
       img{
-        max-width: 7rem;
-        max-height: 10rem;
-        &.brahman{
+        max-width: 12rem;
+        max-height: 15rem;
+        &.logo{
           animation: hover 2.5s ease-in-out infinite;
+          max-width: 10rem;
         }
         &.shadow{
           padding: 0 0.8rem;
           animation: breath 2.5s ease-in-out infinite;
+          max-width: 8rem;
+          margin-right: 1rem;
         }
       }
     }
