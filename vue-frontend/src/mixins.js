@@ -67,6 +67,12 @@ export default {
             if (!this.$store.ownedOvens[ovenAddress].borrowedTokens) { return 0 }
             return this.$store.ownedOvens[ovenAddress].borrowedTokens
         },
+        outstandingTokens(ovenAddress) {
+            if (!ovenAddress) { return 0 }
+            if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
+            if (!this.$store.ownedOvens[ovenAddress].outstandingTokens) { return 0 }
+            return this.$store.ownedOvens[ovenAddress].outstandingTokens
+        },
         borrowedTokensFormatted(ovenAddress) {
             return this.borrowedTokens(ovenAddress).dividedBy(Math.pow(10, 18))
         },

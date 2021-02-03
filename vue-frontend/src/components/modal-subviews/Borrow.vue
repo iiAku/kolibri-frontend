@@ -45,7 +45,7 @@
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
         <a
-          v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt)"
+          v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt.times(1.01))"
           @click="borrowAmount = maxSafeAmt"
           class="has-text-weight-bold"
           >Max Safe (80%)</a

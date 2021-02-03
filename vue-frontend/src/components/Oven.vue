@@ -342,10 +342,15 @@ export default {
   props: ["ovenAddress"],
   mixins: [Mixins],
   async created() {
-    await this.updateOvenData();
+    await this.updateOvenData(true);
 
     this.$eventBus.$on("tx-submitted", (txResult, ovenAddress, verb) => {
       if (this.ovenAddress === ovenAddress) {
+        if (this.tickInterval !== null){
+          console.log("Clearing previous stability fee updater")
+          clearInterval(this.tickInterval)
+          this.tickInterval = null
+        }
         this.waitForTxAndRefresh(txResult, verb);
       }
     });
@@ -390,13 +395,7 @@ export default {
 
       return rate.toFixed(2);
     },
-    async updateOvenData() {
-      if (this.tickInterval !== null){
-        console.log("Clearing previous stability fee updater")
-        clearInterval(this.tickInterval)
-        this.tickInterval = null
-      }
-
+    async updateOvenData(initializing) {
       const keys = [
         "baker",
         "balance",
@@ -406,40 +405,37 @@ export default {
         "isLiquidated",
       ];
 
+      let startTime = new Date()
+      if (initializing !== true && (this.borrowedTokens(this.ovenAddress) === 0 || this.borrowedTokens(this.ovenAddress).isZero())){
+        // Our initial fees are 0, which is something we can't compound properly, so this grabs the first
+        // stability fee and sets that as our initial state
+        console.log("Initial state found")
+        startTime = new Date(+new Date() + 60 * 1000)
+      }
+
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
         this.ovenClient(this.ovenAddress).getBorrowedTokens(),
-        this.ovenClient(this.ovenAddress).getStabilityFees(this.now),
+        this.ovenClient(this.ovenAddress).getStabilityFees(startTime),
         this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
         this.ovenClient(this.ovenAddress).isLiquidated(),
       ]);
 
+      const ovenData = _.zipObject(keys, values)
+
       this.$set(
         this.$store.ownedOvens,
         this.ovenAddress,
-        _.zipObject(keys, values)
+        ovenData
       );
 
       const one = new BigNumber(Math.pow(10, 18))
       const TIMEOUT = 100 // ms
       const rate = this.$store.simpleStabilityFee.dividedBy((1 / 100) * 60).plus(one).dividedBy(one)
-      // let elapsedFromStart = new Date() - this.now
       const oven = this.$store.ownedOvens[this.ovenAddress]
 
-      // let initialStabilityFee = oven.stabilityFee
-      // let initialTokens = oven.outstandingTokens
-      // console.log(initialStabilityFee, initialTokens, elapsedFromStart)
-      //
-      // for (let i = 0; i < (elapsedFromStart / 1000) / TIMEOUT; i++){
-      //   initialStabilityFee = rate.multipliedBy(initialStabilityFee)
-      //   initialTokens = rate.multipliedBy(initialTokens)
-      // }
-      //
-      // this.$set(this.$store.ownedOvens[this.ovenAddress], 'stabilityFee', initialStabilityFee)
-      // this.$set(this.$store.ownedOvens[this.ovenAddress], 'outstandingTokens', initialTokens)
-
-      if (!this.$store.ownedOvens[this.ovenAddress].outstandingTokens.isZero()){
+      if (ovenData.borrowedTokens.isPositive()){
         this.tickInterval = setInterval(() => {
           if (this.$store.simpleStabilityFee !== null) {
             let newStabilityFee = rate.multipliedBy(oven.stabilityFee)
@@ -483,7 +479,6 @@ export default {
       pendingTransaction: false,
       updatingData: false,
       tickInterval: null,
-      now: new Date()
     };
   },
   computed: {
