@@ -7,8 +7,7 @@ import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, Toke
 // const NODE_URL = 'https://tezos-dev.cryptonomic-infra.tech'
 // const NODE_URL = 'https://testnet-tezos.giganode.io'
 
-let NETWORK, NODE_URL, NETWORK_CONTRACTS
-let isTestnet = false
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if (window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') {
@@ -17,9 +16,11 @@ if (window.location.hostname === 'localhost' ||
     NETWORK_CONTRACTS = CONTRACTS.DELPHI
     isTestnet = true
 } else {
-    NODE_URL = 'https://rpc.tzbeta.net'
+    // NODE_URL = 'https://rpc.tzbeta.net'
+    NODE_URL = 'https://tezos-prod.cryptonomic-infra.tech'
     NETWORK = Network.Mainnet
-    // NETWORK_CONTRACTS = CONTRACTS.MAINNET
+    NETWORK_CONTRACTS = CONTRACTS.MAIN
+    isTestnet = false
 }
 
 export default Vue.observable({
@@ -51,5 +52,6 @@ export default Vue.observable({
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },
-    isTestnet
+    isTestnet,
+    NETWORK_CONTRACTS
 })

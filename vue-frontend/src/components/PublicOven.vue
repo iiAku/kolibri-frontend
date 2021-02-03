@@ -9,7 +9,7 @@
               <a
                 target="_blank"
                 rel="noopener"
-                :href="`https://better-call.dev/delphinet/${oven.ovenAddress}/`"
+                :href="`https://better-call.dev/${this.$store.network}/${oven.ovenAddress}/`"
                 >{{ oven.ovenAddress }}</a
               >
             </h1>
@@ -23,7 +23,7 @@
                 target="_blank"
                 rel="noopener"
                 class="is-family-monospace"
-                :href="`https://better-call.dev/delphinet/${oven.ovenOwner}/`"
+                :href="`https://better-call.dev/${this.$store.network}/${oven.ovenOwner}/`"
                 >{{ oven.ovenOwner }}</a
               >
             </h1>
@@ -50,7 +50,7 @@
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
-            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://delphinet.tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
+            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphinet.' : ''}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
             <p class="heading">Collateral Utilization:
               <strong v-if="collatoralizedRateForOven(oven) < 80">{{ collatoralizedRateForOven(oven) }}%</strong>
               <strong v-else-if="collatoralizedRateForOven(oven) < 100" class="has-text-warning">{{ collatoralizedRateForOven(oven) }}%</strong>

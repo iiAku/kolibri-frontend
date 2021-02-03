@@ -64,7 +64,6 @@ import Mixins from "@/mixins"
 import axios from 'axios'
 import _ from 'lodash'
 import BakerInfo from "@/components/BakerInfo";
-import { CONTRACTS } from "@hover-labs/kolibri-js";
 
 export default {
   name: 'OvenDelegateModal',
@@ -91,7 +90,7 @@ export default {
       bakerAddress: null,
       networkLoading: false,
       bakers: {},
-      kolibriBaker: CONTRACTS.DELPHI.KOLIBRI_BAKER
+      kolibriBaker: this.$store.NETWORK_CONTRACTS.KOLIBRI_BAKER
     }
   },
   watch: {

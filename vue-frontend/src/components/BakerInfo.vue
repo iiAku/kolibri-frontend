@@ -14,7 +14,7 @@
         <div class="unknown-baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://delphi.tzstats.com/${kolibriBaker}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${kolibriBaker}`">
                 Kolibri Baker
               </a>
             </h2>
@@ -31,7 +31,7 @@
         <div class="baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://delphi.tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${bakerAddress}`">
                 {{ bakers[bakerAddress].name }}
               </a>
             </h2>
@@ -85,7 +85,7 @@
         <div class="unknown-baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://delphi.tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${bakerAddress}`">
                 Unknown Baker
               </a>
             </h2>

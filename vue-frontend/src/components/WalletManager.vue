@@ -4,8 +4,6 @@
 import { ThanosWallet } from "@thanos-wallet/dapp";
 import { WalletStates } from "@/enums";
 
-import { Network } from "@hover-labs/kolibri-js";
-
 export default {
   name: 'WalletManager',
   async mounted(){
@@ -41,7 +39,7 @@ export default {
       console.log("Connecting wallet!");
       this.$store.walletState = WalletStates.CONNECTING;
       const wallet = new ThanosWallet("Kolibri");
-      await wallet.connect(Network.Delphi)
+      await wallet.connect(this.$store.network)
         .then(async () => {
           this.$store.walletState = WalletStates.CONNECTED;
           this.$store.wallet = wallet;
