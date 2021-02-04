@@ -14,14 +14,14 @@
             <baker-info
                 :baker-address="ovenData.baker"
                 :valid-baker-address="true"
-                :kolibri-baker="kolibriBaker"
+                :baker="tgBaker"
                 :bakers="bakers"
             />
 
           </div>
           <div class="content" v-else>
             <strong>Current:</strong>
-            <p>You are not currently delegating your funds to any baker. If you want to fund Kolibri (and other tezos-based development) please consider <a @click="bakerAddress = kolibriBaker" class="has-text-weight-bold">delegating your funds to the Kolibri baker</a>.</p>
+            <p>You are not currently delegating your funds to any baker. If you want to fund Kolibri (and other tezos-based development) please consider <a @click="bakerAddress = tgBaker" class="has-text-weight-bold">delegating your funds to Tesselated Geometry</a>, with whom we have a referral agreement.</p>
           </div>
           <div class="content">
             <strong>New Baker:</strong>
@@ -34,7 +34,7 @@
             <baker-info
               :baker-address="bakerAddress"
               :valid-baker-address="validBakerAddress"
-              :kolibri-baker="kolibriBaker"
+              :baker="tgBaker"
               :bakers="bakers"
             />
 
@@ -90,7 +90,7 @@ export default {
       bakerAddress: null,
       networkLoading: false,
       bakers: {},
-      kolibriBaker: this.$store.NETWORK_CONTRACTS.KOLIBRI_BAKER
+      tgBaker: this.$store.NETWORK_CONTRACTS.KOLIBRI_BAKER
     }
   },
   watch: {
@@ -105,7 +105,9 @@ export default {
   methods: {
     close(){
       this.$emit('close-requested')
-      Object.assign(this.$data, this.$options.data())
+      this.bakerAddress = null
+      this.networkLoading = false
+      this.bakers = {}
     },
     async setBaker(){
       try{

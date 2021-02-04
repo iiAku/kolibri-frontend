@@ -5,7 +5,7 @@
   >
     <div v-if="bakerAddress && validBakerAddress" class="new-baker-info">
 
-      <div v-if="bakerAddress === kolibriBaker" class="box baker-info is-flex is-flex-direction-row">
+      <div v-if="bakerAddress === baker" class="box baker-info is-flex is-flex-direction-row">
         <div class="image-wrapper">
           <div class="image is-64x64">
             <img src="../assets/hummingbird.svg" />
@@ -14,8 +14,8 @@
         <div class="unknown-baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${kolibriBaker}`">
-                Kolibri Baker
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}tzstats.com/${baker}`">
+                Tesselated Geometry Baker
               </a>
             </h2>
             <p class="subtitle"><strong>Thank you</strong> from the Kolibri team! 🙏🙇‍♂️</p>
@@ -31,7 +31,7 @@
         <div class="baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}tzstats.com/${bakerAddress}`">
                 {{ bakers[bakerAddress].name }}
               </a>
             </h2>
@@ -85,7 +85,7 @@
         <div class="unknown-baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless">
-              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}.tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphi.' : ''}tzstats.com/${bakerAddress}`">
                 Unknown Baker
               </a>
             </h2>
@@ -102,7 +102,7 @@ import Mixins from "@/mixins";
 
 export default {
   name: 'BakerInfo',
-  props: ['bakerAddress', 'validBakerAddress', 'kolibriBaker', 'bakers'],
+  props: ['bakerAddress', 'validBakerAddress', 'baker', 'bakers'],
   mixins: [Mixins],
   async created(){
   },
