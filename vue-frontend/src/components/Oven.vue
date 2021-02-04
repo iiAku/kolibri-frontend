@@ -335,22 +335,20 @@
 import _ from "lodash";
 import Mixins from "@/mixins";
 import Popover from "@/components/Popover";
-import BigNumber from "bignumber.js";
 
 export default {
   name: "Oven",
   props: ["ovenAddress"],
   mixins: [Mixins],
   async created() {
-    await this.updateOvenData(true);
+    await this.updateOvenData();
+
+    setInterval(async () => {
+      await this.updateOvenData()
+    }, 60 * 1000)
 
     this.$eventBus.$on("tx-submitted", (txResult, ovenAddress, verb) => {
       if (this.ovenAddress === ovenAddress) {
-        if (this.tickInterval !== null){
-          console.log("Clearing previous stability fee updater")
-          clearInterval(this.tickInterval)
-          this.tickInterval = null
-        }
         this.waitForTxAndRefresh(txResult, verb);
       }
     });
@@ -377,7 +375,7 @@ export default {
         Math.pow(10, 18)
       );
 
-      return valueHalf.minus(borrowedTokens);
+      return valueHalf.minus(borrowedTokens).decimalPlaces(18);
     },
     collatoralizedRate(ovenBalance) {
       if (parseInt(ovenBalance) === 0) {
@@ -395,55 +393,33 @@ export default {
 
       return rate.toFixed(2);
     },
-    async updateOvenData(initializing) {
+    async updateOvenData() {
       const keys = [
         "baker",
         "balance",
         "borrowedTokens",
         "stabilityFee",
-        "outstandingTokens",
         "isLiquidated",
       ];
-
-      let startTime = new Date()
-      if (initializing !== true && (this.borrowedTokens(this.ovenAddress) === 0 || this.borrowedTokens(this.ovenAddress).isZero())){
-        // Our initial fees are 0, which is something we can't compound properly, so this grabs the first
-        // stability fee and sets that as our initial state
-        console.log("Initial state found")
-        startTime = new Date(+new Date() + 60 * 1000)
-      }
 
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
         this.ovenClient(this.ovenAddress).getBorrowedTokens(),
-        this.ovenClient(this.ovenAddress).getStabilityFees(startTime),
-        this.ovenClient(this.ovenAddress).getTotalOutstandingTokens(),
+        this.ovenClient(this.ovenAddress).getStabilityFees(),
         this.ovenClient(this.ovenAddress).isLiquidated(),
       ]);
 
-      const ovenData = _.zipObject(keys, values)
+      let ovenData = _.zipObject(keys, values)
+
+      // Just calculate this ourselves and save a few requests
+      ovenData.outstandingTokens = ovenData.borrowedTokens.plus(ovenData.stabilityFee)
 
       this.$set(
         this.$store.ownedOvens,
         this.ovenAddress,
         ovenData
       );
-
-      const one = new BigNumber(Math.pow(10, 18))
-      const TIMEOUT = 100 // ms
-      const rate = this.$store.simpleStabilityFee.dividedBy((1 / 100) * 60).plus(one).dividedBy(one)
-      const oven = this.$store.ownedOvens[this.ovenAddress]
-
-      if (ovenData.borrowedTokens.isPositive()){
-        this.tickInterval = setInterval(() => {
-          if (this.$store.simpleStabilityFee !== null) {
-            let newStabilityFee = rate.multipliedBy(oven.stabilityFee)
-            this.$set(oven, 'stabilityFee', newStabilityFee)
-            this.$set(oven, 'outstandingTokens', oven.borrowedTokens.plus(newStabilityFee))
-          }
-        }, TIMEOUT)
-      }
     },
     async waitForTxAndRefresh(txResult, verb) {
       try {
@@ -478,7 +454,6 @@ export default {
     return {
       pendingTransaction: false,
       updatingData: false,
-      tickInterval: null,
     };
   },
   computed: {
