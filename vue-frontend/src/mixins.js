@@ -1,5 +1,6 @@
 import { find } from 'lodash'
 import { ContractErrors } from '@hover-labs/kolibri-js'
+import BigNumber from "bignumber.js";
 
 const errorMap = {
     Unknown: "An unknown error has occurred!",
@@ -155,5 +156,8 @@ export default {
         },
     },
     computed: {
+        ovenCapFormattedInXTZ(){
+            return new BigNumber(this.$store.maxOvenValue).dividedBy(Math.pow(10, 6))
+        },
     }
 }

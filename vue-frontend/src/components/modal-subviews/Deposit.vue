@@ -24,9 +24,29 @@
         </div>
       </div>
     </div>
+    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="notification is-warning">
+      <button @click="showWarning = false" class="delete"></button>
+      <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>{{ ovenCapFormattedInXTZ }} XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our
+      <router-link
+          rel="noopener"
+          target="_blank"
+          :to="{
+              name: 'ProjectInfo',
+              params: { folder: 'security', page: 'security-audit' },
+            }"
+      >
+        audit report status page
+      </router-link>
+      for more details.
+    </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
         <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
+      </p>
+    </div>
+    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null" class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Max Deposit: </strong> <strong class="price-view"><a @click="depositAmount = maxDepositAmt">{{ numberWithCommas(maxDepositAmt.toFixed(2)) }}</a> ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
@@ -96,6 +116,7 @@ export default {
     return {
       depositAmount: null,
       networkLoading: false,
+      showWarning: true
     }
   },
   methods: {
@@ -118,8 +139,15 @@ export default {
     },
   },
   computed: {
+    maxDepositAmt(){
+      return this.ovenCapFormattedInXTZ - this.ovenBalanceFormatted(this.ovenAddress)
+    },
     shouldAllowDeposit(){
-      return !(!this.depositAmount || this.depositAmount <= 0);
+      if (!this.$store.isTestnet && this.$store.maxOvenValue !== null){
+        return this.depositAmount !== null && this.depositAmount > 0 && this.depositAmount <= this.maxDepositAmt;
+      } else {
+        return this.depositAmount !== null && this.depositAmount > 0;
+      }
     },
     collateralizedRateAfterDeposit(){
       let depositAmount = this.depositAmount

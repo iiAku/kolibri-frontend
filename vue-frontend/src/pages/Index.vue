@@ -3,7 +3,7 @@
     <portal-target name="manage-modal" />
     <portal-target name="delegate-modal" />
 
-    <div v-if="showWarning && !$store.isTestnet" class="prerelease-warning is-flex is-justify-content-center">
+    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="prerelease-warning is-flex is-justify-content-center">
       <div class="notification is-warning">
         <button @click="showWarning = false" class="delete"></button>
         <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>100 XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our

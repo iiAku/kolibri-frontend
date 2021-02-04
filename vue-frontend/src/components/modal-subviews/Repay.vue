@@ -172,9 +172,9 @@ export default {
           this.outstandingTokensFormatted(this.ovenAddress)
         )
       ) {
-        return this.walletBalanceFormatted();
+        return this.walletBalanceFormatted().decimalPlaces(18);
       } else {
-        return this.outstandingTokensFormatted(this.ovenAddress);
+        return this.outstandingTokensFormatted(this.ovenAddress).decimalPlaces(18);
       }
     },
     collateralizedRateAfterRepaying() {

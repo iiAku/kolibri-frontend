@@ -155,7 +155,8 @@ export default {
         .minus(borrowedTokens)
         .dividedBy(this.currentPriceFormatted())
         .times(2)
-        .times(0.999999); // FIXME Dirty hack to prevent from going under collat
+        .times(0.999999) // FIXME Dirty hack to prevent from going under collat
+        .decimalPlaces(6);
     },
     shouldAllowWithdraw() {
       if (!this.withdrawAmount || this.withdrawAmount <= 0) {
