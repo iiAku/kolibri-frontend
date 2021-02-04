@@ -58,7 +58,7 @@ export default {
       this.currentPage = parseInt(this.$route.query.page)
     }
 
-    const response = await axios.get("https://kolibri-data.s3.amazonaws.com/oven-data.json")
+    const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
 
     this.ovensData = response.data.allOvenData.map((oven) => {
       let { ovenAddress, ovenOwner, ovenData } = oven

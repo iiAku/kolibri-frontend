@@ -154,13 +154,13 @@ export default {
       });
 
       axios
-        .get("https://kolibri-data.s3.amazonaws.com/apy.json")
+        .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/apy.json`)
         .then((result) => {
           this.$store.stabilityFee = new BigNumber(result.data.apy);
         });
 
       axios
-        .get("https://kolibri-data.s3.amazonaws.com/totals.json")
+        .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/totals.json`)
         .then((result) => {
           const { totalBalance, totalTokens } = result.data;
           this.$store.balanceData = {
