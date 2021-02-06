@@ -57,7 +57,7 @@
               @click="$emit('modal-open-requested', 'Withdraw', ovenAddress)"
               class="button is-small is-primary has-text-weight-bold"
             >
-              Withdraw ꜩ
+              Withdraw Ꜩ
             </button>
           </p>
           <p class="level-item">
@@ -68,7 +68,7 @@
               @click="$emit('modal-open-requested', 'Deposit', ovenAddress)"
               class="button is-small is-primary has-text-weight-bold"
             >
-              Deposit ꜩ
+              Deposit Ꜩ
             </button>
           </p>
         </div>
@@ -237,22 +237,12 @@
                     slot="popup-content"
                     class="has-text-primary heading is-marginless"
                   >
-                    {{
-                      numberWithCommas(
-                        ovenData.balance.dividedBy(Math.pow(10, 6))
-                      )
-                    }}
-                    ꜩ
+                    {{numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} Ꜩ
                   </strong>
 
-                  <strong class="price-has-popover"
-                    >{{
-                      numberWithCommas(
-                        ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)
-                      )
-                    }}
-                    ꜩ</strong
-                  >
+                  <strong class="price-has-popover">
+                    {{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} Ꜩ
+                  </strong>
                 </popover>
               </div>
             </div>

@@ -35,17 +35,17 @@
                 @click="$emit('change-page', 'Withdraw')"
                 :class="{ 'is-active': currentPage === 'Withdraw' }"
               >
-                <a class="has-text-weight-bold">Withdraw ꜩ</a>
+                <a class="has-text-weight-bold">Withdraw Ꜩ</a>
               </li>
               <li
                 @click="$emit('change-page', 'Deposit')"
                 :class="{ 'is-active': currentPage === 'Deposit' }"
               >
-                <a class="has-text-weight-bold">Deposit ꜩ</a>
+                <a class="has-text-weight-bold">Deposit Ꜩ</a>
               </li>
             </ul>
           </div>
-          <h1 v-else class="title is-4">Deposit ꜩ</h1>
+          <h1 v-else class="title is-4">Deposit Ꜩ</h1>
           <component
             @close-requested="close()"
             :ovenAddress="ovenAddress"

@@ -4,6 +4,20 @@
     <portal-target name="delegate-modal" />
     <portal-target name="new-oven-modal" />
 
+    <div
+        v-if="$store.walletBalance !== null && $store.walletBalanceXTZ !== null"
+        class="holdings animate__animated animate__fadeInRight"
+    >
+      <div class="tags has-addons is-justify-content-flex-end is-marginless">
+        <span class="tag">kUSD Holdings</span>
+        <span class="tag is-primary">{{ numberWithCommas(walletBalanceFormatted().toFixed(2)) }} kUSD</span>
+      </div>
+      <div class="tags has-addons is-justify-content-flex-end is-marginless">
+        <span class="tag">Tezos Holdings</span>
+        <span class="tag is-primary">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} Ꜩ</span>
+      </div>
+    </div>
+
     <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="prerelease-warning is-flex is-justify-content-center">
       <div class="notification is-warning">
         <button @click="showWarning = false" class="delete"></button>
@@ -75,6 +89,7 @@
 </template>
 
 <script>
+import Mixins from "@/mixins";
 import Stats from "@/components/Stats";
 import Ovens from "@/components/Ovens";
 import ConnectPrompt from "@/components/ConnectPrompt";
@@ -82,6 +97,7 @@ import HoverLabsFooter from "@/components/HoverLabsFooter";
 
 export default {
   name: 'Index',
+  mixins: [Mixins],
   async created(){
 
   },
@@ -110,12 +126,20 @@ export default {
     background: $light-grey;
     position: relative;
     z-index: 40;
+    .holdings{
+      position: absolute;
+      right: 0;
+      padding: 0 1rem;
+      .tags.has-addons{
+        margin-bottom: .5rem;
+      }
+    }
     .prerelease-warning{
       background: white;
       padding: 1rem;
       margin: 0;
       .notification{
-        max-width: 75vw;
+        max-width: 65vw;
       }
     }
     .ovens-wrapper{

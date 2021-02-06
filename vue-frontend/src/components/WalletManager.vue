@@ -24,7 +24,9 @@ export default {
   },
   methods: {
     async updateBalance(){
+      const tez = this.$store.wallet.toTezos()
       this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.wallet.permission.pkh)
+      this.$store.walletBalanceXTZ = await tez.tz.getBalance(this.$store.wallet.permission.pkh)
     },
     async reconnectWallet(){
       console.log("Reconnecting wallet!")

@@ -117,6 +117,12 @@ export default {
         walletBalanceFormatted() {
             return this.walletBalance().dividedBy(Math.pow(10, 18))
         },
+        walletBalanceXTZ(){
+            return this.$store.walletBalanceXTZ
+        },
+        walletBalanceXTZFormatted() {
+            return this.walletBalanceXTZ().dividedBy(Math.pow(10, 6))
+        },
         currentPrice() {
             return this.$store.priceData.price
         },

@@ -18,7 +18,7 @@
           </p>
           <p class="control">
             <a class="button is-static has-text-weight-bold">
-              ꜩ
+              Ꜩ
             </a>
           </p>
         </div>
@@ -41,12 +41,17 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
+        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} Ꜩ</strong>
       </p>
     </div>
-    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null" class="field is-grouped is-grouped-right is-marginless">
+    <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Max Deposit: </strong> <strong class="price-view"><a @click="depositAmount = maxDepositAmt">{{ numberWithCommas(maxDepositAmt.toFixed(2)) }}</a> ꜩ</strong>
+        <strong>Wallet Holdings: </strong> <strong class="price-view">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} Ꜩ</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right is-marginless">
+      <p class="heading">
+        <strong>Max Deposit: </strong> <strong class="price-view"><a @click="depositAmount = maxDepositAmt">{{ numberWithCommas(maxDepositAmt.toFixed(2)) }}</a> Ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">
@@ -140,13 +145,23 @@ export default {
   },
   computed: {
     maxDepositAmt(){
-      return this.ovenCapFormattedInXTZ - this.ovenBalanceFormatted(this.ovenAddress)
+      let walletBalanceXTZ = this.walletBalanceXTZFormatted()
+      if (this.$store.maxOvenValue !== null){
+        return Math.min(this.ovenCapFormattedInXTZ - this.ovenBalanceFormatted(this.ovenAddress), walletBalanceXTZ)
+      } else {
+        return walletBalanceXTZ
+      }
     },
     shouldAllowDeposit(){
-      if (!this.$store.isTestnet && this.$store.maxOvenValue !== null){
-        return this.depositAmount !== null && this.depositAmount > 0 && this.depositAmount <= this.maxDepositAmt;
+      if (this.$store.maxOvenValue !== null){
+        return this.depositAmount !== null &&
+            this.depositAmount > 0 &&
+            this.depositAmount <= this.maxDepositAmt &&
+            this.depositAmount <= this.walletBalanceXTZFormatted();
       } else {
-        return this.depositAmount !== null && this.depositAmount > 0;
+        return this.depositAmount !== null &&
+            this.depositAmount > 0 &&
+            this.depositAmount <= this.walletBalanceXTZFormatted();
       }
     },
     collateralizedRateAfterDeposit(){

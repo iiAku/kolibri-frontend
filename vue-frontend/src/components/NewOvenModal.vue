@@ -13,6 +13,7 @@
         <section :class="{'showing-overlay': sendingTransactions}" class="modal-card-body is-paddingless">
           <div v-if="sendingTransactions" class="summary-overlay">
             <div class="container animate__animated animate__fadeInRight">
+              <h1 class="title">Hold tight!<br>We're creating your oven.</h1>
               <div class="step">
                 <p class="has-text-primary">
                   1. Creating Oven
@@ -23,7 +24,7 @@
                 <div v-if="createdOven"><img class="check" src="../assets/check.svg" /></div>
                 <div v-else class="loader is-primary"></div>
               </div>
-              <div v-if="this.$store.isTestnet || selectedDelegate !== this.$store.defaultOvenBaker" class="step">
+              <div v-if="this.$store.defaultOvenBaker === null || selectedDelegate !== this.$store.defaultOvenBaker" class="step">
                 <p
                     :class="{'has-text-grey-light': !createdOven, 'has-text-primary': createdOven}"
                 >

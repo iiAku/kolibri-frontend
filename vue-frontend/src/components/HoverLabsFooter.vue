@@ -43,13 +43,13 @@
         max-height: 15rem;
         &.logo{
           animation: hover 2.5s ease-in-out infinite;
-          max-width: 10rem;
+          max-width: 8rem;
         }
         &.shadow{
           padding: 0 0.8rem;
           animation: breath 2.5s ease-in-out infinite;
-          max-width: 8rem;
-          margin-right: 1rem;
+          max-width: 7rem;
+          margin-right: 0.5rem;
         }
       }
     }

@@ -4,10 +4,12 @@ import { WalletStates } from './enums'
 
 import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient } from "@hover-labs/kolibri-js";
 
+const FORCE_MAINNET = false
+
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
-if (window.location.hostname === 'localhost' ||
+if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === 'testnet.kolibri.finance') {
+    window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://rpctest.tzbeta.net'
     NETWORK = Network.Delphi
     NETWORK_CONTRACTS = CONTRACTS.DELPHI
@@ -31,6 +33,7 @@ export default Vue.observable({
     walletStates: WalletStates,
     walletState: WalletStates.DISCONNECTED,
     walletBalance: null,
+    walletBalanceXTZ: null,
     simpleStabilityFee: null,
     maxOvenValue: null,
     bakers: null,
