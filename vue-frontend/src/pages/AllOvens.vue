@@ -82,6 +82,11 @@ export default {
       hideEmptyOvens: false,
       hideLiquidatedOvens: false,
       orderByCollateralization: false,
+      modals: {
+        newOven: {
+          opened: false
+        }
+      }
     }
   },
   watch: {

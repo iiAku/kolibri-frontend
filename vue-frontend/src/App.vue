@@ -17,7 +17,10 @@ export default {
   },
   async mounted(){
     await this.updatePriceInfo()
+    this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
+    this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
     setInterval(this.updatePriceInfo, 60 * 1000) // Go grab oracle data every minute
+
   },
   methods:{
     updatePriceInfo(){

@@ -5,54 +5,54 @@
   >
     <div :class="{'is-active': opened}" class="modal modal-component">
       <div @click="close()" class="modal-background"></div>
-      <div class="modal-content">
-        <div class="box">
-          <h1 class="title">Set Baker</h1>
-          <div class="content" v-if="ovenData.baker">
-            <strong>Current:</strong>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <h2 class="modal-card-title">Set Baker</h2>
+        </header>
+        <section class="modal-card-body is-paddingless">
+          <div class="box">
+            <div class="content" v-if="ovenData.baker">
+              <strong>Current:</strong>
 
-            <baker-info
-                :baker-address="ovenData.baker"
-                :valid-baker-address="true"
-                :baker="tgBaker"
-                :bakers="bakers"
-            />
+              <baker-info
+                  :baker-address="ovenData.baker"
+              />
 
-          </div>
-          <div class="content" v-else>
-            <strong>Current:</strong>
-            <p>You are not currently delegating your funds to any baker. If you want to fund Kolibri (and other tezos-based development) please consider <a @click="bakerAddress = tgBaker" class="has-text-weight-bold">delegating your funds to Tesselated Geometry</a>, with whom we have a referral agreement.</p>
-          </div>
-          <div class="content">
-            <strong>New Baker:</strong>
-            <div class="field">
-              <p class="control">
-                <input v-model="bakerAddress" class="input" type="text" placeholder="">
-              </p>
+            </div>
+            <div class="content" v-else>
+              <strong>Current:</strong>
+              <br>
+              You currently don't have a baker set for this Oven. <b><a target="_blank" rel="noopener" href="https://www.tessellatedgeometry.com/">Tessellated Geometry</a></b>
+              (<b><a @click="bakerAddress = $store.NETWORK_CONTRACTS.KOLIBRI_BAKER">{{ truncateChars($store.NETWORK_CONTRACTS.KOLIBRI_BAKER, 18) }}</a></b>)
+              is the preferred baker for Kolibri ovens, and a portion of Baking income from oven delegations is used to to support Kolibri's development.
+              <br><br>
+              If you'd like a different baker, please set one below. You can always change the baker for your oven at any time in the future, by selecting the baker next to the "DELEGATED BAKER" field in your oven.
+            </div>
+            <div class="content">
+              <strong>New Baker:</strong>
+              <div class="field">
+                <p class="control">
+                  <input v-model="bakerAddress" class="input" type="text" placeholder="">
+                </p>
+              </div>
+
+              <baker-info
+                  :baker-address="bakerAddress"
+              />
             </div>
 
-            <baker-info
-              :baker-address="bakerAddress"
-              :valid-baker-address="validBakerAddress"
-              :baker="tgBaker"
-              :bakers="bakers"
-            />
-
-            <div class="field is-grouped is-grouped-right">
-              <p class="control">
-                <button
-                    :disabled="!validBakerAddress"
-                    @click="setBaker"
-                    :class="{'is-loading': networkLoading}"
-                    class="button is-success"
-                >
-                  <strong>Set New Baker</strong>
-                </button>
-              </p>
-            </div>
           </div>
-
-        </div>
+        </section>
+        <footer class="modal-card-foot is-justify-content-flex-end">
+          <button
+              :disabled="!validBakerAddress"
+              @click="setBaker"
+              :class="{'is-loading': networkLoading}"
+              class="button is-primary"
+          >
+            <strong>Set New Baker</strong>
+          </button>
+        </footer>
       </div>
       <button @click="close()" class="modal-close is-large" aria-label="close"></button>
     </div>
@@ -61,8 +61,6 @@
 
 <script>
 import Mixins from "@/mixins"
-import axios from 'axios'
-import _ from 'lodash'
 import BakerInfo from "@/components/BakerInfo";
 
 export default {
@@ -77,19 +75,15 @@ export default {
     }
   },
   async created(){
-    axios.get('https://api.baking-bad.org/v2/bakers')
-        .then((results) => {
-          this.bakers = results.data.reduce((acc, baker) => {
-            acc[baker.address] = _.omit(baker,'address');
-            return acc
-          }, {})
-        })
+    await this.fetchBakerInfoIfNecessary()
+    if(this.$store.ownedOvens[this.ovenAddress].baker === null){
+      this.bakerAddress = this.$store.NETWORK_CONTRACTS.KOLIBRI_BAKER
+    }
   },
   data: function () {
     return {
       bakerAddress: null,
       networkLoading: false,
-      bakers: {},
       tgBaker: this.$store.NETWORK_CONTRACTS.KOLIBRI_BAKER
     }
   },
@@ -107,7 +101,6 @@ export default {
       this.$emit('close-requested')
       this.bakerAddress = null
       this.networkLoading = false
-      this.bakers = {}
     },
     async setBaker(){
       try{
@@ -123,12 +116,6 @@ export default {
     },
   },
   computed: {
-    validBakerAddress(){
-      if (this.bakerAddress && this.bakerAddress.length === 36){
-        return true
-      }
-      return false
-    },
     ovenData() {
       return this.$store.ownedOvens[this.ovenAddress]
     },

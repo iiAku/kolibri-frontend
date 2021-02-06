@@ -7,8 +7,11 @@ import { WalletStates } from "@/enums";
 export default {
   name: 'WalletManager',
   async mounted(){
-    ThanosWallet.onAvailabilityChange((available) => {
+    ThanosWallet.onAvailabilityChange(async (available) => {
       this.$store.walletAvailable = available
+      if (window.localStorage.getItem('walletPreviouslyConnected') === 'true') {
+        await this.connectWallet()
+      }
     })
 
     this.$eventBus.$on('wallet-connect-request', this.connectWallet)
@@ -37,6 +40,7 @@ export default {
     },
     async connectWallet() {
       console.log("Connecting wallet!");
+      window.localStorage.setItem('walletPreviouslyConnected', 'true')
       this.$store.walletState = WalletStates.CONNECTING;
       const wallet = new ThanosWallet("Kolibri");
       await wallet.connect(this.$store.network)
@@ -47,6 +51,12 @@ export default {
           // Update wallet balances for kUSD
           await this.updateBalance()
           this.updateTimer = setInterval(this.updateBalance, 60 * 1000)
+
+          // Go get the default baker
+          const tez = wallet.toTezos()
+          const ovenFactoryContract = await tez.wallet.at(this.$store.NETWORK_CONTRACTS.OVEN_FACTORY)
+          const ovenFactoryStorage = await ovenFactoryContract.storage()
+          this.$store.defaultOvenBaker = ovenFactoryStorage.initialDelegate
         })
         .catch((err) => {
           // Use sweetalert2

@@ -1,6 +1,7 @@
-import { find } from 'lodash'
-import { ContractErrors } from '@hover-labs/kolibri-js'
+import _, { find } from 'lodash'
+import {ContractErrors, CONTRACTS} from '@hover-labs/kolibri-js'
 import BigNumber from "bignumber.js";
+import axios from "axios";
 
 const errorMap = {
     Unknown: "An unknown error has occurred!",
@@ -33,6 +34,37 @@ const errorMap = {
 
 export default {
     methods: {
+        async fetchBakerInfoIfNecessary(){
+            if (this.$store.bakers === null){
+                const results = await axios.get('https://api.baking-bad.org/v2/bakers')
+                this.$store.bakers = results.data.reduce((acc, baker) => {
+                    acc[baker.address] = _.omit(baker,'address');
+                    return acc
+                }, {})
+
+                // Treat the testnet kolibri baker as the same as the prod baker data on testnet
+                if (this.$store.isTestnet){
+                    this.$store.bakers[CONTRACTS.DELPHI.KOLIBRI_BAKER] = this.$store.bakers[CONTRACTS.MAIN.KOLIBRI_BAKER]
+                }
+            }
+        },
+        validBakerAddress(address){
+            return address && address.length === 36;
+        },
+        truncateChars(fullStr, strLen, separator) {
+            if (fullStr.length <= strLen) return fullStr;
+
+            separator = separator || '...';
+
+            let sepLen = separator.length,
+                charsToShow = strLen - sepLen,
+                frontChars = Math.ceil(charsToShow/2),
+                backChars = Math.floor(charsToShow/2);
+
+            return fullStr.substr(0, frontChars) +
+                separator +
+                fullStr.substr(fullStr.length - backChars);
+        },
         handleWalletError(err, title, message) {
             console.error("Error with wallet operation: ", err)
 
@@ -43,7 +75,6 @@ export default {
             })
 
             if (properError !== undefined){
-                debugger;
                 const errorCode = parseInt(properError.with.int)
                 let parsedError = ContractErrors[errorCode]
                 errString += `(<b>Error Code: ${errorCode}</b>)<br><br>`

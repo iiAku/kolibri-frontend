@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import Mixins from '@/mixins'
 import WalletManager from "@/components/WalletManager";
 import {WalletStates} from "@/enums";
 
@@ -93,6 +94,7 @@ let avatars = new Avatars(sprites, options);
 
 export default {
   name: 'Navbar',
+  mixins: [Mixins],
   async mounted(){
   },
   data: function () {
@@ -102,20 +104,6 @@ export default {
     }
   },
   methods: {
-    truncateChars(fullStr, strLen, separator) {
-      if (fullStr.length <= strLen) return fullStr;
-
-      separator = separator || '...';
-
-      let sepLen = separator.length,
-          charsToShow = strLen - sepLen,
-          frontChars = Math.ceil(charsToShow/2),
-          backChars = Math.floor(charsToShow/2);
-
-      return fullStr.substr(0, frontChars) +
-          separator +
-          fullStr.substr(fullStr.length - backChars);
-    },
     avatarSvg(){
       return avatars.create(this.$store.wallet.permission.pkh.toString(), {
         width: 48,

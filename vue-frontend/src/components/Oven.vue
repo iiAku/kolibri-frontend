@@ -340,10 +340,13 @@ export default {
   name: "Oven",
   props: ["ovenAddress"],
   mixins: [Mixins],
+  destroyed() {
+    clearInterval(this.interval)
+  },
   async created() {
     await this.updateOvenData();
 
-    setInterval(async () => {
+    this.interval = setInterval(async () => {
       await this.updateOvenData()
     }, 60 * 1000)
 
@@ -454,6 +457,7 @@ export default {
     return {
       pendingTransaction: false,
       updatingData: false,
+      interval: null
     };
   },
   computed: {

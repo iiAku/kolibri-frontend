@@ -18,6 +18,13 @@
           :opened="modal.delegate.opened" />
     </portal>
 
+    <portal to="new-oven-modal">
+      <new-oven-modal
+          v-if="modal.newOven.opened"
+          @close-requested="modal.newOven.opened = false"
+      />
+    </portal>
+
     <div class="columns">
       <div class="column is-10 is-offset-1">
         <div v-if="$store.ownedOvens === null" class="ovens-are-loading loader-wrapper">
@@ -25,9 +32,8 @@
         </div>
         <div v-else class="oven-info">
           <div class="buttons is-centered">
-            <button @click="createNewOven" class="button is-primary is-large has-text-weight-bold">Create New Oven</button>
+            <button @click="modal.newOven.opened = true" class="button is-primary is-large has-text-weight-bold">Create New Oven</button>
           </div>
-          <pending-oven :op-hash="opHash" v-for="(_, opHash) in pendingOvens" :key="opHash" />
           <div v-if="$store.ownedOvens !== null">
             <oven
                 @modal-open-requested="openManageModal"
@@ -48,8 +54,8 @@ import OvenManageModal from "@/components/OvenManageModal"
 import Mixins from '@/mixins'
 
 import _ from 'lodash'
-import PendingOven from "@/components/PendingOven";
 import OvenDelegateModal from "@/components/OvenDelegateModal";
+import NewOvenModal from "@/components/NewOvenModal";
 
 export default {
   name: 'Ovens',
@@ -63,7 +69,6 @@ export default {
   },
   data() {
     return {
-      pendingOvens: {},
       modal: {
         manage: {
           opened: false,
@@ -73,6 +78,9 @@ export default {
         delegate: {
           opened: false,
           ovenAddress: null
+        },
+        newOven: {
+          opened: false,
         }
       },
     }
@@ -120,40 +128,12 @@ export default {
       this.modal.manage.ovenAddress = null
       this.modal.manage.requestedPage = null
     },
-    async createNewOven(){
-      try{
-        let result = await this.$store.stableCoinClient.deployOven(_.defaultsDeep({}, this.$store.wallet))
-        this.$set(this.pendingOvens, result.opHash, true)
-
-        await result.confirmation(1)
-
-        this.$delete(this.pendingOvens, result.opHash)
-
-        const results = await result.operationResults()
-
-        const creationResult = _.find(results, (result) => {
-          return result.kind === 'transaction'
-        })
-
-        const ovenAddress = _.find(creationResult.metadata.internal_operation_results, (operation) => {
-          return operation.kind === "origination"
-        }).result.originated_contracts[0]
-
-        if (this.$store.ownedOvens === null) {
-          this.$set(this.$store, 'ownedOvens', {})
-        }
-        this.$set(this.$store.ownedOvens, ovenAddress, null)
-        this.$set(this.$store, 'ovenCount', this.$store.ovenCount + 1)
-      } catch(err) {
-        this.handleWalletError(err, "Unable To Create Oven", "We were unable to create your Oven!")
-      }
-    }
   },
   components: {
     OvenDelegateModal,
     Oven,
-    PendingOven,
     OvenManageModal,
+    NewOvenModal
   },
 }
 </script>

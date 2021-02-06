@@ -2,6 +2,7 @@
   <div class="index">
     <portal-target name="manage-modal" />
     <portal-target name="delegate-modal" />
+    <portal-target name="new-oven-modal" />
 
     <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="prerelease-warning is-flex is-justify-content-center">
       <div class="notification is-warning">
@@ -82,8 +83,7 @@ import HoverLabsFooter from "@/components/HoverLabsFooter";
 export default {
   name: 'Index',
   async created(){
-    this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
-    this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
+
   },
   data(){
     return {
