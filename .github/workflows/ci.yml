@@ -70,7 +70,7 @@ jobs:
     - name: "Build & Deploy Frontend"
       run: |
         cd vue-frontend
-        npm i
+        npm i --legacy-peer-deps
         npm run build
 
     - uses: cloudflare/wrangler-action@1.2.0
