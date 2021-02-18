@@ -15,7 +15,8 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK_CONTRACTS = CONTRACTS.DELPHI
     isTestnet = true
 } else {
-    NODE_URL = 'https://rpc.tzbeta.net'
+    // NODE_URL = 'https://rpc.tzbeta.net'
+    NODE_URL = 'https://mainnet-tezos.giganode.io'
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
     isTestnet = false
