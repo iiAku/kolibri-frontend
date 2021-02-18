@@ -16,4 +16,4 @@ route = "testnet.kolibri.finance/*"
 zone_id = "211e36c6e111bb2821f93495fb73b4f6"
 
 # The route pattern your Workers application will be served at
-route = "prod-test.kolibri.finance/*"
+route = "kolibri.finance/*"
