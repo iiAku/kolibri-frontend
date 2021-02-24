@@ -9,7 +9,7 @@
               <a
                 target="_blank"
                 rel="noopener"
-                :href="`https://better-call.dev/${this.$store.network}/${ovenAddress}/`"
+                :href="tzktLink(ovenAddress)"
                 >{{ ovenAddress }}</a
               >
             </h1>
@@ -82,7 +82,7 @@
           v-if="pendingTransaction !== true"
           target="_blank"
           rel="noopener"
-          :href="`https://better-call.dev/${this.$store.network}/opg/${pendingTransaction}/contents`"
+          :href="tzktLink(pendingTransaction)"
           >Transaction Pending...</a
         >
         <span v-else>Transaction Pending...</span>

@@ -18,7 +18,7 @@
                 <p class="has-text-primary">
                   1. Creating Oven
                   <template v-if="pendingCreateOvenTx !== null">
-                    (<a target="_blank" rel="noopener" :href="`https://better-call.dev/${this.$store.network}/opg/${pendingCreateOvenTx}/contents`" class="has-text-primary">{{ truncateChars(pendingCreateOvenTx, 18) }}</a>)
+                    (<a target="_blank" rel="noopener" :href="tzktLink(pendingCreateOvenTx)" class="has-text-primary">{{ truncateChars(pendingCreateOvenTx, 18) }}</a>)
                   </template>
                 </p>
                 <div v-if="createdOven"><img class="check" src="../assets/check.svg" /></div>
@@ -30,7 +30,7 @@
                 >
                   2. Delegating Oven...
                   <template v-if="pendingSetBakerTx !== null">
-                    (<a target="_blank" rel="noopener" :href="`https://better-call.dev/${this.$store.network}/opg/${pendingSetBakerTx}/contents`" class="has-text-primary">{{ truncateChars(pendingSetBakerTx, 18) }}</a>)
+                    (<a target="_blank" rel="noopener" :href="tzktLink(pendingSetBakerTx)" class="has-text-primary">{{ truncateChars(pendingSetBakerTx, 18) }}</a>)
                   </template>
                 </p>
                 <div v-if="createdOven" class="loader is-primary"></div>

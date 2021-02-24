@@ -191,6 +191,13 @@ export default {
         ovenClient(ovenAddress) {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
+        tzktLink(contractOrOp){
+            if (this.$store.network === 'delphinet'){
+                return `https://delphinet.tzkt.io/${contractOrOp}`
+            } else {
+                return `https://tzkt.io/${contractOrOp}`
+            }
+        }
     },
     computed: {
         ovenCapFormattedInXTZ(){
