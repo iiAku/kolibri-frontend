@@ -30,14 +30,19 @@
                 Hide Liquidated Ovens?
               </label>
               <label class="checkbox">
-                <input v-model="orderByCollateralization" type="checkbox">
-                Order Ovens By Collateralization?
+                <input v-model="orderByValue" type="checkbox">
+                Order Ovens By Value?
               </label>
             </div>
           </div>
         </div>
       </div>
-      <public-oven :oven="oven" v-for="oven in currentChunk" :key="oven.ovenAddress" />
+      <public-oven
+          :oven="oven"
+          :key="oven.ovenAddress"
+          @oven-liquidated="markOvenLiquidated"
+          v-for="oven in currentChunk"
+      />
     </div>
   </section>
 </template>
@@ -79,9 +84,10 @@ export default {
       ovensDataChunks: null,
       currentPage: 1,
       emptyOvens: {},
-      hideEmptyOvens: false,
-      hideLiquidatedOvens: false,
-      orderByCollateralization: false,
+      hideEmptyOvens: true,
+      hideLiquidatedOvens: true,
+      orderByCollateralization: true,
+      orderByValue: false,
       modals: {
         newOven: {
           opened: false
@@ -118,6 +124,18 @@ export default {
                   }
                   return 0
                 })
+                .sortBy((oven) => {
+                  if (this.orderByValue){
+                    return oven.balance.times(-1).toNumber()
+                  }
+                  return 0
+                })
+                .sortBy((oven) => {
+                  if (oven.isLiquidated){
+                    return 1
+                  }
+                  return 0
+                })
                 .chunk(10)
                 .value()
     }
@@ -127,6 +145,10 @@ export default {
     Pagination
   },
   methods: {
+    markOvenLiquidated(ovenAddress){
+      const ovenIndex = _.findIndex(this.ovensData, oven => oven.ovenAddress === ovenAddress)
+      this.ovensData[ovenIndex].isLiquidated = true
+    },
   }
 }
 </script>
@@ -135,6 +157,7 @@ export default {
   @import '../assets/sass/globals';
   .all-ovens{
     background: $light-grey;
+    padding-bottom: 3rem;
     .floating-paginator{
       position: fixed;
       bottom: 0;
