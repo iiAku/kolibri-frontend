@@ -9,30 +9,46 @@
               <a
                 target="_blank"
                 rel="noopener"
-                :href="`https://better-call.dev/${this.$store.network}/${oven.ovenAddress}/`"
-                >{{ oven.ovenAddress }}</a
-              >
+                :href="tzktLink(oven.ovenAddress)"
+                >
+                {{ oven.ovenAddress }}
+              </a>
             </h1>
           </div>
         </div>
         <div class="level-right">
           <div class="level-item">
-            <h1 class="title is-5">
-              Owner:
-              <a
-                target="_blank"
-                rel="noopener"
-                class="is-family-monospace"
-                :href="`https://better-call.dev/${this.$store.network}/${oven.ovenOwner}/`"
-                >{{ oven.ovenOwner }}</a
-              >
-            </h1>
+            <button
+                :disabled="pendingTransaction"
+                v-if="$store.wallet !== null && !oven.isLiquidated && collatoralizedRateForOven(oven) > 100"
+                @click="liquidateOven()"
+                :class="{'is-loading': networkLoading}"
+                class="button is-danger is-small">
+              Liquidate
+            </button>
           </div>
         </div>
       </nav>
     </div>
 
-    <div class="oven-info">
+    <div v-if="pendingTransaction" class="loader-wrapper">
+      <h1 class="title is-marginless is-5">
+        <a
+            :title="pendingTransaction"
+            v-if="pendingTransaction !== true"
+            target="_blank"
+            rel="noopener"
+            :href="tzktLink(pendingTransaction)"
+        >
+          Transaction Pending...
+        </a>
+        <span v-else>
+          Transaction Pending...
+        </span>
+      </h1>
+      <div class="loader left-spaced"></div>
+    </div>
+    <div v-else class="oven-info">
       <div v-if="oven.isLiquidated" class="liquidated-warning">
         <h1 class="title is-4 has-text-white">
           This Oven Has Been
@@ -51,27 +67,23 @@
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
             <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'delphinet' ? 'delphinet.' : ''}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
-            <p class="heading">Collateral Utilization:
-              <strong v-if="collatoralizedRateForOven(oven) < 80">{{ collatoralizedRateForOven(oven) }}%</strong>
-              <strong v-else-if="collatoralizedRateForOven(oven) < 100" class="has-text-warning">{{ collatoralizedRateForOven(oven) }}%</strong>
-              <strong v-else class="has-text-danger">{{ collatoralizedRateForOven(oven) }}%</strong>
-              | Can borrow up to
-              <popover extra-classes="small-price">
-                <strong
-                  slot="popup-content"
-                  class="has-text-primary heading is-marginless"
+            <div class="is-flex is-justify-content-space-between">
+              <p class="heading">Owned By:
+                <a
+                    target="_blank"
+                    rel="noopener"
+                    class="has-text-weight-semibold"
+                    :href="tzktLink(oven.ovenOwner)"
                 >
-                  {{ numberWithCommas(maxBorrowAmt(oven.balance)) }} kUSD
-                </strong>
-
-                <strong class="price-has-popover"
-                  >{{
-                    numberWithCommas(maxBorrowAmt(oven.balance).toFixed(2))
-                  }}
-                  kUSD</strong
-                >
-              </popover>
-            </p>
+                  {{ oven.ovenOwner }}
+                </a>
+              </p>
+              <p class="heading">Utilization:
+                <strong v-if="collatoralizedRateForOven(oven) < 80">{{ collatoralizedRateForOven(oven) }}%</strong>
+                <strong v-else-if="collatoralizedRateForOven(oven) < 100" class="has-text-warning">{{ collatoralizedRateForOven(oven) }}%</strong>
+                <strong v-else class="has-text-danger">{{ collatoralizedRateForOven(oven) }}%</strong>
+              </p>
+            </div>
 
             <div class="allocation-info is-fullwidth">
               <progress v-if="collatoralizedRateForOven(oven) < 80" class="progress is-primary" :value="collatoralizedRateForOven(oven)" max="100">{{ collatoralizedRateForOven(oven) }}%</progress>
@@ -211,6 +223,28 @@ export default {
   props: ["oven"],
   mixins: [Mixins],
   methods: {
+    async liquidateOven(){
+      this.networkLoading = true
+      try {
+        let tx = await this.ovenClient(this.oven.ovenAddress).liquidate()
+
+        this.networkLoading = false
+
+        debugger;
+        this.pendingTransaction = tx.opHash
+
+        await tx.confirmation(1)
+
+        debugger;
+
+        this.pendingTransaction = null
+
+        this.$emit("oven-liquidated", this.oven.ovenAddress)
+      } catch (e) {
+        this.networkLoading = false
+        this.handleWalletError(e, "Couldn't liquidate oven", "There was an issue liquidating this oven!")
+      }
+    },
     ovenValue(ovenBalance) {
       let currentValue = this.$store.priceData.price
         .multipliedBy(ovenBalance)
@@ -249,7 +283,10 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      pendingTransaction: null,
+      networkLoading: false,
+    };
   },
   computed: {},
   components: {
