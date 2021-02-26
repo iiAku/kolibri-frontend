@@ -157,22 +157,20 @@
               <strong v-else class="has-text-danger"
                 >{{ collatoralizedRate(ovenData.balance) }}%</strong
               >
-              | Can borrow up to
-              <popover extra-classes="small-price">
-                <strong
-                  slot="popup-content"
-                  class="has-text-primary heading is-marginless"
-                >
-                  {{ numberWithCommas(maxBorrowAmt(ovenData.balance)) }} kUSD
-                </strong>
 
-                <strong class="price-has-popover"
-                  >{{
-                    numberWithCommas(maxBorrowAmt(ovenData.balance).toFixed(2))
-                  }}
-                  kUSD</strong
-                >
-              </popover>
+              <span v-if="!outstandingTokens(ovenAddress).isZero()">
+                | Liquidatable when XTZ =
+
+                <popover extra-classes="small-price">
+                  <strong
+                      slot="popup-content"
+                      class="has-text-primary heading is-marginless"
+                  >
+                    ${{ liquidatablePrice.toFixed(6) }}
+                  </strong>
+                  <strong class="price-has-popover">${{ liquidatablePrice.toFixed(2) }}</strong>
+                </popover>
+              </span>
             </p>
 
             <div class="allocation-info is-fullwidth">
@@ -325,6 +323,7 @@
 import _ from "lodash";
 import Mixins from "@/mixins";
 import Popover from "@/components/Popover";
+// import BigNumber from "bignumber.js";
 
 export default {
   name: "Oven",
@@ -451,6 +450,12 @@ export default {
     };
   },
   computed: {
+    liquidatablePrice(){
+      let rateDelta = 1 - this.currentCollateralRate(this.ovenAddress).dividedBy(100).toNumber()
+      let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
+
+      return currentPrice.minus(currentPrice.times(rateDelta))
+    },
     ovenData() {
       return this.$store.ownedOvens[this.ovenAddress];
     },
