@@ -24,6 +24,20 @@ if ((window.location.hostname === 'localhost' ||
     isTestnet = false
 }
 
+const ovenNameMapping = window.localStorage.getItem('oven-names')
+let ovenNames
+if (ovenNameMapping !== null){
+    try{
+        ovenNames = JSON.parse(ovenNameMapping)
+    } catch (e) {
+        // There's a problem loading oven names
+        localStorage.setItem('oven-names', null)
+        ovenNames = {}
+    }
+} else {
+    ovenNames = {}
+}
+
 export default Vue.observable({
     priceData: null,
     ovenCount: null,
@@ -43,6 +57,7 @@ export default Vue.observable({
     maxOvenValue: null,
     bakers: null,
     defaultOvenBaker: null,
+    ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
     tokenClient: new TokenClient(NODE_URL, NETWORK_CONTRACTS.TOKEN),

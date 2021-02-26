@@ -18,7 +18,7 @@
           </p>
           <p class="control">
             <a class="button is-static has-text-weight-bold">
-              Ꜩ
+              ꜩ
             </a>
           </p>
         </div>
@@ -41,17 +41,17 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} Ꜩ</strong>
+        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Wallet Holdings: </strong> <strong class="price-view">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} Ꜩ</strong>
+        <strong>Wallet Holdings: </strong> <strong class="price-view">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Max Deposit: </strong> <strong class="price-view"><a @click="depositAmount = maxDepositAmt">{{ numberWithCommas(maxDepositAmt.toFixed(2)) }}</a> Ꜩ</strong>
+        <strong>Max Deposit: </strong> <strong class="price-view"><a @click="depositAmount = maxDepositAmt">{{ numberWithCommas(maxDepositAmt.toFixed(2)) }}</a> ꜩ</strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right">

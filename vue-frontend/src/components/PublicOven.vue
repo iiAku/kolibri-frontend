@@ -132,7 +132,7 @@
                           oven.balance.dividedBy(Math.pow(10, 6))
                         )
                       }}
-                      Ꜩ
+                      ꜩ
                     </strong>
 
                     <strong class="price-has-popover"
@@ -141,7 +141,7 @@
                           oven.balance.dividedBy(Math.pow(10, 6)).toFixed(2)
                         )
                       }}
-                      Ꜩ
+                      ꜩ
                     </strong>
                   </popover>
                 </p>

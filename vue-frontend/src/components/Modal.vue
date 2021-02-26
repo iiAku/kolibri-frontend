@@ -29,13 +29,13 @@
                 @click="$emit('change-page', 'withdraw')"
                 :class="{ 'is-active': page === 'withdraw' }"
               >
-                <a>Withdraw Ꜩ</a>
+                <a>Withdraw ꜩ</a>
               </li>
               <li
                 @click="$emit('change-page', 'deposit')"
                 :class="{ 'is-active': page === 'deposit' }"
               >
-                <a>Deposit Ꜩ</a>
+                <a>Deposit ꜩ</a>
               </li>
             </ul>
           </div>
@@ -50,7 +50,7 @@
             <div class="tabs is-centered is-toggle is-small">
               <ul>
                 <li><a>USD</a></li>
-                <li><a>Tezos (Ꜩ)</a></li>
+                <li><a>Tezos (ꜩ)</a></li>
               </ul>
             </div>
             <div class="title">{{ page }}</div>

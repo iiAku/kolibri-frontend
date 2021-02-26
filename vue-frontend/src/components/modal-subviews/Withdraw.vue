@@ -19,7 +19,7 @@
             />
           </p>
           <p class="control">
-            <a class="button is-static has-text-weight-bold">Ꜩ</a>
+            <a class="button is-static has-text-weight-bold">ꜩ</a>
           </p>
         </div>
       </div>
@@ -28,7 +28,7 @@
       <p class="heading">
         <strong>Oven Collateral: </strong>
         <strong class="price-view">
-          {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} Ꜩ
+          {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ
         </strong>
       </p>
     </div>
@@ -37,7 +37,7 @@
         <strong>Max Withdraw Amount:</strong>
         <strong class="price-view">
           <a @click="withdrawAmount = maxWithdrawAmount">
-            {{ numberWithCommas(maxWithdrawAmount.toFixed(2)) }} Ꜩ
+            {{ numberWithCommas(maxWithdrawAmount.toFixed(2)) }} ꜩ
           </a>
         </strong>
       </p>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-edit copy</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-edit-copy" transform="translate(0.400000, 0.000000)" fill="#486581" fill-rule="nonzero">
+            <path d="M2,12 C2.00375705,11.7362307 2.11158574,11.4846305 2.3,11.3 L13.3,0.3 C13.6888435,-0.0811428762 14.3111565,-0.0811428762 14.7,0.3 L17.7,3.3 C18.0811429,3.68884351 18.0811429,4.31115649 17.7,4.7 L6.7,15.7 C6.51536954,15.8884143 6.26376927,15.996243 6,16 L3,16 C2.44771525,16 2,15.5522847 2,15 L2,12 L2,12 Z" id="Path"></path>
+            <rect id="Rectangle" x="0" y="18" width="20" height="2" rx="1"></rect>
+        </g>
+    </g>
+</svg>

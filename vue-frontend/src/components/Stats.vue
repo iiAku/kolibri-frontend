@@ -45,7 +45,7 @@
                     ($store.balanceData.totalBalance / Math.pow(10, 6)).toFixed(2)
                 )
               }}
-              <span class="subtitle">Ꜩ</span>
+              <span class="subtitle">ꜩ</span>
             </p>
           </div>
         </div>

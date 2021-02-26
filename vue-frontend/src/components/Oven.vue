@@ -5,14 +5,51 @@
         <!-- Left side -->
         <div class="level-left">
           <div class="level-item">
-            <h1 class="title is-5">
+            <h1
+                @mouseover="showTooltip = true"
+                @mouseleave="showTooltip = false"
+                class="title is-5 oven-name"
+                v-if="!editingName"
+            >
               <a
                 target="_blank"
                 rel="noopener"
                 :href="tzktLink(ovenAddress)"
-                >{{ ovenAddress }}</a
               >
+                {{ ovenName }}
+              </a>
+              <span v-if="showTooltip" class="edit-button animate__fadeIn animate__animated">
+                <a
+                    @mouseover="toggleIcon = true"
+                    @mouseleave="toggleIcon = false"
+                    @click="editingName = true">
+                  <img v-if="toggleIcon" src="../assets/icon-edit-green.svg" />
+                  <img v-else src="../assets/icon-edit-grey.svg" />
+                </a>
+              </span>
+
             </h1>
+            <div v-else class="field is-grouped oven-name-edit">
+              <p class="control is-expanded">
+                <input autofocus class="input" type="text" placeholder="Your Awesome Oven 🙌" v-model="editInput">
+              </p>
+              <div class="control">
+                <div class="buttons">
+                  <button @click="saveOvenName" class="button is-primary">
+                    <span v-if="editInput">
+                      Save
+                    </span>
+                    <span v-else>
+                      Clear
+                    </span>
+                  </button>
+                  <a @click="editingName = false" class="button">
+                    Cancel
+                  </a>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -57,7 +94,7 @@
               @click="$emit('modal-open-requested', 'Withdraw', ovenAddress)"
               class="button is-small is-primary has-text-weight-bold"
             >
-              Withdraw Ꜩ
+              Withdraw ꜩ
             </button>
           </p>
           <p class="level-item">
@@ -68,7 +105,7 @@
               @click="$emit('modal-open-requested', 'Deposit', ovenAddress)"
               class="button is-small is-primary has-text-weight-bold"
             >
-              Deposit Ꜩ
+              Deposit ꜩ
             </button>
           </p>
         </div>
@@ -235,11 +272,11 @@
                     slot="popup-content"
                     class="has-text-primary heading is-marginless"
                   >
-                    {{numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} Ꜩ
+                    {{numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} ꜩ
                   </strong>
 
                   <strong class="price-has-popover">
-                    {{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} Ꜩ
+                    {{ numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(2)) }} ꜩ
                   </strong>
                 </popover>
               </div>
@@ -346,6 +383,11 @@ export default {
     });
   },
   methods: {
+    saveOvenName(){
+      this.$set(this.$store.ovenNames, this.ovenAddress, this.editInput)
+      window.localStorage.setItem('oven-names', JSON.stringify(this.$store.ovenNames))
+      this.editingName = false
+    },
     ovenValue(ovenBalance) {
       let currentValue = this.$store.priceData.price
         .multipliedBy(ovenBalance)
@@ -446,7 +488,11 @@ export default {
     return {
       pendingTransaction: false,
       updatingData: false,
-      interval: null
+      interval: null,
+      showTooltip: false,
+      editingName: false,
+      toggleIcon: false,
+      editInput: this.$store.ovenNames[this.ovenAddress],
     };
   },
   computed: {
@@ -462,6 +508,14 @@ export default {
     isLiquidated() {
       return this.ovenData && this.ovenData.isLiquidated;
     },
+    ovenName(){
+      const ovenName = this.$store.ovenNames[this.ovenAddress]
+      if (ovenName){
+        return ovenName + ` (${this.truncateChars(this.ovenAddress, 18)})`
+      } else {
+        return this.ovenAddress
+      }
+    },
   },
   components: {
     Popover,
@@ -475,6 +529,26 @@ export default {
 .oven {
   padding: 0;
   width: 100%;
+  .oven-name-edit{
+    max-height: 1rem;
+    margin-top: -1.5rem;
+    .input{
+      width: 18rem;
+    }
+  }
+  .oven-name{
+    cursor: pointer;
+    .edit-button{
+      img{
+        max-width: 1rem;
+        margin: 0.2rem;
+        transition: transform 500ms ease;
+        &:hover{
+          transform: scale(1.125);
+        }
+      }
+    }
+  }
   .address {
     text-transform: initial;
   }

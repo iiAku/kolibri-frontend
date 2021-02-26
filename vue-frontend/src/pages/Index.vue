@@ -14,7 +14,7 @@
       </div>
       <div class="tags has-addons is-justify-content-flex-end is-marginless">
         <span class="tag">Tezos Holdings</span>
-        <span class="tag is-primary">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} Ꜩ</span>
+        <span class="tag is-primary">{{ numberWithCommas(walletBalanceXTZFormatted().toFixed(2)) }} ꜩ</span>
       </div>
     </div>
 
