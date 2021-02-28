@@ -37,7 +37,7 @@
       <nav class="level">
         <div class="level-item has-text-centered">
           <div class="is-flex is-flex-direction-column is-align-items-center">
-            <p class="heading">All Tezos in Kolibri Ovens</p>
+            <p class="heading">All Tez in Kolibri Ovens</p>
             <p v-if="$store.balanceData === null" class="loader"></p>
             <p v-else class="title">
               {{
