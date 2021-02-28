@@ -289,12 +289,7 @@ export default {
     };
   },
   computed: {
-    liquidatablePrice(){
-      let rateDelta = 1 - this.currentCollateralRate(this.ovenAddress).dividedBy(100).toNumber()
-      let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
 
-      return currentPrice.minus(currentPrice.times(rateDelta))
-    },
   },
   components: {
     Popover,

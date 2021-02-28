@@ -82,17 +82,46 @@
         >
       </p>
     </div>
-    <div class="field is-grouped is-grouped-right">
+    <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
         <strong
-          v-if="repayAmount && repayAmount > 0"
-          :class="
-            collatoralizationWarningClasses(collateralizedRateAfterRepaying)
-          "
-          class="price-view"
-          >{{ collateralizedRateAfterRepaying.toFixed(2) }}%</strong
+            v-if="repayAmount === maxPaybackAmt"
+            class="price-view"
         >
+          -
+        </strong>
+        <strong
+          v-else-if="repayAmount && repayAmount > 0"
+          :class="collatoralizationWarningClasses(collateralizedRateAfterRepaying)"
+          class="price-view"
+        >
+          {{ collateralizedRateAfterRepaying.toFixed(2) }}%
+        </strong>
+        <strong v-else class="price-view">-</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right">
+      <p class="heading">
+        <strong>Oven Liquidatable when XTZ price is:</strong>
+        <strong
+            v-if="repayAmount === maxPaybackAmt"
+            class="price-view"
+        >
+          -
+        </strong>
+        <strong
+            v-else-if="repayAmount && repayAmount > 0"
+            class="price-view has-text-primary"
+        >
+          ${{ liquidationPriceAfterRepaying.toFixed(2) }}
+        </strong>
+        <strong
+            v-else-if="borrowedTokens(ovenAddress) > 0"
+            class="price-view"
+        >
+          ${{ liquidatablePrice(ovenAddress).toFixed(2) }}
+        </strong>
         <strong v-else class="price-view">-</strong>
       </p>
     </div>
@@ -195,6 +224,12 @@ export default {
 
       return newTokenCount.dividedBy(maxCollateral).times(100);
     },
+    liquidationPriceAfterRepaying(){
+      let rateDelta = 1 - this.collateralizedRateAfterRepaying.dividedBy(100).toNumber()
+      let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
+
+      return currentPrice.minus(currentPrice.times(rateDelta))
+    }
   },
 };
 </script>

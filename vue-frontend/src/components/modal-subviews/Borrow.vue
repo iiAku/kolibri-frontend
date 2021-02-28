@@ -82,7 +82,7 @@
         >
       </p>
     </div>
-    <div class="field is-grouped is-grouped-right">
+    <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
         <strong>New Collateral Utilization:</strong>
         <strong
@@ -93,6 +93,24 @@
           class="price-view"
           >{{ collateralizedRateAfterBorrowing.toFixed(2) }}%</strong
         >
+        <strong v-else class="price-view">-</strong>
+      </p>
+    </div>
+    <div class="field is-grouped is-grouped-right">
+      <p class="heading">
+        <strong>Oven Liquidatable when XTZ price is:</strong>
+        <strong
+          v-if="borrowAmount && borrowAmount > 0"
+          class="price-view has-text-danger"
+        >
+          ${{ liquidationPriceAfterBorrowing.toFixed(2) }}
+        </strong>
+        <strong
+          v-else-if="borrowedTokens(ovenAddress) > 0"
+          class="price-view"
+        >
+          ${{ liquidatablePrice(ovenAddress).toFixed(2) }}
+        </strong>
         <strong v-else class="price-view">-</strong>
       </p>
     </div>
@@ -194,6 +212,12 @@ export default {
         .dividedBy(maxCollateral)
         .times(100);
     },
+    liquidationPriceAfterBorrowing(){
+      let rateDelta = 1 - this.collateralizedRateAfterBorrowing.dividedBy(100).toNumber()
+      let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
+
+      return currentPrice.minus(currentPrice.times(rateDelta))
+    }
   },
 };
 </script>

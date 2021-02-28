@@ -19,8 +19,6 @@ if ((window.location.hostname === 'localhost' ||
     // NODE_URL = 'https://mainnet-tezos.giganode.io'
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
-    NETWORK_CONTRACTS.DEVELOPER_FUND = 'KT1SorR4UFBkUJeYVbtXZBNivUV1cQM6AqRR'
-    NETWORK_CONTRACTS.STABILITY_FUND = 'KT18wngSoTUqEJiNaYuhcrfYCtsczLUVVkTp'
     isTestnet = false
 }
 

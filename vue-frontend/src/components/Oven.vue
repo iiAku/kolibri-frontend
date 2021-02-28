@@ -203,9 +203,9 @@
                       slot="popup-content"
                       class="has-text-primary heading is-marginless"
                   >
-                    ${{ liquidatablePrice.toFixed(6) }}
+                    ${{ liquidatablePrice(ovenAddress).toFixed(6) }}
                   </strong>
-                  <strong class="price-has-popover">${{ liquidatablePrice.toFixed(2) }}</strong>
+                  <strong class="price-has-popover">${{ liquidatablePrice(ovenAddress).toFixed(2) }}</strong>
                 </popover>
               </span>
             </p>
@@ -496,12 +496,6 @@ export default {
     };
   },
   computed: {
-    liquidatablePrice(){
-      let rateDelta = 1 - this.currentCollateralRate(this.ovenAddress).dividedBy(100).toNumber()
-      let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
-
-      return currentPrice.minus(currentPrice.times(rateDelta))
-    },
     ovenData() {
       return this.$store.ownedOvens[this.ovenAddress];
     },

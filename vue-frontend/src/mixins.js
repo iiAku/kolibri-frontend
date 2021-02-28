@@ -197,7 +197,13 @@ export default {
             } else {
                 return `https://tzkt.io/${contractOrOp}`
             }
-        }
+        },
+        liquidatablePrice(ovenAddress){
+            let rateDelta = 1 - this.currentCollateralRate(ovenAddress).dividedBy(100).toNumber()
+            let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))
+
+            return currentPrice.minus(currentPrice.times(rateDelta))
+        },
     },
     computed: {
         ovenCapFormattedInXTZ(){
