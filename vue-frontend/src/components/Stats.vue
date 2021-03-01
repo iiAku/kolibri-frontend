@@ -42,7 +42,7 @@
             <p v-else class="title">
               {{
                 numberWithCommas(
-                    ($store.balanceData.totalBalance / Math.pow(10, 6)).toFixed(2)
+                    ($store.balanceData.totalBalance / Math.pow(10, 6)).toFixed(0)
                 )
               }}
               <span class="subtitle">ꜩ</span>
@@ -51,15 +51,47 @@
         </div>
         <div class="level-item has-text-centered">
           <div class="is-flex is-flex-direction-column is-align-items-center">
+            <p class="heading">Value Of All Ovens</p>
+            <p v-if="$store.priceData === null || $store.balanceData === null" class="loader"></p>
+            <p v-else class="title">
+              ${{
+                numberWithCommas(
+                    (
+                        $store.balanceData.totalBalance
+                            .dividedBy(Math.pow(10, 6))
+                            .times($store.priceData.price.dividedBy(Math.pow(10,6)))
+                    ).toFixed(0)
+                )
+              }}
+            </p>
+          </div>
+        </div>
+      </nav>
+
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div class="is-flex is-flex-direction-column is-align-items-center">
             <p class="heading">Total kUSD In Existence</p>
             <p v-if="$store.balanceData === null" class="loader"></p>
             <p v-else class="title">
-              {{ numberWithCommas($store.balanceData.totalTokens.toFixed(2)) }}
+              {{ numberWithCommas($store.balanceData.totalTokens.toFixed(0)) }}
+              <span class="subtitle">kUSD</span>
+            </p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div class="is-flex is-flex-direction-column is-align-items-center">
+            <p class="heading">Current Debt Ceiling</p>
+
+            <p v-if="$store.debtCeiling === null" class="loader"></p>
+            <p v-else class="title">
+              {{ numberWithCommas(this.$store.debtCeiling.dividedBy(Math.pow(10, 18)).toFixed(0)) }}
               <span class="subtitle">kUSD</span>
             </p>
           </div>
         </div>
       </nav>
+
       <nav class="level">
         <div class="level-item has-text-centered">
           <div class="is-flex is-flex-direction-column is-align-items-center">
@@ -109,9 +141,9 @@
     >
       <h1 class="subtitle is-marginless has-text-weight-normal">
         Latest
-        <a href="https://harbinger.live" target="_blank" rel="noopener"
-          >XTZ/USD Oracle</a
-        >
+        <a href="https://harbinger.live" target="_blank" rel="noopener">
+          XTZ/USD Oracle
+        </a>
         Price:
       </h1>
       <div class="price-data">
@@ -143,9 +175,9 @@
               functionality has been disabled by the protocol.
             </strong>
           </div>
-          <span class="has-text-danger"
-            >⛔️{{ humanTime($store.priceData.time) }} Ago</span
-          >
+          <span class="has-text-danger">
+            ⛔️{{ humanTime($store.priceData.time) }} Ago
+          </span>
         </popover>
 
         <popover v-else-if="duration($store.priceData.time) > 25 * 60 * 1000">
@@ -221,6 +253,12 @@ export default {
             totalTokens: new BigNumber(totalTokens),
           };
         });
+
+      this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.TOKEN)
+        .then(async (token) => {
+          const storage = await token.storage()
+          this.$store.debtCeiling = storage.debtCeiling
+        })
 
       this.$store.stableCoinClient
         .getRequiredCollateralizationRatio()

@@ -3,6 +3,7 @@ import Vue from 'vue'
 import { WalletStates } from './enums'
 
 import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient } from "@hover-labs/kolibri-js";
+import {TezosToolkit} from "@taquito/taquito";
 
 const FORCE_MAINNET = false
 
@@ -53,11 +54,13 @@ export default Vue.observable({
     stabilityFundHoldings: null,
     devFundHoldings: null,
     maxOvenValue: null,
+    debtCeiling: null,
     bakers: null,
     defaultOvenBaker: null,
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
+    tezosToolkit: new TezosToolkit(NODE_URL),
     tokenClient: new TokenClient(NODE_URL, NETWORK_CONTRACTS.TOKEN),
     harbingerClient: new HarbingerClient(NODE_URL,
         NETWORK_CONTRACTS.HARBINGER_NORMALIZER

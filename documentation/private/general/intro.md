@@ -35,6 +35,10 @@ If a `Oven` drops below the **collateralization ratio**, then it is said to be *
 
 The Kolibri system will prevent users from borrowing `kUSD` such that an `Oven` becomes under collateralized, or withdrawing `XTZ` to cause the `Oven` to become undercollateralized. However, the price of `XTZ` still fluctuates, which means an `Oven` can become undercollateralized without user action. At that point, a liquidation process kicks in to restore stability to the system.
 
+### Debt Ceiling
+
+Kolibri maintains a debt ceiling that can be used as a lever to control supply and demand. It is a hard cap on the amount of kUSD that can exist, and is subject to change over time through governance.
+
 ### Precision
 
 Internally, all values in Kolibri are represented as integers with precision of `10^-18` (similar to a Wei within Ethereum). That is to say, the number `1.23` would be represented as
