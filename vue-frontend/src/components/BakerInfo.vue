@@ -29,13 +29,6 @@
 
               <div class="control">
                 <div class="tags has-addons">
-                  <span class="tag">Estimated ROI</span>
-                  <span class="tag is-primary">{{ ($store.bakers[bakerAddress].estimatedRoi * 100).toFixed(2) }}%</span>
-                </div>
-              </div>
-
-              <div class="control">
-                <div class="tags has-addons">
                   <span class="tag">Fee</span>
                   <span class="tag is-primary">{{ ($store.bakers[bakerAddress].fee * 100).toFixed(2) }}%</span>
                 </div>
