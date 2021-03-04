@@ -15,6 +15,12 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK = Network.Delphi
     NETWORK_CONTRACTS = CONTRACTS.DELPHI
     isTestnet = true
+
+    // If we're in testnet tell google not to index
+    const link = document.createElement('meta');
+    link.setAttribute('name', 'robots');
+    link.content = 'noindex';
+    document.getElementsByTagName('head')[0].appendChild(link);
 } else {
     // NODE_URL = 'https://rpc.tzbeta.net'
     NODE_URL = 'https://mainnet-tezos.giganode.io'
