@@ -10,7 +10,7 @@
       </div>
       <div class="level-item has-text-centered">
         <div class="is-flex is-flex-direction-column is-align-items-center">
-          <p class="heading">Stability Fee</p>
+          <p class="heading">Stability Fee (yearly)</p>
           <p v-if="$store.stabilityFee === null" class="loader"></p>
           <p v-else class="title">{{ formattedStabilityFee() }}</p>
         </div>
@@ -279,7 +279,7 @@ export default {
     formattedStabilityFee() {
       return ConversionUtils.shardToHumanReadablePercentage(
         this.$store.stabilityFee,
-        4
+        2
       );
     },
     formattedCollateralRate() {
