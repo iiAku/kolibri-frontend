@@ -11,7 +11,9 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://rpctest.tzbeta.net'
+    // NODE_URL = 'https://rpctest.tzbeta.net'
+    // NODE_URL = 'https://testnet-tezos.giganode.io'
+    NODE_URL = 'https://delphinet.smartpy.io'
     NETWORK = Network.Delphi
     NETWORK_CONTRACTS = CONTRACTS.DELPHI
     isTestnet = true

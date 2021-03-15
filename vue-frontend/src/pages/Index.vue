@@ -36,6 +36,16 @@
       </div>
     </div>
 
+    <div class="columns is-gapless has-background-white is-marginless is-justify-content-center top-notification">
+      <div class="column is-half is-centered">
+        <div class="notification is-primary">
+          <strong>
+            As outlined in <a target="_blank" rel="noopener" href="https://forum.tezosagora.org/t/kolibri-governance-proposal-6-continuous-increase-of-the-stability-fee-to-reach-peg/2851">governance proposal #6</a>, the stability fee is increasing by 1% every day until the system can reach a stable peg. See <a target="_blank" rel="noopener" href="https://p.datadoghq.com/sb/e72980047-41e546b0c453a72015620c4d8002646b?live=true&theme=dark&tpl_var_network=mainnet&tv_mode=true">the Kolibri metrics timeboard</a> or <a rel="noopener" target="_blank" href="https://discord.gg/pCKVNTw6Pf">join the Kolibri discord</a> for more info.
+          </strong>
+        </div>
+      </div>
+    </div>
+
     <section class="cta">
       <div class="columns is-marginless">
         <div class="column cta-column is-6 is-offset-3">
