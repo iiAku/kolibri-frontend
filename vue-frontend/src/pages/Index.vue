@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="columns is-gapless has-background-white is-marginless is-justify-content-center top-notification">
+    <div v-if="false" class="columns is-gapless has-background-white is-marginless is-justify-content-center top-notification">
       <div class="column is-half is-centered">
         <div class="notification is-primary">
           <strong>

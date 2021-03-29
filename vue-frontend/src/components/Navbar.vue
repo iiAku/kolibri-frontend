@@ -42,33 +42,21 @@
       <div class="navbar-end">
         <div class="navbar-item wallet-connector">
           <div v-if="$store.wallet === null || $store.wallet.connected === false" class="buttons">
-            <popover
-                class="address-full-width animated slideInRight"
-                :disabled="$store.walletAvailable !== false"
+            <button
+              :disabled="$store.walletState === WalletStates.CONNECTING"
+              :class="{'is-loading': $store.walletState === WalletStates.CONNECTING}"
+              @click="$eventBus.$emit('wallet-connect-request')"
+              class="button connect-button is-primary is-small"
             >
-              <p slot="popup-content">
-                <strong>
-                  The <a target='_blank' rel='noopener' href='https://chrome.google.com/webstore/detail/thanos-wallet/ookjlbkiijinhpmnjffcofjonbfbgaoc?hl=en'>Thanos Browser Plugin</a> isn't available! Please install it and try again.
-                </strong>
-              </p>
-
-              <button
-                  :disabled="$store.walletState === WalletStates.CONNECTING || ($store.walletAvailable === false || $store.walletAvailable === null)"
-                  :class="{'is-loading': $store.walletState === WalletStates.CONNECTING}"
-                  @click="$eventBus.$emit('wallet-connect-request')"
-                  class="button connect-button is-primary is-small"
-              >
-                <strong>Connect Thanos Wallet</strong>
-              </button>
-
-            </popover>
+              <strong>Connect Wallet</strong>
+            </button>
           </div>
           <div class="is-flex is-align-items-center" v-else>
             <div class="avatar"><div class="image is-48x48" v-html="avatarSvg()"></div></div>
             <div class="wallet-info">
               <p class="has-text-weight-bold has-text-right">
                 <a @click="$eventBus.$emit('wallet-reconnect-request')">
-                  {{ truncateChars($store.wallet.permission.pkh, 18) }}
+                  {{ truncateChars(this.$store.walletPKH, 18) }}
                 </a>
               </p>
               <p class="heading has-text-right">Network: <strong>{{ $store.network }}</strong></p>
@@ -87,7 +75,6 @@ import {WalletStates} from "@/enums";
 
 import Avatars from '@dicebear/avatars';
 import sprites from '@dicebear/avatars-bottts-sprites';
-import Popover from "@/components/Popover";
 
 let options = {};
 let avatars = new Avatars(sprites, options);
@@ -105,7 +92,7 @@ export default {
   },
   methods: {
     avatarSvg(){
-      return avatars.create(this.$store.wallet.permission.pkh.toString(), {
+      return avatars.create(this.$store.walletPKH.toString(), {
         width: 48,
         height: 48,
         margin: 4,
@@ -114,7 +101,6 @@ export default {
   },
   components: {
     WalletManager,
-    Popover
   },
 }
 </script>

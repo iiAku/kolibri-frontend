@@ -73,61 +73,11 @@
     },
     methods: {
       async signPayload(){
-        this.signatureResult = await this.$store.wallet.sign(this.message)
+        this.signatureResult = await this.$store.wallet.client.requestSignPayload({payload: this.message})
+        console.log(this.signatureResult)
       }
     },
     computed: {
-      // humanReadableMessage(){
-      //   try {
-      //
-      //     console.log(
-      //         addressDecoder(
-      //             new Uint8ArrayConsumer.fromHexString('01e5fd66cc8fd280028be25a706ecd9f5a6c3e563700')
-      //         )
-      //     )
-      //     const parsedMsg = JSON.parse(
-      //         TezosLanguageUtil.normalizeMichelineWhiteSpace(
-      //             TezosLanguageUtil.hexToMicheline(this.message.substr(4)).code
-      //         )
-      //     )
-      //     // const rawMsg = TezosLanguageUtil.normalizeMichelineWhiteSpace(
-      //     //     TezosLanguageUtil.hexToMicheline(this.message.substr(4)).code
-      //     // )
-      //     console.log(parsedMsg)
-      //
-      //     debugger;
-      //
-      //     const p = new Parser()
-      //     let res = p.parseJSON(parsedMsg)
-      //     console.log(res)
-      //     const parsed = new MichelsonMap(parsedMsg)
-      //     console.log(parsed)
-      //
-      //     const lambdaContents = parsedMsg.args[1].args[1]
-      //
-      //     if (lambdaContents.length !== 9){
-      //       throw Error("Unknown contract type! This is an early tool :grimace:")
-      //     }
-      //
-      //     return {
-      //       chainID: "0x" + parsedMsg.args[0].bytes,
-      //       operationID: parseInt(parsedMsg.args[1].args[0].int),
-      //       functionAddress: addressDecoder(
-      //           new Uint8ArrayConsumer.fromHexString(parsedMsg.args[1].args[1][2].args[1].bytes)
-      //       ),
-      //       functionCall: parsedMsg.args[1].args[1][3].annots[0],
-      //       mutezToSend: parseInt(parsedMsg.args[1].args[1][5].args[1].int),
-      //       toAddress: addressDecoder(
-      //           new Uint8ArrayConsumer.fromHexString(parsedMsg.args[1].args[1][6].args[1].bytes)
-      //       ),
-      //       // lambdaContents,
-      //       // parsedMsg
-      //     }
-      //   } catch(e) {
-      //     console.log(e)
-      //     return {}
-      //   }
-      // },
       decodedMessage(){
         if (this.message === null || !this.message.startsWith('0x')){
           return null

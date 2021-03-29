@@ -11,11 +11,10 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    // NODE_URL = 'https://rpctest.tzbeta.net'
+    NODE_URL = 'https://rpctest.tzbeta.net'
     // NODE_URL = 'https://testnet-tezos.giganode.io'
-    NODE_URL = 'https://delphinet.smartpy.io'
-    NETWORK = Network.Delphi
-    NETWORK_CONTRACTS = CONTRACTS.DELPHI
+    NETWORK = 'edonet'
+    NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
 
     // If we're in testnet tell google not to index
@@ -53,7 +52,6 @@ export default Vue.observable({
     ownedOvens: null,
     balanceData: null,
     wallet: null,
-    walletAvailable: null,
     walletStates: WalletStates,
     walletState: WalletStates.DISCONNECTED,
     walletBalance: null,

@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     async updateOvens(){
-      let ownedOvens = (await this.$store.stableCoinClient.ovensOwnedByAddress(this.$store.wallet.permission.pkh))
+      let ownedOvens = (await this.$store.stableCoinClient.ovensOwnedByAddress(this.$store.walletPKH))
           .reduce((acc, ovenAddress) => {
             acc[ovenAddress] = null
             return acc

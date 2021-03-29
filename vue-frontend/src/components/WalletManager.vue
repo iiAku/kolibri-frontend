@@ -1,38 +1,49 @@
 <template></template>
 
 <script>
-import { ThanosWallet } from "@thanos-wallet/dapp";
 import { WalletStates } from "@/enums";
+import { BeaconWallet } from "@taquito/beacon-wallet";
 
 export default {
   name: 'WalletManager',
   async mounted(){
-    ThanosWallet.onAvailabilityChange(async (available) => {
-      this.$store.walletAvailable = available
-      if (window.localStorage.getItem('walletPreviouslyConnected') === 'true') {
-        await this.connectWallet()
-      }
-    })
-
     this.$eventBus.$on('wallet-connect-request', this.connectWallet)
     this.$eventBus.$on('wallet-reconnect-request', this.reconnectWallet)
+
+    this.beaconWallet = new BeaconWallet({
+      name: "Kolibri",
+      iconUrl: 'https://kolibri-data.s3.amazonaws.com/logo.png',
+      appUrl: 'https://kolibri.finance',
+    });
+
+    // Go check for an active account, and if it exists just use that
+    const activeAccount = await this.beaconWallet.client.getActiveAccount()
+    console.log("Active Account - ", activeAccount)
+    if (activeAccount !== undefined){
+      this.$eventBus.$emit('wallet-connect-request', activeAccount)
+    }
   },
   data(){
     return {
-      updateTimer: null
+      updateTimer: null,
+      beaconWallet: null,
     }
   },
   methods: {
     async updateBalance(){
-      const tez = this.$store.wallet.toTezos()
-      this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.wallet.permission.pkh)
-      this.$store.walletBalanceXTZ = await tez.tz.getBalance(this.$store.wallet.permission.pkh)
+      this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.walletPKH)
+      this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
     },
     async reconnectWallet(){
       console.log("Reconnecting wallet!")
       try {
-        await this.$store.wallet.reconnect(this.$store.network)
-        await this.updateBalance()
+        await this.beaconWallet.clearActiveAccount()
+        clearInterval(this.updateTimer)
+        this.updateTimer = null
+        this.$store.wallet = null
+        this.$store.walletBalance = null
+        this.$store.walletState = WalletStates.DISCONNECTED
+        await this.connectWallet()
         this.$eventBus.$emit('refresh-all-ovens')
       } catch (e) {
         if (e.name !== 'NotGrantedThanosWalletError') {
@@ -40,39 +51,44 @@ export default {
         }
       }
     },
-    async connectWallet() {
+    async connectWallet(activeAccount) {
       console.log("Connecting wallet!");
-      window.localStorage.setItem('walletPreviouslyConnected', 'true')
-      this.$store.walletState = WalletStates.CONNECTING;
-      const wallet = new ThanosWallet("Kolibri");
-      await wallet.connect(this.$store.network)
-        .then(async () => {
-          this.$store.walletState = WalletStates.CONNECTED;
-          this.$store.wallet = wallet;
 
-          // Update wallet balances for kUSD
-          await this.updateBalance()
-          this.updateTimer = setInterval(this.updateBalance, 60 * 1000)
+      try {
+        if (activeAccount === undefined){
+          await this.beaconWallet.requestPermissions({
+            network: {type: this.$store.isTestnet ? 'edonet' : 'mainnet'}
+          })
+        }
 
-          // Go get the default baker
-          const tez = wallet.toTezos()
-          const ovenFactoryContract = await tez.wallet.at(this.$store.NETWORK_CONTRACTS.OVEN_FACTORY)
-          const ovenFactoryStorage = await ovenFactoryContract.storage()
-          this.$store.defaultOvenBaker = ovenFactoryStorage.initialDelegate
-        })
-        .catch((err) => {
-          // Use sweetalert2
-          this.$swal(
-            "Could Not Connect",
-            `We couldn't connect to Thanos Wallet 🙈!<br><pre class="has-text-left">${JSON.stringify(
-              err,
-              null,
-              2
-            )}</pre>`,
-            "error"
-          );
-          this.$store.walletState = WalletStates.ERROR;
-        });
+        this.$store.walletPKH = await this.beaconWallet.getPKH()
+        this.$store.walletState = WalletStates.CONNECTED;
+        this.$store.wallet = this.beaconWallet
+
+        // Update wallet balances for kUSD
+        await this.updateBalance()
+        this.updateTimer = setInterval(this.updateBalance, 60 * 1000)
+
+        // Go get the default baker
+        this.$store.tezosToolkit.setWalletProvider(this.$store.wallet)
+        const ovenFactoryContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.OVEN_FACTORY)
+        const ovenFactoryStorage = await ovenFactoryContract.storage()
+        this.$store.defaultOvenBaker = ovenFactoryStorage.initialDelegate
+
+      } catch(e) {
+        this.beaconWallet.clearActiveAccount()
+        console.error(e)
+        this.$swal(
+          "Could Not Connect",
+          `We couldn't connect to Beacon 🙈!<br><pre class="has-text-left">${JSON.stringify(
+            e,
+            null,
+            2
+          )}</pre>`,
+          "error"
+        );
+        this.$store.walletState = WalletStates.ERROR;
+      }
     },
   },
 };
