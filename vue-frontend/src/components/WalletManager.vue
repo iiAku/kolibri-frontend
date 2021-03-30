@@ -3,6 +3,7 @@
 <script>
 import { WalletStates } from "@/enums";
 import { BeaconWallet } from "@taquito/beacon-wallet";
+import BigNumber from "bignumber.js";
 
 export default {
   name: 'WalletManager',
@@ -22,6 +23,16 @@ export default {
     if (activeAccount !== undefined){
       this.$eventBus.$emit('wallet-connect-request', activeAccount)
     }
+
+    this.$eventBus.$on('refresh-holdings', async () => {
+      console.log("Updating holdings")
+      this.$store.lpData = null
+      this.$store.lpBalance = null
+      this.$store.walletBalance = null
+      await this.updateBalance()
+      console.log('Done updating holdings')
+    })
+
   },
   data(){
     return {
@@ -33,6 +44,21 @@ export default {
     async updateBalance(){
       this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.walletPKH)
       this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
+
+      if (this.$store.lpData === null){
+        const lpTokenContract = this.$store.isTestnet ? 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV' : ''
+        const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
+        this.$store.lpData = await lpContract.storage()
+        this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
+      }
+
+      const currentLPBalance = await this.$store.lpData.balances.get(this.$store.walletPKH)
+
+      if (currentLPBalance === undefined){
+        this.$store.lpBalance = new BigNumber(0)
+      } else {
+        this.$store.lpBalance = currentLPBalance.balance
+      }
     },
     async reconnectWallet(){
       console.log("Reconnecting wallet!")
@@ -80,11 +106,7 @@ export default {
         console.error(e)
         this.$swal(
           "Could Not Connect",
-          `We couldn't connect to Beacon 🙈!<br><pre class="has-text-left">${JSON.stringify(
-            e,
-            null,
-            2
-          )}</pre>`,
+          `We couldn't connect to Beacon 🙈!<br><pre class="has-text-left">${JSON.stringify(e, null, 2)}</pre>`,
           "error"
         );
         this.$store.walletState = WalletStates.ERROR;

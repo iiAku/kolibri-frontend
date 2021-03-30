@@ -4,6 +4,7 @@ import { WalletStates } from './enums'
 
 import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient } from "@hover-labs/kolibri-js";
 import {TezosToolkit} from "@taquito/taquito";
+import BigNumber from "bignumber.js";
 
 const FORCE_MAINNET = false
 
@@ -63,6 +64,10 @@ export default Vue.observable({
     debtCeiling: null,
     bakers: null,
     defaultOvenBaker: null,
+    lpData: null,
+    lpBalance: null,
+    lpTokenAddress: null,
+    lpMantissa: new BigNumber(10).pow(36),
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,

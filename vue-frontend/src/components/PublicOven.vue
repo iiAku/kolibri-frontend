@@ -66,7 +66,7 @@
       <div class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
-            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'edonet' ? 'edonet.' : ''}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
+            <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'edonet' ? 'edo2net.' : ''}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
             <div class="is-flex is-justify-content-space-between">
               <p class="heading">Owned By:
                 <a

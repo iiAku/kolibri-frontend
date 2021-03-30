@@ -10,6 +10,7 @@ import NotFound from "@/pages/NotFound";
 import TOS from "@/pages/TOS";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import SigningTool from "@/pages/SigningTool";
+import LiquidityPool from "@/pages/LiquidityPool";
 
 const routes = [
     {
@@ -46,6 +47,11 @@ const routes = [
         path: '/signing-tool',
         name: 'SigningTool',
         component: SigningTool
+    },
+    {
+        path: '/liquidity-pool',
+        name: 'LiquidityPool',
+        component: LiquidityPool
     },
     { path: "*", component: NotFound }
 ]

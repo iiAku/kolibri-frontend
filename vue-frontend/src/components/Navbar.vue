@@ -37,6 +37,15 @@
         >
           Project Info
         </router-link>
+
+        <router-link
+          :to="{name: 'LiquidityPool'}"
+          class="navbar-item"
+          v-if="false"
+        >
+          Liquidity Pool
+          <div class="new-badge">New!</div>
+        </router-link>
       </div>
 
       <div class="navbar-end">
@@ -113,6 +122,16 @@ export default {
   padding: 0 .5rem;
   position: relative;
   z-index: 1;
+  .new-badge{
+    background: $primary;
+    position: absolute;
+    bottom: 0.2rem;
+    padding: 0.1rem 0.25rem;
+    font-size: 0.6rem;
+    border-radius: 0.5rem;
+    color: white;
+    right: 0.6rem;
+  }
   .wallet-info{
     margin-left: .5rem;
   }

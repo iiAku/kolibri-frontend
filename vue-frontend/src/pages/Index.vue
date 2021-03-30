@@ -139,6 +139,9 @@ export default {
     background: $light-grey;
     position: relative;
     z-index: 40;
+    .top-notification{
+      padding-top: 1rem;
+    }
     .stats-link{
       margin-left: .5rem;
     }
