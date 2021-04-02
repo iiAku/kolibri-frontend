@@ -44,7 +44,7 @@ export default {
 
                 // Treat the testnet kolibri baker as the same as the prod baker data on testnet
                 if (this.$store.isTestnet){
-                    this.$store.bakers[CONTRACTS.DELPHI.KOLIBRI_BAKER] = this.$store.bakers[CONTRACTS.MAIN.KOLIBRI_BAKER]
+                    this.$store.bakers[CONTRACTS.TEST.KOLIBRI_BAKER] = this.$store.bakers[CONTRACTS.MAIN.KOLIBRI_BAKER]
                 }
             }
         },
