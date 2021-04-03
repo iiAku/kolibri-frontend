@@ -50,18 +50,6 @@ jobs:
         npm run lint
         npm run build
 
-  lint_and_build_sdk:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-    - name: "Build, Lint and Test SDK"
-      run: |
-        cd sdk
-        npm i
-        npm run lint
-        npm run build
-
   build_and_deploy_frontend:
     runs-on: ubuntu-latest
     steps:
