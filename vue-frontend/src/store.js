@@ -3,7 +3,7 @@ import Vue from 'vue'
 import { WalletStates } from './enums'
 
 import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, Network, TokenClient } from "@hover-labs/kolibri-js";
-import {TezosToolkit} from "@taquito/taquito";
+import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 
 const FORCE_MAINNET = false
@@ -12,7 +12,7 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://rpctest.tzbeta.net'
+    NODE_URL = 'https://rpczero.tzbeta.net'
     // NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = 'edonet'
     NETWORK_CONTRACTS = CONTRACTS.TEST
@@ -33,8 +33,8 @@ if ((window.location.hostname === 'localhost' ||
 
 const ovenNameMapping = window.localStorage.getItem('oven-names')
 let ovenNames
-if (ovenNameMapping !== null){
-    try{
+if (ovenNameMapping !== null) {
+    try {
         ovenNames = JSON.parse(ovenNameMapping)
     } catch (e) {
         // There's a problem loading oven names
