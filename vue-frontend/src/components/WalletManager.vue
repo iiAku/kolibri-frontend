@@ -86,7 +86,7 @@ export default {
       try {
         if (activeAccount === undefined){
           await this.beaconWallet.requestPermissions({
-            network: {type: this.$store.isTestnet ? 'edonet' : 'mainnet'}
+            network: {type: this.$store.network}
           })
         }
 
