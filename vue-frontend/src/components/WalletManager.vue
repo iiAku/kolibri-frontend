@@ -46,7 +46,7 @@ export default {
       this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
 
       // TODO: Fix this
-      if (this.$store.isTestnet){
+      if (this.$store.isTestnet && this.$store.network === 'edonet'){
         if (this.$store.lpData === null){
           const lpTokenContract = this.$store.isTestnet ? 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV' : ''
           const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
