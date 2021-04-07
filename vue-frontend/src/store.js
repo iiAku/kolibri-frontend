@@ -12,11 +12,20 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    // NODE_URL = 'https://rpczero.tzbeta.net'
     NODE_URL = 'https://rpctest.tzbeta.net'
-    // NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = 'edonet'
     NETWORK_CONTRACTS = CONTRACTS.TEST
+    isTestnet = true
+
+    // If we're in testnet tell google not to index
+    const link = document.createElement('meta');
+    link.setAttribute('name', 'robots');
+    link.content = 'noindex';
+    document.getElementsByTagName('head')[0].appendChild(link);
+} else if (window.location.hostname === 'zeronet.kolibri.finance') {
+    NODE_URL = 'https://rpczero.tzbeta.net'
+    NETWORK = 'florencenet'
+    NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
 
     // If we're in testnet tell google not to index
