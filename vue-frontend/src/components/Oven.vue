@@ -608,6 +608,9 @@ export default {
     @include until($desktop) {
       padding-bottom: 1rem;
     }
+    &.compact{
+      margin-top: 0;
+    }
   }
   .left-info {
     width: 100%;

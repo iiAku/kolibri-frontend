@@ -56,6 +56,7 @@ if (ovenNameMapping !== null) {
 }
 
 export default Vue.observable({
+    allOvensData: null,
     priceData: null,
     ovenCount: null,
     stabilityFee: null,

@@ -196,6 +196,41 @@
             </div>
 
           </div>
+
+          <hr>
+
+          <div class="liquidatable-ovens content">
+            <h2 class="title has-text-centered">Liquidatable Ovens</h2>
+            <template v-if="liquidatableOvens === null">
+              <div class="loader-wrapper">
+                <div class="loader is-large is-primary"></div>
+              </div>
+            </template>
+            <template v-else>
+              <div v-if="!liquidatableOvens.length">
+                <div class="has-text-centered loader-wrapper">
+                  <p>There are no liquidatable ovens currently!</p>
+                </div>
+              </div>
+              <public-oven
+                v-else
+                :compact="true"
+                :oven="oven"
+                :key="oven.ovenAddress"
+                v-for="oven in liquidatableOvens">
+
+                <template v-slot:liquidation-button>
+                  <button
+                    :disabled="txPending"
+                    @click="liquidateOven(oven)"
+                    :class="{'is-loading': txPending}"
+                    class="button is-danger is-small">
+                    Liquidate
+                  </button>
+                </template>
+              </public-oven>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -205,9 +240,12 @@
 <script>
   import Mixins from "@/mixins";
   import BigNumber from "bignumber.js";
+  import _ from "lodash";
+  import PublicOven from "@/components/PublicOven";
 
   export default {
     name: "LiquidityPool",
+    components: {PublicOven},
     mixins: [Mixins],
     data() {
       return {
@@ -218,6 +256,8 @@
         poolBalance: null,
         txPending: false,
         lpTokenContract: null,
+        currentPage: 0,
+
       }
     },
     async mounted(){
@@ -225,7 +265,13 @@
         this.warningModalOpen = true
       }
 
-      this.lpTokenContract = this.$store.isTestnet ? 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV' : ''
+      if (this.$store.network === 'edonet'){
+        this.lpTokenContract = 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV'
+      } else if (this.$store.network === 'florencenet'){
+        this.lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
+      } else {
+        // TODO: Mainnet
+      }
 
       if (this.$store.lpData === null){
         const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
@@ -237,6 +283,31 @@
 
     },
     methods: {
+      async liquidateOven(oven){
+        this.txPending = true
+
+        try {
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
+
+          debugger;
+          const sendResult = await lpContract.methods.liquidate(oven.ovenAddress).send()
+
+          await sendResult.confirmation(1)
+
+          this.poolBalance = null
+          await this.updatePoolBalance()
+
+          this.markOvenLiquidated(oven.ovenAddress)
+        } catch(e){
+          this.handleWalletError(e, 'Unable To Liquidate Oven', 'We were unable to liquidate the selected oven.')
+        } finally {
+          this.txPending = false
+        }
+      },
+      markOvenLiquidated(ovenAddress){
+        const ovenIndex = _.findIndex(this.$store.allOvensData, oven => oven.ovenAddress === ovenAddress)
+        this.$set(this.$store.allOvensData[ovenIndex], 'isLiquidated', true)
+      },
       async updatePoolBalance(){
         const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpTokenAddress)
         const kUSDStorage = await kUSDContract.storage()
@@ -304,8 +375,35 @@
         } finally {
           this.txPending = false
         }
-      }
+      },
+      collateralRate(oven) {
+        const currentHoldings = oven.balance.dividedBy(Math.pow(10, 6))
+
+        const currentPrice = this.currentPriceFormatted()
+
+        const maxCollateral = currentPrice.multipliedBy(currentHoldings).dividedBy(2)
+
+        const borrowedTokens = oven.outstandingTokens.dividedBy(Math.pow(10, 18))
+
+        // If we have no xtz in the oven, don't try to divide by 0
+        if (maxCollateral.isZero()) {
+          return new BigNumber(0)
+        }
+
+        return borrowedTokens.dividedBy(maxCollateral)
+      },
     },
+    computed: {
+      liquidatableOvens(){
+        if (this.$store.allOvensData === null || this.$store.priceData === null) return null
+
+        return _(this.$store.allOvensData)
+          .filter((oven) => {
+            return this.collateralRate(oven).isGreaterThanOrEqualTo(1)
+          })
+          .value()
+      }
+    }
   }
 </script>
 
@@ -318,6 +416,12 @@
     min-height: 100vh;
     z-index: 31;
     position: relative;
+    .liquidatable-ovens{
+      padding: 0 1rem 1rem;
+      .loader-wrapper{
+        padding: 1rem;
+      }
+    }
     .management-buttons{
       padding: 0 1rem 1.5rem;
     }
@@ -353,5 +457,6 @@
       padding: 1.3rem 1.3rem 0.3rem;
       margin-top: .5rem;
     }
+
   }
 </style>

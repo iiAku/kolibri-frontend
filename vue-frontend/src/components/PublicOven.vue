@@ -18,14 +18,16 @@
         </div>
         <div class="level-right">
           <div class="level-item">
-            <button
+            <slot name="liquidation-button">
+              <button
                 :disabled="pendingTransaction"
                 v-if="$store.wallet !== null && !oven.isLiquidated && collatoralizedRateForOven(oven) > 100"
                 @click="liquidateOven()"
                 :class="{'is-loading': networkLoading}"
                 class="button is-danger is-small">
-              Liquidate
-            </button>
+                Liquidate
+              </button>
+            </slot>
           </div>
         </div>
       </nav>
@@ -63,7 +65,7 @@
           >
         </h1>
       </div>
-      <div class="columns is-gapless">
+      <div :class="{'is-flex-direction-column': compact}" class="columns is-gapless">
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
             <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'edonet' ? 'edo2net.' : ''}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
@@ -93,7 +95,7 @@
           </div>
         </div>
         <div class="column">
-          <nav class="level right-info">
+          <nav :class="{compact}" class="level right-info">
             <div class="level-item has-text-centered">
               <div
                 class="is-flex is-flex-direction-column is-align-items-center"
@@ -220,7 +222,7 @@ import Popover from "@/components/Popover";
 
 export default {
   name: "PublicOven",
-  props: ["oven"],
+  props: ["oven", "compact", "liquidateEmitOnly"],
   mixins: [Mixins],
   methods: {
     async liquidateOven(){

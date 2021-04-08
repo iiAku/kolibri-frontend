@@ -1,7 +1,7 @@
 <template>
   <section class="all-ovens hero is-fullheight is-align-items-center">
     <div
-        v-if="ovensData !== null && $store.priceData !== null"
+        v-if="$store.allOvensData !== null && $store.priceData !== null"
         class="floating-paginator animate__animated animate__fadeInUp">
       <Pagination
           class="is-centered"
@@ -13,7 +13,7 @@
           queryParameter="page"
       />
     </div>
-    <div v-if="ovensData === null || $store.priceData === null" class="loading-wrapper">
+    <div v-if="$store.allOvensData === null || $store.priceData === null" class="loading-wrapper">
       <div class="loader is-large is-primary"></div>
     </div>
     <div class="container oven-data is-fluid" v-else>
@@ -49,10 +49,8 @@
 
 <script>
 import _ from 'lodash'
-import axios from 'axios'
 import PublicOven from "@/components/PublicOven";
 import Pagination from 'vue-bulma-paginate/src/components/Pagination';
-import BigNumber from 'bignumber.js';
 import Mixins from '../mixins';
 
 export default {
@@ -62,25 +60,9 @@ export default {
     if (this.$route.query.page){
       this.currentPage = parseInt(this.$route.query.page)
     }
-
-    const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
-
-    this.ovensData = response.data.allOvenData.map((oven) => {
-      let { ovenAddress, ovenOwner, ovenData } = oven
-
-      // Coerce back into bignumbers
-      ovenData.balance = new BigNumber(ovenData.balance)
-      ovenData.borrowedTokens = new BigNumber(ovenData.borrowedTokens)
-      ovenData.stabilityFee = new BigNumber(ovenData.stabilityFee)
-      ovenData.outstandingTokens = new BigNumber(ovenData.outstandingTokens)
-
-      // debugger;
-      return Object.assign(ovenData, { ovenAddress, ovenOwner })
-    })
   },
   data(){
     return {
-      ovensData: null,
       ovensDataChunks: null,
       currentPage: 1,
       emptyOvens: {},
@@ -105,7 +87,7 @@ export default {
       return this.activeVaults[this.currentPage - 1]
     },
     activeVaults(){
-      return _(this.ovensData)
+      return _(this.$store.allOvensData)
                 .reject((oven) => {
                   if (this.hideEmptyOvens) {
                     return oven.balance.isLessThanOrEqualTo(0)
@@ -146,8 +128,8 @@ export default {
   },
   methods: {
     markOvenLiquidated(ovenAddress){
-      const ovenIndex = _.findIndex(this.ovensData, oven => oven.ovenAddress === ovenAddress)
-      this.ovensData[ovenIndex].isLiquidated = true
+      const ovenIndex = _.findIndex(this.$store.allOvensData, oven => oven.ovenAddress === ovenAddress)
+      this.$store.allOvensData[ovenIndex].isLiquidated = true
     },
   }
 }
