@@ -46,9 +46,15 @@ export default {
       this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
 
       // TODO: Fix this
-      if (this.$store.isTestnet && this.$store.network === 'edonet'){
+      if (this.$store.isTestnet){
         if (this.$store.lpData === null){
-          const lpTokenContract = this.$store.isTestnet ? 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL' : ''
+          let lpTokenContract
+          if (this.$store.network === 'edonet'){
+            lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
+          } else {
+            lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
+          }
+
           const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
           this.$store.lpData = await lpContract.storage()
           this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
