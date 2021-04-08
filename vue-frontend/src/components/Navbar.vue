@@ -41,7 +41,7 @@
         <router-link
           :to="{name: 'LiquidityPool'}"
           class="navbar-item"
-          v-if="false"
+          v-if="$store.isTestnet"
         >
           Liquidity Pool
           <div class="new-badge">New!</div>

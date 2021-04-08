@@ -42,6 +42,15 @@
                 v-for="oven in sortedOvens"
                 :key="oven[0]" />
           </div>
+
+          <div class="config-options">
+            <div class="control">
+              <label class="checkbox">
+                <input v-model="hideLiquidatedOvens" type="checkbox">
+                Hide Liquidated Ovens?
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -69,6 +78,7 @@ export default {
   },
   data() {
     return {
+      hideLiquidatedOvens: true,
       modal: {
         manage: {
           opened: false,
@@ -89,6 +99,12 @@ export default {
     sortedOvens(){
       return _(this.$store.ownedOvens)
           .toPairs()
+          .reject((oven) => {
+            if (this.hideLiquidatedOvens){
+              return oven[1] && oven[1].isLiquidated
+            }
+            return false
+          })
           .orderBy(
               (oven) => {
                 if (oven[1] && oven[1].isLiquidated) {
@@ -143,6 +159,10 @@ export default {
   .ovens {
     background: $light-grey;
     padding: 0 1.5rem 2rem;
+    .config-options{
+      text-align: center;
+      padding-top: 3rem;
+    }
     .ovens-are-loading{
       padding: 4.25rem;
     }

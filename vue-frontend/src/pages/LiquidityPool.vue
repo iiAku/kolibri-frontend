@@ -262,11 +262,13 @@
     },
     async mounted(){
       if (!this.$store.isTestnet){
-        this.warningModalOpen = true
+        // this.warningModalOpen = true
+        await this.$router.push({name: 'Index'})
+        return
       }
 
       if (this.$store.network === 'edonet'){
-        this.lpTokenContract = 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV'
+        this.lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
       } else if (this.$store.network === 'florencenet'){
         this.lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
       } else {
