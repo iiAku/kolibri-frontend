@@ -48,7 +48,7 @@ export default {
       // TODO: Fix this
       if (this.$store.isTestnet && this.$store.network === 'edonet'){
         if (this.$store.lpData === null){
-          const lpTokenContract = this.$store.isTestnet ? 'KT1X7v7J8sdndX8qudt2n9gASzb4jg3xzXSV' : ''
+          const lpTokenContract = this.$store.isTestnet ? 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL' : ''
           const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
           this.$store.lpData = await lpContract.storage()
           this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
