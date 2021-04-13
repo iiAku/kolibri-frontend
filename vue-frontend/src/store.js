@@ -34,8 +34,8 @@ if ((window.location.hostname === 'localhost' ||
     link.content = 'noindex';
     document.getElementsByTagName('head')[0].appendChild(link);
 } else {
-    // NODE_URL = 'https://rpc.tzbeta.net'
-    NODE_URL = 'https://mainnet-tezos.giganode.io'
+    NODE_URL = 'https://rpc.tzbeta.net'
+    // NODE_URL = 'https://mainnet-tezos.giganode.io'
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
     isTestnet = false
