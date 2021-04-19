@@ -270,7 +270,7 @@
       if (this.$store.network === 'edonet'){
         this.lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
       } else if (this.$store.network === 'florencenet'){
-        this.lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
+        this.lpTokenContract = 'KT1GYqNCmUnJSA5AkXxRzwovaLHRHnQkp1zK'
       } else {
         // TODO: Mainnet
       }

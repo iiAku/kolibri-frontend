@@ -52,7 +52,7 @@ export default {
           if (this.$store.network === 'edonet'){
             lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
           } else {
-            lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
+            lpTokenContract = 'KT1GYqNCmUnJSA5AkXxRzwovaLHRHnQkp1zK'
           }
 
           const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
