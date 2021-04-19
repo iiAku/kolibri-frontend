@@ -15,8 +15,10 @@
           </header>
           <section class="modal-card-body">
             <div class="content">
-              <h4 class="title">The Kolibri Liquidity Pool is <span class="has-text-danger">ALPHA</span> software.</h4>
-              <p>The liquidity pool has <span class="has-text-danger has-text-weight-bold">not</span> been audited for security issues or correctness of operation.</p>
+              <h4 class="title">The Kolibri Liquidity Pool has <span class="has-text-danger">not</span> undergone a security review.</h4>
+              <p>It has <span class="has-text-danger has-text-weight-bold">not</span> been audited by a 3rd party firm for security issues or correctness of operation, and while we've made efforts to review and test the pool, software bugs may still occur which could result in loss of funds.</p>
+              <p>You can find the source code for this liquidity pool at <a target="_blank" rel="noopener" href="https://github.com/Hover-Labs/liquidation-pool"><b>Hover-Labs/Liquidation-Pool</b></a></p>
+              <p><b>Use this pool at your own risk!</b></p>
             </div>
           </section>
           <footer class="modal-card-foot is-justify-content-flex-end">
@@ -131,14 +133,14 @@
                 <span class="tag is-medium is-marginless">kUSD Holdings</span>
                 <span v-if="$store.walletBalance !== null" class="tag is-marginless is-medium is-primary">{{ numberWithCommas(walletBalanceFormatted().toFixed(2)) }} kUSD</span>
                 <span v-else class="tag is-marginless is-medium is-primary">
-                  <div class="loader"></div>
+                  <div class="loader is-white"></div>
                 </span>
               </div>
               <div class="tags has-addons is-justify-content-flex-end is-marginless">
                 <span class="tag is-marginless is-medium">LP Holdings</span>
                 <span v-if="$store.lpBalance !== null" class="tag is-marginless is-medium is-primary">{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }}</span>
                 <span v-else class="tag is-marginless is-medium is-primary">
-                  <div class="loader"></div>
+                  <div class="loader is-white"></div>
                 </span>
               </div>
 
@@ -255,28 +257,16 @@
         redeemInput: '',
         poolBalance: null,
         txPending: false,
-        lpTokenContract: null,
         currentPage: 0,
-
       }
     },
     async mounted(){
       if (!this.$store.isTestnet){
-        // this.warningModalOpen = true
-        await this.$router.push({name: 'Index'})
-        return
-      }
-
-      if (this.$store.network === 'edonet'){
-        this.lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
-      } else if (this.$store.network === 'florencenet'){
-        this.lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
-      } else {
-        // TODO: Mainnet
+        this.warningModalOpen = true
       }
 
       if (this.$store.lpData === null){
-        const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
+        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
         this.$store.lpData = await lpContract.storage()
         this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
       }
@@ -289,7 +279,7 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
 
           debugger;
           const sendResult = await lpContract.methods.liquidate(oven.ovenAddress).send()
@@ -313,7 +303,7 @@
       async updatePoolBalance(){
         const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpTokenAddress)
         const kUSDStorage = await kUSDContract.storage()
-        const poolBalance = await kUSDStorage.balances.get(this.lpTokenContract)
+        const poolBalance = await kUSDStorage.balances.get(this.$store.lpContract)
         if (poolBalance === undefined){
           this.poolBalance = new BigNumber(0)
         } else {
@@ -324,13 +314,13 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
           const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpTokenAddress)
 
           const sendAmt = new BigNumber(this.depositInput).multipliedBy(Math.pow(10, 18))
 
           const sendResult = await this.$store.tezosToolkit.wallet.batch([])
-            .withContractCall(kUSDContract.methods.approve(this.lpTokenContract, sendAmt))
+            .withContractCall(kUSDContract.methods.approve(this.$store.lpContract, sendAmt))
             .withContractCall(lpContract.methods.deposit(sendAmt))
             .send()
 
@@ -354,7 +344,7 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.lpTokenContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
 
           const redeemAmt = new BigNumber(this.redeemInput).multipliedBy(this.$store.lpMantissa)
 
@@ -425,7 +415,7 @@
       }
     }
     .management-buttons{
-      padding: 0 1rem 1.5rem;
+      padding: 0;
     }
     .manage-liquidity-pool{
       .holdings{

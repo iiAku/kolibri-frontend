@@ -45,29 +45,20 @@ export default {
       this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.walletPKH)
       this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
 
-      // TODO: Fix this
-      if (this.$store.isTestnet){
-        if (this.$store.lpData === null){
-          let lpTokenContract
-          if (this.$store.network === 'edonet'){
-            lpTokenContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
-          } else {
-            lpTokenContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
-          }
-
-          const lpContract = await this.$store.tezosToolkit.wallet.at(lpTokenContract)
-          this.$store.lpData = await lpContract.storage()
-          this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
-        }
-
-        const currentLPBalance = await this.$store.lpData.balances.get(this.$store.walletPKH)
-
-        if (currentLPBalance === undefined){
-          this.$store.lpBalance = new BigNumber(0)
-        } else {
-          this.$store.lpBalance = currentLPBalance.balance
-        }
+      if (this.$store.lpData === null){
+        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+        this.$store.lpData = await lpContract.storage()
+        this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
       }
+
+      const currentLPBalance = await this.$store.lpData.balances.get(this.$store.walletPKH)
+
+      if (currentLPBalance === undefined){
+        this.$store.lpBalance = new BigNumber(0)
+      } else {
+        this.$store.lpBalance = currentLPBalance.balance
+      }
+
     },
     async reconnectWallet(){
       console.log("Reconnecting wallet!")

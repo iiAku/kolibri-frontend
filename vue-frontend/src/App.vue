@@ -103,6 +103,11 @@ export default {
       border-right-color: transparent;
       border-top-color: transparent;
     }
+    &.is-white{
+      border: 2px solid $white;
+      border-right-color: transparent;
+      border-top-color: transparent;
+    }
   }
 
 </style>
