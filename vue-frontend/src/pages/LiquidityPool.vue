@@ -35,12 +35,12 @@
         <div @click="learnMoreModalOpen = !learnMoreModalOpen" class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
-            <p class="modal-card-title">Kolibri Liquidation Pool</p>
+            <p class="modal-card-title">Kolibri Liquidity Pool</p>
             <button @click="learnMoreModalOpen = !learnMoreModalOpen" class="delete" aria-label="close"></button>
           </header>
           <section class="modal-card-body">
             <div class="content">
-              <p>A <b>Liquidation Pool</b> is a shared pool where users contribute funds in order to liquidate under-collateralized ovens.</p>
+              <p>A <b>Liquidity Pool</b> is a shared pool where users contribute funds in order to liquidate under-collateralized ovens.</p>
               <p>Users deposit <b>kUSD tokens</b> in the pool and receive <b>QLkUSD</b> (<b>Q</b>uipuswap <b>L</b>iquidating <b>kUSD</b>) tokens in return. The QLkUSD tokens entitle the holder to the original amount of kUSD tokens deposited, plus any additional kUSD tokens earned from liquidating ovens. QLkUSD tokens are liquid and may be sent to other users or used in other applications. Any user who holds a QLkUSD may return the token to the pool and receive the associated kUSD at any time. </p>
 
               <h3 class="title">How It Works</h3>
@@ -72,11 +72,11 @@
                   risks page
                 </router-link> as part of the Kolibri documentation for more info about the general risks with using smart contracts on Tezos.
               </p>
-              <p>There is no way to mitigate smart contract risk completely, however, good software engineering practices can help to build confidence in the security and correctness of implementation. The Kolibi Liquidation Pool contracts are <a href="https://github.com/hover-labs/liquidation-pool" rel="noopener" target="_blank">open sourced</a> and well tested, however, they <b>have not undergone a security audit</b>.</p>
+              <p>There is no way to mitigate smart contract risk completely, however, good software engineering practices can help to build confidence in the security and correctness of implementation. The Kolibi Liquidity Pool contracts are <a href="https://github.com/hover-labs/liquidation-pool" rel="noopener" target="_blank">open sourced</a> and well tested, however, they <b>have not undergone a security audit</b>.</p>
 
               <h5 class="title">Market Manipulation Risks</h5>
               <p>When an oven is liquidated, the pool receives XTZ which it trades for kUSD on Quipuswap. Sophisticated users with significant capital may be able to manipulate prices on Quipuswap prior to using the pool to liquidate an oven in order to gain outsized profit.</p>
-              <p>Any market is subject to manipulation, and there is no way to mitigate this risk completely. However, healthy and liquid markets generally prove harder to manipulate. Thus, the less healthy the Quipuswap market for kUSD is, the more risky the Liquidation Pool contracts behavior will be.</p>
+              <p>Any market is subject to manipulation, and there is no way to mitigate this risk completely. However, healthy and liquid markets generally prove harder to manipulate. Thus, the less healthy the Quipuswap market for kUSD is, the more risky the Liquidity Pool contracts behavior will be.</p>
             </div>
           </section>
           <footer class="modal-card-foot is-justify-content-flex-end">
