@@ -104,7 +104,7 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Pool Size</p>
-                <p class="title">{{ poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2) }} <span class="heading is-inline-block">kUSD</span></p>
+                <p class="title">{{ parseFloat(poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">kUSD</span></p>
               </div>
             </div>
             <div class="level-item has-text-centered">
@@ -116,7 +116,7 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">LP Tokens Total</p>
-                <p class="title">{{ $store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2) }}</p>
+                <p class="title">{{ parseFloat($store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }}</p>
               </div>
             </div>
           </nav>
@@ -130,14 +130,19 @@
 
               <div class="tags has-addons is-justify-content-flex-end is-marginless">
                 <span class="tag is-medium is-marginless">kUSD Holdings</span>
-                <span v-if="$store.walletBalance !== null" class="tag is-marginless is-medium is-primary">{{ numberWithCommas(walletBalanceFormatted().toFixed(2)) }} kUSD</span>
+                <span v-if="$store.walletBalance !== null" class="tag is-marginless is-medium is-primary">
+                  <a @click="depositInput = $store.walletBalance.dividedBy(Math.pow(10, 18))" class="has-text-white">{{ numberWithCommas(walletBalanceFormatted().toFixed(2)) }} kUSD</a>
+                </span>
                 <span v-else class="tag is-marginless is-medium is-primary">
                   <div class="loader is-white"></div>
                 </span>
               </div>
               <div class="tags has-addons is-justify-content-flex-end is-marginless">
                 <span class="tag is-marginless is-medium">LP Holdings</span>
-                <span v-if="$store.lpBalance !== null" class="tag is-marginless is-medium is-primary">{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }}</span>
+                <span v-if="$store.lpBalance !== null" class="tag is-marginless is-medium is-primary">
+                  <a @click="redeemInput = $store.lpBalance.dividedBy($store.lpMantissa)" class="has-text-white">{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }} QLkUSD</a>
+
+                </span>
                 <span v-else class="tag is-marginless is-medium is-primary">
                   <div class="loader is-white"></div>
                 </span>
