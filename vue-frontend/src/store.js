@@ -8,14 +8,13 @@ import BigNumber from "bignumber.js";
 
 const FORCE_MAINNET = false
 
-let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, lpContract
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://rpctest.tzbeta.net'
     NETWORK = 'edonet'
     NETWORK_CONTRACTS = CONTRACTS.TEST
-    lpContract = 'KT1TTQL5Pv8KKfRDwXhsozNpLFAA76kzogiL'
     isTestnet = true
 
     // If we're in testnet tell google not to index
@@ -27,7 +26,6 @@ if ((window.location.hostname === 'localhost' ||
     NODE_URL = 'https://rpczero.tzbeta.net'
     NETWORK = 'florencenet'
     NETWORK_CONTRACTS = CONTRACTS.ZERO
-    lpContract = 'KT1Ve1UsqTP6Xc8zZW18f1mTBQUf5jwUGnPa'
     isTestnet = true
 
     // If we're in testnet tell google not to index
@@ -40,7 +38,6 @@ if ((window.location.hostname === 'localhost' ||
     // NODE_URL = 'https://mainnet-tezos.giganode.io'
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
-    lpContract = 'KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA'
     isTestnet = false
 }
 
@@ -82,6 +79,7 @@ export default Vue.observable({
     lpBalance: null,
     lpTokenAddress: null,
     lpMantissa: new BigNumber(10).pow(36),
+    lpContract: NETWORK_CONTRACTS.LIQUIDITY_POOL,
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
@@ -100,6 +98,5 @@ export default Vue.observable({
         return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },
     isTestnet,
-    lpContract,
     NETWORK_CONTRACTS
 })

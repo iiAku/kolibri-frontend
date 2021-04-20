@@ -137,11 +137,11 @@
                   <div class="loader is-white"></div>
                 </span>
               </div>
+
               <div class="tags has-addons is-justify-content-flex-end is-marginless">
                 <span class="tag is-marginless is-medium">LP Holdings</span>
                 <span v-if="$store.lpBalance !== null" class="tag is-marginless is-medium is-primary">
                   <a @click="redeemInput = $store.lpBalance.dividedBy($store.lpMantissa)" class="has-text-white">{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }} QLkUSD</a>
-
                 </span>
                 <span v-else class="tag is-marginless is-medium is-primary">
                   <div class="loader is-white"></div>
@@ -199,6 +199,10 @@
                   </div>
                 </div>
               </div>
+
+              <p class="has-text-centered lp-value" v-if="$store.lpBalance !== null && $store.lpData !== null">
+                Your <b>{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }} QLkUSD</b> is <b>~{{ $store.lpBalance.dividedBy($store.lpData.totalSupply).times(100).toFixed(2) }}%</b> of the total supply, entitling you to <b>{{ parseFloat($store.lpBalance.dividedBy($store.lpData.totalSupply).times(poolBalance).dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} kUSD</b> if you redeem it right now.
+              </p>
             </div>
           </div>
           <div class="content" v-else>
@@ -447,7 +451,7 @@
         padding: 2rem;
       }
       .words {
-        width: 50%;
+        width: 35%;
         padding-left: 1rem;
         color: white;
       }
@@ -459,6 +463,9 @@
     .loader-wrapper{
       padding: 1.3rem 1.3rem 0.3rem;
       margin-top: .5rem;
+    }
+    .lp-value{
+      padding: 1rem 3rem 0;
     }
 
   }
