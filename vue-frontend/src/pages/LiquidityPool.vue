@@ -124,10 +124,9 @@
             <div class="loader is-large is-primary"></div>
           </div>
 
-          <hr>
-
-          <div class="manage-liquidity-pool">
-            <div v-if="$store.wallet !== null" class="container holdings is-justify-content-space-around is-flex">
+          <div v-if="$store.wallet !== null" class="manage-liquidity-pool">
+            <hr>
+            <div class="container holdings is-justify-content-space-around is-flex">
 
               <div class="tags has-addons is-justify-content-flex-end is-marginless">
                 <span class="tag is-medium is-marginless">kUSD Holdings</span>
@@ -147,56 +146,63 @@
             </div>
           </div>
 
-          <hr>
-
-          <div class="management-buttons">
-
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Deposit</label>
-              </div>
-              <div class="field-body">
-                <div class="field has-addons">
-                  <p class="control is-expanded">
-                    <input v-model="depositInput" class="input" type="number" placeholder="10">
-                  </p>
-                  <p class="control">
-                    <a class="button is-static has-text-weight-bold">
-                      kUSD
-                    </a>
-                  </p>
+          <div v-if="$store.wallet !== null" class="management-buttons">
+            <hr>
+            <div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">Deposit</label>
                 </div>
-                <div class="field">
-                  <div class="control">
-                    <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button is-primary has-text-weight-bold">Deposit kUSD</button>
+                <div class="field-body">
+                  <div class="field has-addons">
+                    <p class="control is-expanded">
+                      <input v-model="depositInput" class="input" type="number" placeholder="10">
+                    </p>
+                    <p class="control">
+                      <a class="button is-static has-text-weight-bold">
+                        kUSD
+                      </a>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button is-primary has-text-weight-bold">Deposit kUSD</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">Redeem</label>
+                </div>
+                <div class="field-body">
+                  <div class="field has-addons">
+                    <p class="control is-expanded">
+                      <input v-model="redeemInput" class="input" type="number" placeholder="10">
+                    </p>
+                    <p class="control">
+                      <a class="button is-static has-text-weight-bold">
+                        QLkUSD
+                      </a>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <button :class="{'is-loading': txPending}" @click="redeemLPTokens" :disabled="!redeemInput || txPending" class="button is-primary has-text-weight-bold">Redeem LP Tokens</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Redeem</label>
-              </div>
-              <div class="field-body">
-                <div class="field has-addons">
-                  <p class="control is-expanded">
-                    <input v-model="redeemInput" class="input" type="number" placeholder="10">
-                  </p>
-                  <p class="control">
-                    <a class="button is-static has-text-weight-bold">
-                      QLkUSD
-                    </a>
-                  </p>
-                </div>
-                <div class="field">
-                  <div class="control">
-                    <button :class="{'is-loading': txPending}" @click="redeemLPTokens" :disabled="!redeemInput || txPending" class="button is-primary has-text-weight-bold">Redeem LP Tokens</button>
-                  </div>
-                </div>
-              </div>
+          </div>
+          <div class="content" v-else>
+            <hr>
+            <h2 class="has-text-centered">Connect your wallet</h2>
+            <p class="has-text-centered">Please connect your wallet to get started!</p>
+            <div class="buttons is-centered">
+              <button @click="$eventBus.$emit('wallet-connect-request')" class="button is-primary has-text-weight-bold">Connect Wallet</button>
             </div>
-
           </div>
 
           <hr>
