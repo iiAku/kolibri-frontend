@@ -11,6 +11,7 @@ import TOS from "@/pages/TOS";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import SigningTool from "@/pages/SigningTool";
 import LiquidityPool from "@/pages/LiquidityPool";
+import Farming from "@/pages/Farming";
 
 const routes = [
     {
@@ -52,6 +53,11 @@ const routes = [
         path: '/liquidity-pool',
         name: 'LiquidityPool',
         component: LiquidityPool
+    },
+    {
+        path: '/farming',
+        name: 'Farming',
+        component: Farming
     },
     { path: "*", component: NotFound }
 ]

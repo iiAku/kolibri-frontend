@@ -78,6 +78,7 @@ export default {
       }
     },
     async connectWallet(activeAccount) {
+      this.$store.walletState = WalletStates.CONNECTING
       console.log("Connecting wallet!");
 
       try {

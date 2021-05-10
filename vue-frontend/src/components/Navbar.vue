@@ -43,6 +43,14 @@
           class="navbar-item"
         >
           Liquidity Pool
+        </router-link>
+
+        <router-link
+          :to="{name: 'Farming'}"
+          class="navbar-item"
+          v-if="false"
+        >
+          Farming
           <div class="new-badge">New!</div>
         </router-link>
       </div>

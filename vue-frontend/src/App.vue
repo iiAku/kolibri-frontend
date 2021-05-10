@@ -18,6 +18,7 @@ export default {
     Navbar
   },
   async mounted(){
+    this.updateBlockHeight()
     await this.updatePriceInfo()
     await this.updateAllOvenData()
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
@@ -46,7 +47,12 @@ export default {
           .then((priceData) => {
             this.$store.priceData = priceData;
           })
-    }
+    },
+    async updateBlockHeight(){
+      const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
+      this.$store.currentBlockHeight = currentBlock.header.level
+      setTimeout(this.updateBlockHeight, 10 * 1000)
+    },
   }
 }
 </script>

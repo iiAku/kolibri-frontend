@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
 
 const FORCE_MAINNET = false
 
-let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
@@ -16,6 +16,10 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK = 'edonet'
     NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
+
+    farmContracts = {
+        'kUSD': 'KT1Sc3BkMMeJawhrwyghNnJzpVN2Udswet91',
+    }
 
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
@@ -28,6 +32,8 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
 
+    farmContracts = {}
+
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
     link.setAttribute('name', 'robots');
@@ -39,6 +45,8 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
     isTestnet = false
+
+    farmContracts = {}
 }
 
 const ovenNameMapping = window.localStorage.getItem('oven-names')
@@ -56,6 +64,7 @@ if (ovenNameMapping !== null) {
 }
 
 export default Vue.observable({
+    currentBlockHeight: null,
     allOvensData: null,
     priceData: null,
     ovenCount: null,
@@ -66,6 +75,7 @@ export default Vue.observable({
     wallet: null,
     walletStates: WalletStates,
     walletState: WalletStates.DISCONNECTED,
+    walletPKH: null,
     walletBalance: null,
     walletBalanceXTZ: null,
     simpleStabilityFee: null,
@@ -98,5 +108,6 @@ export default Vue.observable({
         return new OvenClient(NODE_URL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },
     isTestnet,
-    NETWORK_CONTRACTS
+    NETWORK_CONTRACTS,
+    farmContracts
 })
