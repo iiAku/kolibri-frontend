@@ -92,6 +92,8 @@ export default {
         this.$store.walletState = WalletStates.CONNECTED;
         this.$store.wallet = this.beaconWallet
 
+        this.$eventBus.$emit('wallet-connected')
+
         // Update wallet balances for kUSD
         await this.updateBalance()
         this.updateTimer = setInterval(this.updateBalance, 60 * 1000)

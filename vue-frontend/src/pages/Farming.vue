@@ -7,7 +7,7 @@
         </div>
       </div>
     </div>
-    <div class="columns is-centered is-gapless">
+    <div class="columns is-centered is-gapless farms">
       <div class="column is-half-desktop">
         <farm
           v-for="(contract, pairName) in $store.farmContracts"
@@ -28,7 +28,12 @@ export default {
   name: 'Farming',
   mixins: [Mixins],
   async created(){
-
+    if (this.$store.walletPKH !== null){
+      this.$nextTick(this.updatekDAOHoldings)
+    } else {
+      this.$eventBus.$on('wallet-connected', this.updatekDAOHoldings)
+    }
+    this.$eventBus.$on('refresh-kdao-holdings', this.updatekDAOHoldings)
   },
   data(){
     return {
@@ -40,7 +45,12 @@ export default {
 
   },
   methods: {
-
+    async updatekDAOHoldings(){
+      this.$store.kdaoHoldings = null
+      const kDAOToken = await this.$store.tezosToolkit.wallet.at(this.$store.daoToken)
+      const kDAOStorage = await kDAOToken.storage()
+      this.$store.kdaoHoldings = await kDAOStorage.balances.get(this.$store.walletPKH)
+    }
   }
 }
 </script>
@@ -60,6 +70,9 @@ export default {
         background: $primary;
         color: white;
       }
+    }
+    .farms{
+      padding-bottom: 3rem;
     }
   }
 </style>

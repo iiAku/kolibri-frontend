@@ -12,24 +12,22 @@
               <h1 class="title has-text-white">{{ pairName }} Farm</h1>
             </div>
           </div>
-          
-          <div class="level-right">
-            <button
-              v-if="$store.walletPKH !== null"
-              class="button is-white is-outlined has-text-weight-bold"
-              :class="{'is-loading': networkSending}"
-              @click="depositTokens"
-            >
-              Deposit 1 {{ pairName }}
-            </button>
-          </div>
+
+          <div class="level-right"></div>
         </nav>
 
         <div v-if="$store.walletPKH !== null" class="field is-grouped is-grouped-multiline">
+          <div v-if="pairName !== 'kDAO'" class="control">
+            <div class="tags has-addons">
+              <span class="tag is-info">{{ pairName }} Holdings</span>
+              <span v-if="holdingsData" class="tag is-light">{{ holdingsData.balance.dividedBy(decimalsMap[pairName]).toFixed(2) }} {{ pairName }}</span>
+              <span v-else class="tag is-light"><div class="loader"></div></span>
+            </div>
+          </div>
           <div class="control">
             <div class="tags has-addons">
-              <span class="tag is-dark">{{ pairName }} Holdings</span>
-              <span v-if="holdingsData" class="tag is-light">{{ holdingsData.balance.dividedBy(decimalsMap[pairName]).toFixed(2) }} {{ pairName }}</span>
+              <span class="tag is-info">kDAO Holdings</span>
+              <span v-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO).toFixed(2) }} kDAO</span>
               <span v-else class="tag is-light"><div class="loader"></div></span>
             </div>
           </div>
@@ -70,9 +68,69 @@
           </div>
         </nav>
 
-        <hr class="bottomless">
+        <div v-if="$store.walletPKH !== null">
+          <hr>
 
-        <br><pre v-html="JSON.stringify(farmContractData, null, 2)"></pre>
+          <div v-if="depositedTokens !== null">
+            <nav class="level is-marginless">
+              <div class="level-left">
+                <div class="level-item">
+                  <p class="has-text-white has-text-weight-bold">Your Deposits</p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName]).toFixed(2)) }} {{ pairName }}</p>
+              </div>
+            </nav>
+            <nav class="level is-marginless">
+              <div class="level-left">
+                <div class="level-item">
+                  <p class="has-text-white has-text-weight-bold">Pool %</p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <p class="has-text-white has-text-weight-bold">{{ currentPoolPercentage.times(100).toFixed(2) }}%</p>
+              </div>
+            </nav>
+            <nav class="level is-marginless">
+              <div class="level-left">
+                <div class="level-item">
+                  <p class="has-text-white has-text-weight-bold">Your Reward Rate</p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
+              </div>
+            </nav>
+            <nav class="level is-marginless">
+              <div class="level-left">
+                <div class="level-item">
+                  <p class="has-text-white has-text-weight-bold">Claimable Rewards</p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.toFixed(2)) }} kDAO</p>
+              </div>
+            </nav>
+<br>
+            <div class="buttons is-right">
+              <button :class="{'is-loading': networkSending}" @click="depositTokens" class="button is-outlined is-white has-text-weight-bold">
+                Deposit 1 kUSD
+              </button>
+              <button :disabled="estimatedRewards.isZero()" :class="{'is-loading': networkSending}" @click="claim" class="button is-outlined is-white has-text-weight-bold">
+                Claim {{ numberWithCommas(estimatedRewards.toFixed(2)) }} kDAO
+              </button>
+            </div>
+
+          </div>
+          <div v-else class="loader-wrapper">
+            <div class="loader is-large is-white"></div>
+          </div>
+        </div>
       </div>
       <div v-else class="loader-wrapper">
         <div class="loader is-large is-white"></div>
@@ -99,7 +157,35 @@ export default {
       const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
       this.tokenContractData = await tokenContract.storage()
       if (this.$store.walletPKH !== null){
-        this.holdingsData = await this.tokenContractData.balances.get(this.$store.walletPKH)
+        await this.updateTokenBalance()
+      } else {
+        this.$eventBus.$on('wallet-connected', this.updateTokenBalance)
+      }
+    },
+    async updateTokenBalance(){
+      this.holdingsData = await this.tokenContractData.balances.get(this.$store.walletPKH)
+      this.depositedTokens = await this.farmContractData.delegators.get(this.$store.walletPKH)
+    },
+    async claim(){
+      this.networkSending = true
+      try {
+        const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
+
+        const sendResult = await farmContract.methods.claim(null).send()
+
+        this.pendingTx = sendResult
+
+        await sendResult.confirmation(1)
+
+        this.holdingsData = null
+
+        this.$eventBus.$emit('refresh-kdao-holdings')
+        await this.initialize()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.networkSending = false
+        this.pendingTx = null
       }
     },
     async depositTokens(){
@@ -136,6 +222,73 @@ export default {
     currentReward(){
       return this.poolRate.dividedBy(this.farmContractData.farmLpTokenBalance.dividedBy(this.decimalsMap[this.pairName]))
     },
+    currentPoolPercentage(){
+      return this.depositedTokens.lpTokenBalance.dividedBy(this.farmContractData.farmLpTokenBalance)
+    },
+    currentDripRate(){
+      return this.currentPoolPercentage.times(this.poolRate)
+    },
+    estimatedRewards(){
+      /*
+        let calculateReward = ((delegator, storage): (address, storage)): nat => {
+            let delegatorRecord = getDelegator(delegator, storage);
+
+            let accRewardPerShareStart = delegatorRecord.accumulatedRewardPerShareStart;
+            let accRewardPerShareEnd = storage.farm.accumulatedRewardPerShare;
+            let accumulatedRewardPerShare = safeBalanceSubtraction(accRewardPerShareEnd, accRewardPerShareStart);
+            let delegatorReward = accumulatedRewardPerShare * delegatorRecord.lpTokenBalance;
+            // remove precision
+            let delegatorReward = delegatorReward / fixedPointAccuracy;
+            delegatorReward;
+        };
+
+        let claim = ((storage): (storage)): entrypointReturn => {
+            let storage = updatePool(storage);
+
+            let delegator = Tezos.sender;
+            let delegatorReward = calculateReward(delegator, storage);
+            // after claim reward debt for delegator needs to be updated
+            let storage = updateRewardDebt(delegator, storage);
+
+            // update paid and unpaid properties in claimedRewards
+            let unpaidRewards = safeBalanceSubtraction(storage.farm.claimedRewards.unpaid, delegatorReward);
+            let storage = setUnpaidRewards(unpaidRewards, storage);
+            let paidRewards = storage.farm.claimedRewards.paid + delegatorReward;
+            let storage = setPaidRewards(paidRewards, storage);
+
+            // transfer reward token
+            let tokenTransferOperation = transfer(
+                storage.addresses.rewardReserve, // from
+                delegator, // to
+                delegatorReward, // value
+                storage.addresses.rewardTokenContract // tzip7 contract's address
+            );
+
+            ([tokenTransferOperation], storage);
+        };
+
+      */
+      const accRewardPerShareStart = this.depositedTokens.accumulatedRewardPerShareStart
+      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare
+      const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
+      console.log('accumulatedRewardPerShare', accumulatedRewardPerShare.toNumber())
+      // const delegatorReward = accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
+      // const unclaimedRewards = this.farmContractData.farm.claimedRewards.unpaid.minus(delegatorReward)
+
+      const blocks = new BigNumber(this.$store.currentBlockHeight).minus(this.farmContractData.farm.lastBlockUpdate)
+      const outstandingReward = blocks.times(this.farmContractData.farm.plannedRewards.rewardPerBlock)
+
+      const claimedRewards = (this.farmContractData.farm.claimedRewards.paid).plus(this.farmContractData.farm.claimedRewards.unpaid);
+      const totalRewards = outstandingReward.plus(claimedRewards);
+      const plannedRewards = (this.farmContractData.farm.plannedRewards.rewardPerBlock).multipliedBy(this.farmContractData.farm.plannedRewards.totalBlocks);
+      const totalRewardsExhausted = totalRewards.isGreaterThan(plannedRewards);
+
+      if (totalRewardsExhausted) {
+        return plannedRewards.minus(claimedRewards).dividedBy(this.decimalsMap.kDAO)
+      } else {
+        return outstandingReward.dividedBy(this.decimalsMap.kDAO)
+      }
+    },
   },
   data(){
     return {
@@ -143,10 +296,12 @@ export default {
       farmContractData: null,
       tokenContractData: null,
       holdingsData: null,
+      depositedTokens: null,
       networkSending: false,
       pendingTx: null,
       decimalsMap: {
-        'kUSD': new BigNumber(10).pow(18)
+        'kUSD': new BigNumber(10).pow(18),
+        'kDAO': new BigNumber(10).pow(18)
       }
     }
   },
@@ -168,10 +323,17 @@ export default {
     .button.is-white{
       &:hover{
         color: $primary;
+        &[disabled]{
+          color: white;
+        }
       }
       &:focus{
         border-color: $primary;
         color: $primary;
+        &[disabled]{
+          color: white;
+          border-color: white;
+        }
         &.is-loading::after{
           border-color: transparent transparent $primary $primary !important
         }

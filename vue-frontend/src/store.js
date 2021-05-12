@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
 
 const FORCE_MAINNET = false
 
-let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, daoToken
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
@@ -20,6 +20,8 @@ if ((window.location.hostname === 'localhost' ||
     farmContracts = {
         'kUSD': 'KT1Sc3BkMMeJawhrwyghNnJzpVN2Udswet91',
     }
+
+    daoToken = 'KT18yyUYL7U9eGfjukKqhY9THqugmh1oW6Fh'
 
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
@@ -33,6 +35,7 @@ if ((window.location.hostname === 'localhost' ||
     isTestnet = true
 
     farmContracts = {}
+    daoToken = ''
 
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
@@ -47,6 +50,7 @@ if ((window.location.hostname === 'localhost' ||
     isTestnet = false
 
     farmContracts = {}
+    daoToken = ''
 }
 
 const ovenNameMapping = window.localStorage.getItem('oven-names')
@@ -81,6 +85,7 @@ export default Vue.observable({
     simpleStabilityFee: null,
     stabilityFundHoldings: null,
     devFundHoldings: null,
+    kdaoHoldings: null,
     maxOvenValue: null,
     debtCeiling: null,
     bakers: null,
@@ -109,5 +114,6 @@ export default Vue.observable({
     },
     isTestnet,
     NETWORK_CONTRACTS,
-    farmContracts
+    farmContracts,
+    daoToken
 })
