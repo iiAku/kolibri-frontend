@@ -108,12 +108,12 @@
             <nav class="level is-marginless">
               <div class="level-left">
                 <div class="level-item">
-                  <p class="has-text-white has-text-weight-bold">Claimable Rewards</p>
+                  <p class="has-text-white has-text-weight-bold">Claimable Rewards (est)</p>
                 </div>
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.toFixed(2)) }} kDAO</p>
+                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO).toFixed(2)) }} kDAO</p>
               </div>
             </nav>
 <br>
@@ -122,7 +122,7 @@
                 Deposit 1 kUSD
               </button>
               <button :disabled="estimatedRewards.isZero()" :class="{'is-loading': networkSending}" @click="claim" class="button is-outlined is-white has-text-weight-bold">
-                Claim {{ numberWithCommas(estimatedRewards.toFixed(2)) }} kDAO
+                Claim {{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO).toFixed(2)) }} kDAO
               </button>
             </div>
 
@@ -229,65 +229,23 @@ export default {
       return this.currentPoolPercentage.times(this.poolRate)
     },
     estimatedRewards(){
-      /*
-        let calculateReward = ((delegator, storage): (address, storage)): nat => {
-            let delegatorRecord = getDelegator(delegator, storage);
-
-            let accRewardPerShareStart = delegatorRecord.accumulatedRewardPerShareStart;
-            let accRewardPerShareEnd = storage.farm.accumulatedRewardPerShare;
-            let accumulatedRewardPerShare = safeBalanceSubtraction(accRewardPerShareEnd, accRewardPerShareStart);
-            let delegatorReward = accumulatedRewardPerShare * delegatorRecord.lpTokenBalance;
-            // remove precision
-            let delegatorReward = delegatorReward / fixedPointAccuracy;
-            delegatorReward;
-        };
-
-        let claim = ((storage): (storage)): entrypointReturn => {
-            let storage = updatePool(storage);
-
-            let delegator = Tezos.sender;
-            let delegatorReward = calculateReward(delegator, storage);
-            // after claim reward debt for delegator needs to be updated
-            let storage = updateRewardDebt(delegator, storage);
-
-            // update paid and unpaid properties in claimedRewards
-            let unpaidRewards = safeBalanceSubtraction(storage.farm.claimedRewards.unpaid, delegatorReward);
-            let storage = setUnpaidRewards(unpaidRewards, storage);
-            let paidRewards = storage.farm.claimedRewards.paid + delegatorReward;
-            let storage = setPaidRewards(paidRewards, storage);
-
-            // transfer reward token
-            let tokenTransferOperation = transfer(
-                storage.addresses.rewardReserve, // from
-                delegator, // to
-                delegatorReward, // value
-                storage.addresses.rewardTokenContract // tzip7 contract's address
-            );
-
-            ([tokenTransferOperation], storage);
-        };
-
-      */
       const accRewardPerShareStart = this.depositedTokens.accumulatedRewardPerShareStart
-      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare
-      const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
-      console.log('accumulatedRewardPerShare', accumulatedRewardPerShare.toNumber())
-      // const delegatorReward = accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
-      // const unclaimedRewards = this.farmContractData.farm.claimedRewards.unpaid.minus(delegatorReward)
 
-      const blocks = new BigNumber(this.$store.currentBlockHeight).minus(this.farmContractData.farm.lastBlockUpdate)
-      const outstandingReward = blocks.times(this.farmContractData.farm.plannedRewards.rewardPerBlock)
-
-      const claimedRewards = (this.farmContractData.farm.claimedRewards.paid).plus(this.farmContractData.farm.claimedRewards.unpaid);
+      const nextBlock = new BigNumber(this.$store.currentBlockHeight + 1)
+      const multiplier = nextBlock.minus(this.farmContractData.farm.lastBlockUpdate)
+      const outstandingReward = multiplier.times(this.farmContractData.farm.plannedRewards.rewardPerBlock)
+      const claimedRewards = this.farmContractData.farm.claimedRewards.paid.plus(this.farmContractData.farm.claimedRewards.unpaid)
       const totalRewards = outstandingReward.plus(claimedRewards);
-      const plannedRewards = (this.farmContractData.farm.plannedRewards.rewardPerBlock).multipliedBy(this.farmContractData.farm.plannedRewards.totalBlocks);
+      const plannedRewards = this.farmContractData.farm.plannedRewards.rewardPerBlock.times(this.farmContractData.farm.plannedRewards.totalBlocks)
       const totalRewardsExhausted = totalRewards.isGreaterThan(plannedRewards);
+      const reward = totalRewardsExhausted
+        ? plannedRewards.minus(claimedRewards)
+        : outstandingReward;
 
-      if (totalRewardsExhausted) {
-        return plannedRewards.minus(claimedRewards).dividedBy(this.decimalsMap.kDAO)
-      } else {
-        return outstandingReward.dividedBy(this.decimalsMap.kDAO)
-      }
+      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(reward.times(1000000).div(this.farmContractData.farmLpTokenBalance))
+
+      const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
+      return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
     },
   },
   data(){
