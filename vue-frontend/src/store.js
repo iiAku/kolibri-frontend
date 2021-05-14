@@ -29,7 +29,7 @@ if ((window.location.hostname === 'localhost' ||
     link.content = 'noindex';
     document.getElementsByTagName('head')[0].appendChild(link);
 } else if (window.location.hostname === 'zeronet.kolibri.finance') {
-    NODE_URL = 'https://rpczero.tzbeta.net'
+    NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = 'florencenet'
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
