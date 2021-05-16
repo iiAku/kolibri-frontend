@@ -19,6 +19,7 @@ if ((window.location.hostname === 'localhost' ||
 
     farmContracts = {
         'kUSD': 'KT1Sc3BkMMeJawhrwyghNnJzpVN2Udswet91',
+        'QLPkUSD': 'KT1C4kFZ2Y4AUeRXk98tcf7Rt2Gu93Nch7Xd',
     }
 
     daoToken = 'KT18yyUYL7U9eGfjukKqhY9THqugmh1oW6Fh'

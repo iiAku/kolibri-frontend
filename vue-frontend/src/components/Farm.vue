@@ -20,14 +20,14 @@
           <div v-if="pairName !== 'kDAO'" class="control">
             <div class="tags has-addons">
               <span class="tag is-info">{{ pairName }} Holdings</span>
-              <span v-if="holdingsData" class="tag is-light">{{ holdingsData.balance.dividedBy(decimalsMap[pairName]).toFixed(2) }} {{ pairName }}</span>
+              <span v-if="holdingsData" class="tag is-light">{{ holdingsData.balance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2) }} {{ pairName }}</span>
               <span v-else class="tag is-light"><div class="loader"></div></span>
             </div>
           </div>
           <div class="control">
             <div class="tags has-addons">
               <span class="tag is-info">kDAO Holdings</span>
-              <span v-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO).toFixed(2) }} kDAO</span>
+              <span v-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO.mantissa).toFixed(2) }} kDAO</span>
               <span v-else class="tag is-light"><div class="loader"></div></span>
             </div>
           </div>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="level-right">
-            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(farmContractData.farmLpTokenBalance.dividedBy(decimalsMap[pairName]).toFixed(2)) }} {{ pairName }}</p>
+            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(farmContractData.farmLpTokenBalance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2)) }} {{ pairName }}</p>
           </div>
         </nav>
         <nav class="level is-marginless">
@@ -80,7 +80,8 @@
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName]).toFixed(2)) }} {{ pairName }}</p>
+                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ numberWithCommas(depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2)) }} {{ pairName }}</p>
+                <p v-else class="has-text-white has-text-weight-bold">0.00 {{ pairName }}</p>
               </div>
             </nav>
             <nav class="level is-marginless">
@@ -91,7 +92,8 @@
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ currentPoolPercentage.times(100).toFixed(2) }}%</p>
+                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ currentPoolPercentage.times(100).toFixed(2) }}%</p>
+                <p v-else class="has-text-white has-text-weight-bold">0%</p>
               </div>
             </nav>
             <nav class="level is-marginless">
@@ -102,7 +104,8 @@
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
+                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
+                <p v-else class="has-text-white has-text-weight-bold">0.00 kDAO / Week</p>
               </div>
             </nav>
             <nav class="level is-marginless">
@@ -129,7 +132,7 @@
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO).toFixed(2)) }} kDAO</p>
+                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO.mantissa).toFixed(2)) }} kDAO</p>
               </div>
             </nav>
 <br>
@@ -140,7 +143,7 @@
                   <div class="control">
                     <input v-model="depositInput" class="input" type="number" placeholder="1.234">
                     <div
-                      @click="depositInput = holdingsData.balance.dividedBy(decimalsMap[pairName])"
+                      @click="depositInput = holdingsData.balance.dividedBy(decimalsMap[pairName].mantissa)"
                       class="max-button heading"
                     >
                       Max
@@ -163,7 +166,7 @@
                   <div class="control">
                     <input v-model="withdrawInput" class="input" type="number" placeholder="1.234">
                     <div
-                      @click="withdrawInput = depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName])"
+                      @click="withdrawInput = depositedTokens ? depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa) : 0"
                       class="max-button heading"
                     >
                       Max
@@ -173,7 +176,7 @@
                     <button
                       @click="withdrawTokens"
                       :class="{'is-loading': networkSending}"
-                      :disabled="pendingTx !== null || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName])"
+                      :disabled="pendingTx !== null || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa)"
                       class="button is-info"
                     >
                       Withdraw {{ pairName }}
@@ -190,7 +193,7 @@
                 @click="claim"
                 class="button is-info"
               >
-                Claim {{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO).toFixed(2)) }} kDAO
+                Claim {{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO.mantissa).toFixed(2)) }} kDAO
               </button>
             </div>
 
@@ -223,6 +226,7 @@ export default {
     async initialize(){
       const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
       this.farmContractData = await farmContract.storage()
+      // const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
       const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
       this.tokenContractData = await tokenContract.storage()
       if (this.$store.walletPKH !== null){
@@ -232,7 +236,13 @@ export default {
       }
     },
     async updateTokenBalance(){
-      this.holdingsData = await this.tokenContractData.balances.get(this.$store.walletPKH)
+      const balanceMap = this.decimalsMap[this.pairName].balances()
+      const holdingsData = await balanceMap.get(this.$store.walletPKH)
+      if (holdingsData === undefined){
+        this.holdingsData = {balance: new BigNumber(0)}
+      } else {
+        this.holdingsData = holdingsData
+      }
       this.depositedTokens = await this.farmContractData.delegators.get(this.$store.walletPKH)
     },
     async claim(){
@@ -260,13 +270,13 @@ export default {
     async depositTokens(){
       this.networkSending = true
       try {
-        // const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
+        const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
         const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
-        const sendAmt = new BigNumber(this.depositInput).times(this.decimalsMap[this.pairName])
+        const sendAmt = new BigNumber(this.depositInput).times(this.decimalsMap[this.pairName].mantissa)
 
         const sendResult = await this.$store.tezosToolkit.wallet.batch([])
           .withContractCall(tokenContract.methods.approve(this.contract, sendAmt))
-          // .withContractCall(farmContract.methods.deposit(sendAmt))
+          .withContractCall(farmContract.methods.deposit(sendAmt))
           .send()
 
         this.$eventBus.$emit('tx-submitted', sendResult)
@@ -307,10 +317,18 @@ export default {
   computed: {
     poolRate(){
       const minutesPerWeek = 10080;
-      return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(minutesPerWeek).dividedBy(this.decimalsMap[this.pairName])
+      if (this.farmContractData.farmLpTokenBalance.isZero()){
+        return this.farmContractData.farmLpTokenBalance
+      } else {
+        return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(minutesPerWeek).dividedBy(this.decimalsMap[this.pairName].mantissa)
+      }
     },
     currentReward(){
-      return this.poolRate.dividedBy(this.farmContractData.farmLpTokenBalance.dividedBy(this.decimalsMap[this.pairName]))
+      if (this.farmContractData.farmLpTokenBalance.isZero()){
+        return this.farmContractData.farmLpTokenBalance
+      } else {
+        return this.poolRate.dividedBy(this.farmContractData.farmLpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa))
+      }
     },
     currentPoolPercentage(){
       return this.depositedTokens.lpTokenBalance.dividedBy(this.farmContractData.farmLpTokenBalance)
@@ -319,6 +337,9 @@ export default {
       return this.currentPoolPercentage.times(this.poolRate)
     },
     estimatedRewards(){
+      if (this.depositedTokens === undefined){
+        return new BigNumber(0)
+      }
       const accRewardPerShareStart = this.depositedTokens.accumulatedRewardPerShareStart
 
       const nextBlock = new BigNumber(this.$store.currentBlockHeight + 1)
@@ -350,8 +371,19 @@ export default {
       withdrawInput: null,
       depositInput: null,
       decimalsMap: {
-        'kUSD': new BigNumber(10).pow(18),
-        'kDAO': new BigNumber(10).pow(18)
+        'kUSD': {
+          mantissa: new BigNumber(10).pow(18),
+          balances: () => this.tokenContractData.balances,
+          balanceKey: 'balances',
+        },
+        'kDAO': {
+          mantissa: new BigNumber(10).pow(18),
+          balances: () => this.tokenContractData.balances,
+        },
+        'QLPkUSD': {
+          mantissa: new BigNumber(10).pow(6),
+          balances: () => this.tokenContractData.storage.ledger,
+        },
       }
     }
   },
