@@ -108,7 +108,23 @@
             <nav class="level is-marginless">
               <div class="level-left">
                 <div class="level-item">
-                  <p class="has-text-white has-text-weight-bold">Claimable Rewards (est)</p>
+                  <p class="has-text-white has-text-weight-bold">
+                    Claimable Rewards
+                    <popover extra-classes="small-price">
+                      <strong
+                        slot="popup-content"
+                        class="is-marginless"
+                      >
+                        Due to the way reward calculations are determined,<br>
+                        your claimed amount might be included in a different <br>
+                        block than was expected/displayed here, so you may <br>
+                        receive a *slightly* different amount than this.
+                      </strong>
+                      <span>(<a>
+                        <strong class="has-text-white is-underlined">est</strong>
+                      </a>)</span>
+                    </popover>
+                  </p>
                 </div>
               </div>
 
@@ -117,11 +133,63 @@
               </div>
             </nav>
 <br>
+
+            <div class="columns is-centered">
+              <div class="column">
+                <div class="field has-addons has-addons-centered">
+                  <div class="control">
+                    <input v-model="depositInput" class="input" type="number" placeholder="1.234">
+                    <div
+                      @click="depositInput = holdingsData.balance.dividedBy(decimalsMap[pairName])"
+                      class="max-button heading"
+                    >
+                      Max
+                    </div>
+                  </div>
+                  <div class="control">
+                    <button
+                      @click="depositTokens"
+                      :class="{'is-loading': networkSending}"
+                      :disabled="this.pendingTx !== null || Math.sign(depositInput) < 1"
+                      class="button is-info"
+                    >
+                      Deposit {{ pairName }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="field has-addons has-addons-centered">
+                  <div class="control">
+                    <input v-model="withdrawInput" class="input" type="number" placeholder="1.234">
+                    <div
+                      @click="withdrawInput = depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName])"
+                      class="max-button heading"
+                    >
+                      Max
+                    </div>
+                  </div>
+                  <div class="control">
+                    <button
+                      @click="withdrawTokens"
+                      :class="{'is-loading': networkSending}"
+                      :disabled="pendingTx !== null || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName])"
+                      class="button is-info"
+                    >
+                      Withdraw {{ pairName }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="buttons is-right">
-              <button :class="{'is-loading': networkSending}" @click="depositTokens" class="button is-outlined is-white has-text-weight-bold">
-                Deposit 1 kUSD
-              </button>
-              <button :disabled="estimatedRewards.isZero()" :class="{'is-loading': networkSending}" @click="claim" class="button is-outlined is-white has-text-weight-bold">
+              <button
+                :disabled="pendingTx !== null || estimatedRewards.isZero()"
+                :class="{'is-loading': networkSending}"
+                @click="claim"
+                class="button is-info"
+              >
                 Claim {{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO).toFixed(2)) }} kDAO
               </button>
             </div>
@@ -142,6 +210,7 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
+import Popover from "@/components/Popover";
 
 export default {
   name: 'Farm',
@@ -191,14 +260,35 @@ export default {
     async depositTokens(){
       this.networkSending = true
       try {
-        const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
+        // const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
         const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
-        const sendAmt = new BigNumber(1).times(new BigNumber(10).pow(18))
+        const sendAmt = new BigNumber(this.depositInput).times(this.decimalsMap[this.pairName])
 
         const sendResult = await this.$store.tezosToolkit.wallet.batch([])
           .withContractCall(tokenContract.methods.approve(this.contract, sendAmt))
-          .withContractCall(farmContract.methods.deposit(sendAmt))
+          // .withContractCall(farmContract.methods.deposit(sendAmt))
           .send()
+
+        this.$eventBus.$emit('tx-submitted', sendResult)
+
+        await sendResult.confirmation(1)
+
+        this.holdingsData = null
+        await this.initialize()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.networkSending = false
+        this.$eventBus.$emit('tx-finished')
+      }
+    },
+    async withdrawTokens(){
+      this.networkSending = true
+      try {
+        const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
+        const sendAmt = new BigNumber(this.withDrawInput).times(new BigNumber(10).pow(18))
+
+        const sendResult = await farmContract.methods.withdraw(sendAmt).send()
 
         this.pendingTx = sendResult
 
@@ -257,6 +347,8 @@ export default {
       depositedTokens: null,
       networkSending: false,
       pendingTx: null,
+      withdrawInput: null,
+      depositInput: null,
       decimalsMap: {
         'kUSD': new BigNumber(10).pow(18),
         'kDAO': new BigNumber(10).pow(18)
@@ -264,6 +356,7 @@ export default {
     }
   },
   components: {
+    Popover
   },
 }
 </script>
@@ -272,6 +365,34 @@ export default {
   @import '../assets/sass/globals';
 
   .farm{
+    .control{
+      &:hover{
+        .max-button{
+          opacity: 1;
+        }
+      }
+      input:focus + .max-button{
+        opacity: 1;
+      }
+    }
+    .max-button{
+      position: absolute;
+      top: 0.75rem;
+      color: $primary;
+      right: .5rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      z-index: 9;
+      opacity: 0;
+      transition: opacity 250ms linear;
+      &:hover{
+        border-bottom: 1px solid $primary;
+      }
+    }
+    strong.is-underlined{
+      border-bottom: 1px solid white;
+    }
     hr.bottomless{
       margin-bottom: 0;
     }
@@ -296,6 +417,17 @@ export default {
           border-color: transparent transparent $primary $primary !important
         }
       }
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
     }
   }
 </style>

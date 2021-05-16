@@ -1,5 +1,6 @@
 <template>
   <div class="farming">
+    <pending-tx-info />
     <div class="columns is-centered is-gapless">
       <div class="column is-half-desktop">
         <div class="notification is-info">
@@ -23,6 +24,7 @@
 <script>
 import Mixins from "@/mixins";
 import Farm from "@/components/Farm";
+import PendingTxInfo from "@/components/PendingTransactionInfo";
 
 export default {
   name: 'Farming',
@@ -41,6 +43,7 @@ export default {
     }
   },
   components: {
+    PendingTxInfo,
     Farm
 
   },

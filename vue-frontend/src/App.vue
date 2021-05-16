@@ -11,6 +11,7 @@
 import Navbar from "@/components/Navbar";
 import axios from "axios";
 import BigNumber from "bignumber.js";
+// import moment from "moment";
 
 export default {
   name: 'App',
@@ -50,7 +51,11 @@ export default {
     },
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
+      // const headerTimestamp = moment(currentBlock.header.timestamp).add(1, 'minute').add(5, 'seconds')
+      // const nextCheckTime = headerTimestamp - moment()
       this.$store.currentBlockHeight = currentBlock.header.level
+      console.log("Updating block height - ", currentBlock.header.level)
+      // setTimeout(this.updateBlockHeight, nextCheckTime)
       setTimeout(this.updateBlockHeight, 10 * 1000)
     },
   }
