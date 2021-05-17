@@ -153,7 +153,7 @@
                     <button
                       @click="depositTokens"
                       :class="{'is-loading': networkSending}"
-                      :disabled="this.pendingTx !== null || Math.sign(depositInput) < 1"
+                      :disabled="this.networkSending || Math.sign(depositInput) < 1"
                       class="button is-info"
                     >
                       Deposit {{ pairName }}
@@ -176,7 +176,7 @@
                     <button
                       @click="withdrawTokens"
                       :class="{'is-loading': networkSending}"
-                      :disabled="pendingTx !== null || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa)"
+                      :disabled="networkSending || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa)"
                       class="button is-info"
                     >
                       Withdraw {{ pairName }}
@@ -188,7 +188,7 @@
 
             <div class="buttons is-right">
               <button
-                :disabled="pendingTx !== null || estimatedRewards.isZero()"
+                :disabled="networkSending || estimatedRewards.isZero()"
                 :class="{'is-loading': networkSending}"
                 @click="claim"
                 class="button is-info"
@@ -252,7 +252,7 @@ export default {
 
         const sendResult = await farmContract.methods.claim(null).send()
 
-        this.pendingTx = sendResult
+        this.$eventBus.$emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
@@ -264,7 +264,7 @@ export default {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.pendingTx = null
+        this.$eventBus.$emit('tx-finished')
       }
     },
     async depositTokens(){
@@ -300,7 +300,7 @@ export default {
 
         const sendResult = await farmContract.methods.withdraw(sendAmt).send()
 
-        this.pendingTx = sendResult
+        this.$eventBus.$emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
@@ -310,7 +310,7 @@ export default {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.pendingTx = null
+        this.$eventBus.$emit('tx-finished')
       }
     }
   },
@@ -320,7 +320,7 @@ export default {
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {
-        return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(minutesPerWeek).dividedBy(this.decimalsMap[this.pairName].mantissa)
+        return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(minutesPerWeek).dividedBy(this.decimalsMap.kDAO.mantissa)
       }
     },
     currentReward(){
@@ -367,7 +367,6 @@ export default {
       holdingsData: null,
       depositedTokens: null,
       networkSending: false,
-      pendingTx: null,
       withdrawInput: null,
       depositInput: null,
       decimalsMap: {
