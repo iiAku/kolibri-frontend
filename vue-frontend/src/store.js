@@ -58,7 +58,7 @@ const ovenNameMapping = window.localStorage.getItem('oven-names')
 let ovenNames
 if (ovenNameMapping !== null) {
     try {
-        ovenNames = JSON.parse(ovenNameMapping)
+         ovenNames = JSON.parse(ovenNameMapping)
     } catch (e) {
         // There's a problem loading oven names
         localStorage.setItem('oven-names', null)
