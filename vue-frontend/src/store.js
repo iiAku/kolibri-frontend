@@ -18,11 +18,11 @@ if ((window.location.hostname === 'localhost' ||
     isTestnet = true
 
     farmContracts = {
-        'kUSD': 'KT1Sc3BkMMeJawhrwyghNnJzpVN2Udswet91',
-        'QLPkUSD': 'KT1C4kFZ2Y4AUeRXk98tcf7Rt2Gu93Nch7Xd',
+        // 'kUSD': 'KT1JwAnSkTs7ios7bawaH6Jd63KuZKC1SvkV',
+        'QLPkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
     }
 
-    daoToken = 'KT18yyUYL7U9eGfjukKqhY9THqugmh1oW6Fh'
+    daoToken = 'KT1Ssn1Rnr1v2WM7yzrZ83GeAhwhq6eUy4nn'
 
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
@@ -30,8 +30,8 @@ if ((window.location.hostname === 'localhost' ||
     link.content = 'noindex';
     document.getElementsByTagName('head')[0].appendChild(link);
 } else if (window.location.hostname === 'zeronet.kolibri.finance') {
-    NODE_URL = 'https://testnet-tezos.giganode.io'
-    NETWORK = 'florencenet'
+    NODE_URL = 'https://rpczero.tzbeta.net'
+    NETWORK = 'granada'
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
 

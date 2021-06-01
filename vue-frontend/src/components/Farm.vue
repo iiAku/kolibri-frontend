@@ -27,7 +27,8 @@
           <div class="control">
             <div class="tags has-addons">
               <span class="tag is-info">kDAO Holdings</span>
-              <span v-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO.mantissa).toFixed(2) }} kDAO</span>
+              <span v-if="$store.kdaoHoldings === undefined" class="tag is-light">0.00 kDAO</span>
+              <span v-else-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO.mantissa).toFixed(2) }} kDAO</span>
               <span v-else class="tag is-light"><div class="loader"></div></span>
             </div>
           </div>
@@ -80,7 +81,7 @@
               </div>
 
               <div class="level-right">
-                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ numberWithCommas(depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2)) }} {{ pairName }}</p>
+                <p v-if="depositedTokens !== undefined && !this.depositedTokens.lpTokenBalance.isZero()" class="has-text-white has-text-weight-bold">{{ numberWithCommas(depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2)) }} {{ pairName }}</p>
                 <p v-else class="has-text-white has-text-weight-bold">0.00 {{ pairName }}</p>
               </div>
             </nav>
@@ -92,7 +93,7 @@
               </div>
 
               <div class="level-right">
-                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ currentPoolPercentage.times(100).toFixed(2) }}%</p>
+                <p v-if="depositedTokens !== undefined && !this.depositedTokens.lpTokenBalance.isZero()" class="has-text-white has-text-weight-bold">{{ currentPoolPercentage.times(100).toFixed(2) }}%</p>
                 <p v-else class="has-text-white has-text-weight-bold">0%</p>
               </div>
             </nav>
@@ -104,7 +105,7 @@
               </div>
 
               <div class="level-right">
-                <p v-if="depositedTokens !== undefined" class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
+                <p v-if="depositedTokens !== undefined && !this.depositedTokens.lpTokenBalance.isZero()" class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
                 <p v-else class="has-text-white has-text-weight-bold">0.00 kDAO / Week</p>
               </div>
             </nav>
@@ -226,9 +227,10 @@ export default {
     async initialize(){
       const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
       this.farmContractData = await farmContract.storage()
-      // const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
+
       const tokenContract = await this.$store.tezosToolkit.wallet.at(this.farmContractData.addresses.lpTokenContract)
       this.tokenContractData = await tokenContract.storage()
+
       if (this.$store.walletPKH !== null){
         await this.updateTokenBalance()
       } else {
@@ -290,13 +292,14 @@ export default {
       } finally {
         this.networkSending = false
         this.$eventBus.$emit('tx-finished')
+        this.depositInput = null
       }
     },
     async withdrawTokens(){
       this.networkSending = true
       try {
         const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
-        const sendAmt = new BigNumber(this.withDrawInput).times(new BigNumber(10).pow(18))
+        const sendAmt = new BigNumber(this.withdrawInput).times(this.decimalsMap[this.pairName].mantissa)
 
         const sendResult = await farmContract.methods.withdraw(sendAmt).send()
 
@@ -311,6 +314,7 @@ export default {
       } finally {
         this.networkSending = false
         this.$eventBus.$emit('tx-finished')
+        this.withdrawInput = null
       }
     }
   },
@@ -331,13 +335,17 @@ export default {
       }
     },
     currentPoolPercentage(){
-      return this.depositedTokens.lpTokenBalance.dividedBy(this.farmContractData.farmLpTokenBalance)
+      if (this.depositedTokens.lpTokenBalance.isZero()){
+        return new BigNumber(0)
+      } else {
+        return this.depositedTokens.lpTokenBalance.dividedBy(this.farmContractData.farmLpTokenBalance)
+      }
     },
     currentDripRate(){
       return this.currentPoolPercentage.times(this.poolRate)
     },
     estimatedRewards(){
-      if (this.depositedTokens === undefined){
+      if (this.depositedTokens === undefined || this.depositedTokens.lpTokenBalance.isZero()){
         return new BigNumber(0)
       }
       const accRewardPerShareStart = this.depositedTokens.accumulatedRewardPerShareStart
@@ -373,15 +381,14 @@ export default {
         'kUSD': {
           mantissa: new BigNumber(10).pow(18),
           balances: () => this.tokenContractData.balances,
-          balanceKey: 'balances',
         },
         'kDAO': {
           mantissa: new BigNumber(10).pow(18),
           balances: () => this.tokenContractData.balances,
         },
         'QLPkUSD': {
-          mantissa: new BigNumber(10).pow(6),
-          balances: () => this.tokenContractData.storage.ledger,
+          mantissa: new BigNumber(10).pow(36),
+          balances: () => this.tokenContractData.balances,
         },
       }
     }
