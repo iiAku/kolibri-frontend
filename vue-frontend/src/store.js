@@ -12,8 +12,8 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, daoToken
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://rpctest.tzbeta.net'
-    NETWORK = 'edonet'
+    NODE_URL = 'https://testnet-tezos.giganode.io'
+    NETWORK = 'florencenet'
     NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
 

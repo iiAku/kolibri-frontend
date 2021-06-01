@@ -192,8 +192,8 @@ export default {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
         tzktLink(contractOrOp){
-            if (this.$store.network === 'edonet'){
-                return `https://edonet.tzkt.io/${contractOrOp}`
+            if (this.$store.network === 'florencenet'){
+                return `https://florencenet.tzkt.io/${contractOrOp}`
             } else {
                 return `https://tzkt.io/${contractOrOp}`
             }

@@ -13,7 +13,7 @@
         <div class="baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless is-4">
-              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'edonet' ? 'edo.' : ''}tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'mainnet' ? '' : this.$store.network + '.'}tzstats.com/${bakerAddress}`">
                 {{ $store.bakers[bakerAddress].name }}
               </a>
             </h2>
@@ -60,7 +60,7 @@
         <div class="unknown-baker-info-content">
           <div class="content">
             <h2 class="subtitle is-marginless is-4">
-              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'edonet' ? 'edo.' : ''}tzstats.com/${bakerAddress}`">
+              <a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'mainnet' ? '' : this.$store.network + '.'}tzstats.com/${bakerAddress}`">
                 Unknown Baker
               </a>
             </h2>
