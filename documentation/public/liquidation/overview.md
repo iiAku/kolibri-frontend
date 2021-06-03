@@ -27,6 +27,10 @@ This is economically beneficial to the **liquidator**, since they are able to ac
             <td><b>Liquidation Fee</b></td>
             <td><b>10%</b></td>
         </tr>
+        <tr>
+            <td><b>Dev Fund/Stability Fund Split</b></td>
+            <td><b>10%</b></td>
+        </tr>
     </tbody>
 </table>
 
@@ -34,4 +38,4 @@ This is economically beneficial to the **liquidator**, since they are able to ac
 2. Some time later, the price of `XTZ/USD` drops to $1.50. The 10 `XTZ` in her `Oven` is now worth only $15, the 10 `kUSD `is still worth $10, and the `Oven` is now collateralized at 150%.
 3. Bob notices the `Oven` is under collateralized and liquidates it.
 4. Bob pays all outstanding `kUSD`, along with a 10% penalty (the liquidation fee), ($10 + $1 = $11) and receives $15 worth of `XTZ`
-5. The `Oven` transitions to a liquidated state, the $10 in kUSD is burned/destroyed, and the $1 in fees is split between the `stability fund`, and the `development fund`
+5. The `Oven` transitions to a liquidated state, the $10 in kUSD is burned/destroyed, and the $1 in fees is split between the `stability fund`, and the `development fund` in a 90/10 ratio (0.90 kUSD goes into the `stability fund` and 0.10 kUSD goes into the `development fund`)

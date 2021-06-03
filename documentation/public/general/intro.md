@@ -22,7 +22,7 @@ Negative stability fees are not supported in Kolibri but may be added in the fut
 
 In order to remain solvent, an `Oven` must maintain a minimum **collateralization ratio**. The collateralization ratio is computed as:
 ```
-Collateralization Ratio = ((XTZ in Oven` * Price of XTZ/USD) / (Borrowed kUSD + Stability Fees)) * 100 
+Collateralization Ratio = ((XTZ in Oven * Price of XTZ/USD) / (Borrowed kUSD + Stability Fees)) * 100 
 ```
 
 If a `Oven` drops below the **collateralization ratio**, then it is said to be **under collateralized**. `Oven` owners should take care to keep their position above the collateralization ratio, by either locking more `XTZ` or repaying `kUSD` when the collateralization ratio drops.
