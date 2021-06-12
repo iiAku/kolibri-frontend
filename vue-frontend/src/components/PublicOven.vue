@@ -232,12 +232,9 @@ export default {
 
         this.networkLoading = false
 
-        debugger;
         this.pendingTransaction = tx.opHash
 
         await tx.confirmation(1)
-
-        debugger;
 
         this.pendingTransaction = null
 

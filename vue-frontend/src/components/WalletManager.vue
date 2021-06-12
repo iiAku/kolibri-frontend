@@ -46,7 +46,7 @@ export default {
       this.$store.walletBalanceXTZ = await this.$store.tezosToolkit.tz.getBalance(this.$store.walletPKH)
 
       if (this.$store.lpData === null){
-        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
         this.$store.lpData = await lpContract.storage()
         this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
       }

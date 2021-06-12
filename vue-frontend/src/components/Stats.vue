@@ -12,6 +12,7 @@
         <div class="is-flex is-flex-direction-column is-align-items-center">
           <p class="heading">Stability Fee (yearly)</p>
           <p v-if="$store.stabilityFee === null" class="loader"></p>
+          <p v-else-if="typeof $store.stabilityFee === 'string'" class="title">{{ $store.stabilityFee }}</p>
           <p v-else class="title">{{ formattedStabilityFee() }}</p>
         </div>
       </div>
@@ -39,6 +40,7 @@
           <div class="is-flex is-flex-direction-column is-align-items-center">
             <p class="heading">All Tez in Kolibri Ovens</p>
             <p v-if="$store.balanceData === null" class="loader"></p>
+            <p v-else-if="typeof $store.balanceData === 'string'" class="title"> {{ $store.balanceData }} </p>
             <p v-else class="title">
               {{
                 numberWithCommas(
@@ -53,6 +55,7 @@
           <div class="is-flex is-flex-direction-column is-align-items-center">
             <p class="heading">Value Of All Ovens</p>
             <p v-if="$store.priceData === null || $store.balanceData === null" class="loader"></p>
+            <p v-else-if="typeof $store.balanceData === 'string'" class="title">{{ $store.balanceData }}</p>
             <p v-else class="title">
               ${{
                 numberWithCommas(
@@ -73,6 +76,7 @@
           <div class="is-flex is-flex-direction-column is-align-items-center">
             <p class="heading">Total kUSD In Existence</p>
             <p v-if="$store.balanceData === null" class="loader"></p>
+            <p v-else-if="typeof $store.balanceData === 'string'" class="title">{{ $store.balanceData }}</p>
             <p v-else class="title">
               {{ numberWithCommas($store.balanceData.totalTokens.toFixed(0)) }}
               <span class="subtitle">kUSD</span>
@@ -219,7 +223,7 @@ export default {
       this.now = moment();
     }, 1000);
 
-    setInterval(this.updateStatsData, 30 * 1000);
+    this.statsUpdateTimer = setInterval(this.updateStatsData, 30 * 1000);
 
     this.updateStatsData();
   },
@@ -230,19 +234,36 @@ export default {
     return {
       now: moment(),
       showAll: false,
+      statsUpdateTimer: null,
     };
   },
   methods: {
     updateStatsData() {
-      this.$store.stableCoinClient.getOvenCount().then((count) => {
-        this.$store.ovenCount = count;
-      });
+      this.$store.stableCoinClient.getOvenCount()
+        .then((count) => {
+          this.$store.ovenCount = count;
+        })
+        .catch((err) => {
+          clearInterval(this.statsUpdateTimer)
+          console.error("Error getting oven count ", err)
+          this.$store.ovenCount = "?";
+        });
 
       axios
         .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/apy.json`)
         .then((result) => {
           this.$store.stabilityFee = new BigNumber(result.data.apy);
-        });
+        })
+        .catch(async () => {
+          try {
+            const minter = await this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
+            const minterStorage = await minter.storage()
+            this.$store.stabilityFee = minterStorage.stabilityFee
+          } catch(e) {
+            clearInterval(this.statsUpdateTimer)
+            this.$store.stabilityFee = "?";
+          }
+        })
 
       axios
         .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/totals.json`)
@@ -252,7 +273,12 @@ export default {
             totalBalance: new BigNumber(totalBalance),
             totalTokens: new BigNumber(totalTokens),
           };
-        });
+        })
+        .catch((err) => {
+          clearInterval(this.statsUpdateTimer)
+          console.error("Error getting oven count ", err)
+          this.$store.balanceData = "?";
+        })
 
       this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.TOKEN)
         .then(async (token) => {

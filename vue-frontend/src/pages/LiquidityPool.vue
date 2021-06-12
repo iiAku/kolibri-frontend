@@ -281,7 +281,7 @@
       }
 
       if (this.$store.lpData === null){
-        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+        const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
         this.$store.lpData = await lpContract.storage()
         this.$store.lpTokenAddress = this.$store.lpData.tokenAddress
       }
@@ -294,9 +294,8 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
 
-          debugger;
           const sendResult = await lpContract.methods.liquidate(oven.ovenAddress).send()
 
           await sendResult.confirmation(1)
@@ -318,7 +317,7 @@
       async updatePoolBalance(){
         const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpTokenAddress)
         const kUSDStorage = await kUSDContract.storage()
-        const poolBalance = await kUSDStorage.balances.get(this.$store.lpContract)
+        const poolBalance = await kUSDStorage.balances.get(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
         if (poolBalance === undefined){
           this.poolBalance = new BigNumber(0)
         } else {
@@ -329,13 +328,13 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
           const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpTokenAddress)
 
           const sendAmt = new BigNumber(this.depositInput).multipliedBy(Math.pow(10, 18))
 
           const sendResult = await this.$store.tezosToolkit.wallet.batch([])
-            .withContractCall(kUSDContract.methods.approve(this.$store.lpContract, sendAmt))
+            .withContractCall(kUSDContract.methods.approve(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL, sendAmt))
             .withContractCall(lpContract.methods.deposit(sendAmt))
             .send()
 
@@ -359,7 +358,7 @@
         this.txPending = true
 
         try {
-          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.lpContract)
+          const lpContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.LIQUIDITY_POOL)
 
           const redeemAmt = new BigNumber(this.redeemInput).multipliedBy(this.$store.lpMantissa)
 

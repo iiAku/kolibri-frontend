@@ -1,5 +1,6 @@
 <template>
   <div>
+    <sandbox-override />
     <navbar />
     <keep-alive>
       <router-view :key="$route.name"></router-view>
@@ -11,12 +12,20 @@
 import Navbar from "@/components/Navbar";
 import axios from "axios";
 import BigNumber from "bignumber.js";
+import SandboxOverride from "@/components/SandboxOverrides";
 // import moment from "moment";
 
 export default {
   name: 'App',
   components: {
+    SandboxOverride,
     Navbar
+  },
+  data(){
+    return {
+      updatePriceInfoTimer: null,
+      updateAllOvenDataTimer: null,
+    }
   },
   async mounted(){
     this.updateBlockHeight()
@@ -24,24 +33,29 @@ export default {
     await this.updateAllOvenData()
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
     this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
-    setInterval(this.updatePriceInfo, 60 * 1000) // Go grab oracle data every minute
-    setInterval(this.updateAllOvenData, 60 * 1000) // Go grab all oven data every minute
+    this.updatePriceInfoTimer = setInterval(this.updatePriceInfo, 60 * 1000) // Go grab oracle data every minute
+    this.updateAllOvenDataTimer = setInterval(this.updateAllOvenData, 60 * 1000) // Go grab all oven data every minute
   },
   methods:{
     async updateAllOvenData(){
-      const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
+      try {
+        const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
 
-      this.$store.allOvensData = response.data.allOvenData.map((oven) => {
-        let { ovenAddress, ovenOwner, ovenData } = oven
+        this.$store.allOvensData = response.data.allOvenData.map((oven) => {
+          let { ovenAddress, ovenOwner, ovenData } = oven
 
-        // Coerce back into bignumbers
-        ovenData.balance = new BigNumber(ovenData.balance)
-        ovenData.borrowedTokens = new BigNumber(ovenData.borrowedTokens)
-        ovenData.stabilityFee = new BigNumber(ovenData.stabilityFee)
-        ovenData.outstandingTokens = new BigNumber(ovenData.outstandingTokens)
+          // Coerce back into bignumbers
+          ovenData.balance = new BigNumber(ovenData.balance)
+          ovenData.borrowedTokens = new BigNumber(ovenData.borrowedTokens)
+          ovenData.stabilityFee = new BigNumber(ovenData.stabilityFee)
+          ovenData.outstandingTokens = new BigNumber(ovenData.outstandingTokens)
 
-        return Object.assign(ovenData, { ovenAddress, ovenOwner })
-      })
+          return Object.assign(ovenData, { ovenAddress, ovenOwner })
+        })
+      } catch (e){
+        clearInterval(this.updateAllOvenDataTimer)
+        console.error(e)
+      }
     },
     updatePriceInfo(){
       this.$store.harbingerClient.getPriceData()
