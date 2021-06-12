@@ -1,6 +1,6 @@
 <template>
   <div>
-    <sandbox-override />
+    <sandbox-override v-if="$store.NETWORK === 'custom'" />
     <navbar />
     <keep-alive>
       <router-view :key="$route.name"></router-view>
@@ -13,7 +13,6 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import BigNumber from "bignumber.js";
 import SandboxOverride from "@/components/SandboxOverrides";
-// import moment from "moment";
 
 export default {
   name: 'App',
