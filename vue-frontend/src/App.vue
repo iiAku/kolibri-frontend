@@ -1,6 +1,6 @@
 <template>
   <div>
-    <sandbox-override v-if="$store.NETWORK === 'custom'" />
+    <sandbox-override v-if="$store.network === 'custom'" />
     <navbar />
     <keep-alive>
       <router-view :key="$route.name"></router-view>
