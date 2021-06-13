@@ -6,7 +6,6 @@ import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, TokenClient }
 import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
-import axios from "axios";
 
 const FORCE_MAINNET = false
 
@@ -162,31 +161,12 @@ state = _.merge(state, {
         state.network,
         state.NETWORK_CONTRACTS.OVEN_REGISTRY,
         state.NETWORK_CONTRACTS.MINTER,
-        state.NETWORK_CONTRACTS.OVEN_FACTORY
+        state.NETWORK_CONTRACTS.OVEN_FACTORY,
+        NETWORK === NETWORKS.SANDBOX ? 'http://127.0.0.1:8000' : undefined
     ),
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },
 })
-
-if (NETWORK === NETWORKS.SANDBOX){
-    // If we're in sandbox mode go solicit things from the local indexer instead of S3
-    state.stableCoinClient['getAllOvens'] = async () => {
-        const ovenRegistryContract = await state.tezosToolkit.contract.at(
-            state.NETWORK_CONTRACTS.OVEN_REGISTRY,
-        )
-        const ovenRegistryStorage = await ovenRegistryContract.storage()
-        const ovenRegistryBigMapId = await ovenRegistryStorage.ovenMap
-
-        const values = await axios.get(`http://127.0.0.1:8000/v1/bigmap/sandboxnet/${ovenRegistryBigMapId}/keys?size=10`)
-
-        return values.data.map((value) => {
-            return {
-                ovenAddress: value.data.key.value,
-                ovenOwner: value.data.value.value,
-            }
-        })
-    }
-}
 
 export default state
