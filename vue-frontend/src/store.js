@@ -16,7 +16,7 @@ const NETWORKS = {
     SANDBOX: 'custom',
 }
 
-let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, daoToken
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, daoToken, isSandbox
 if ((window.location.hostname === 'localhost' ||
     // window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
@@ -24,6 +24,7 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK = NETWORKS.FLORENCE
     NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
+    isSandbox = false
 
     farmContracts = {
         // 'kUSD': 'KT1JwAnSkTs7ios7bawaH6Jd63KuZKC1SvkV',
@@ -61,6 +62,7 @@ if ((window.location.hostname === 'localhost' ||
     }
 
     isTestnet = true
+    isSandbox = true
 
     farmContracts = {
         'QLPkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
@@ -73,6 +75,7 @@ if ((window.location.hostname === 'localhost' ||
     NETWORK = NETWORKS.GRANADA
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
+    isSandbox = false
 
     farmContracts = {}
     daoToken = ''
@@ -83,11 +86,12 @@ if ((window.location.hostname === 'localhost' ||
     link.content = 'noindex';
     document.getElementsByTagName('head')[0].appendChild(link);
 } else {
-    NODE_URL = 'https://rpc.tzbeta.net'
-    // NODE_URL = 'https://mainnet-tezos.giganode.io'
+    // NODE_URL = 'https://rpc.tzbeta.net'
+    NODE_URL = 'https://mainnet-tezos.giganode.io'
     NETWORK = NETWORKS.MAINNET
     NETWORK_CONTRACTS = CONTRACTS.MAIN
     isTestnet = false
+    isSandbox = false
 
     farmContracts = {}
     daoToken = ''
@@ -138,6 +142,7 @@ let state = Vue.observable({
     network: NETWORK,
     nodeURL: NODE_URL,
     isTestnet,
+    isSandbox,
     NETWORK_CONTRACTS,
     farmContracts,
     daoToken
