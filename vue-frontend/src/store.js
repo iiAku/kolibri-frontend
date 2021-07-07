@@ -2,47 +2,43 @@ import Vue from 'vue'
 
 import { WalletStates } from './enums'
 
-import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, TokenClient } from "@hover-labs/kolibri-js";
+import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, TokenClient, Network } from "@hover-labs/kolibri-js";
 import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 
 const FORCE_MAINNET = false
 
-const NETWORKS = {
-    FLORENCE: 'florencenet',
-    GRANADA: 'granada',
-    MAINNET: 'mainnet',
-    SANDBOX: 'custom',
-}
-
-let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, daoToken, isSandbox
-if ((window.location.hostname === 'localhost' ||
-    // window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://testnet-tezos.giganode.io'
-    NETWORK = NETWORKS.FLORENCE
-    NETWORK_CONTRACTS = CONTRACTS.TEST
-    isTestnet = true
-    isSandbox = false
-
-    farmContracts = {
-        // 'kUSD': 'KT1JwAnSkTs7ios7bawaH6Jd63KuZKC1SvkV',
-        'QLPkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
-    }
-
-    daoToken = 'KT1Ssn1Rnr1v2WM7yzrZ83GeAhwhq6eUy4nn'
-
+function dontIndexTestnets(){
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
     link.setAttribute('name', 'robots');
     link.content = 'noindex';
     document.getElementsByTagName('head')[0].appendChild(link);
+}
+
+let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
+if ((window.location.hostname === 'localhost' ||
+    // window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
+    NODE_URL = 'https://testnet-tezos.giganode.io'
+    NETWORK = Network.Florence
+    NETWORK_CONTRACTS = CONTRACTS.TEST
+    isTestnet = true
+    isSandbox = false
+
+    farmContracts = {
+        'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+        'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+        'kUSD_LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+    }
+
+    dontIndexTestnets()
 } else if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'sandbox.kolibri.finance') {
     NODE_URL = 'http://127.0.0.1:8732'
-    NETWORK = NETWORKS.SANDBOX
+    NETWORK = Network.Sandbox
 
-    NETWORK_CONTRACTS = {
+    NETWORK_CONTRACTS  = {
         MINTER: "KT1WoJNcdahhq767m3Sbwdd2GBY6Y9MEPaq6",
         OVEN_PROXY: "KT1TNBZ1swd3h5WBA7RiDP2xTeGbAk3XLRua",
         OVEN_FACTORY: "KT19Li9kJ7zioJ9DUfsvTKwSMmWW5aruHtBW",
@@ -68,33 +64,26 @@ if ((window.location.hostname === 'localhost' ||
         'QLPkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
     }
 
-    daoToken = 'KT1SXZcLmdvTbfCnNvGWYeq6y1yXehcA2MAw'
-
+    dontIndexTestnets()
 } else if (window.location.hostname === 'zeronet.kolibri.finance') {
     NODE_URL = 'https://rpczero.tzbeta.net'
-    NETWORK = NETWORKS.GRANADA
+    NETWORK = Network.Granada
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
     isSandbox = false
 
     farmContracts = {}
-    daoToken = ''
 
-    // If we're in testnet tell google not to index
-    const link = document.createElement('meta');
-    link.setAttribute('name', 'robots');
-    link.content = 'noindex';
-    document.getElementsByTagName('head')[0].appendChild(link);
+    dontIndexTestnets()
 } else {
     // NODE_URL = 'https://rpc.tzbeta.net'
     NODE_URL = 'https://mainnet-tezos.giganode.io'
-    NETWORK = NETWORKS.MAINNET
+    NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
     isTestnet = false
     isSandbox = false
 
     farmContracts = {}
-    daoToken = ''
 }
 
 const ovenNameMapping = window.localStorage.getItem('oven-names')
@@ -141,14 +130,14 @@ let state = Vue.observable({
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
+    daoToken: NETWORK_CONTRACTS.DAO_TOKEN,
     isTestnet,
     isSandbox,
     NETWORK_CONTRACTS,
     farmContracts,
-    daoToken
 })
 
-if (NETWORK === NETWORKS.SANDBOX){
+if (NETWORK === Network.Sandbox){
     const sandboxOverrides = localStorage.getItem('sandbox-overrides')
     if (sandboxOverrides !== null){
         const newState = JSON.parse(sandboxOverrides)
@@ -167,7 +156,7 @@ state = _.merge(state, {
         state.NETWORK_CONTRACTS.OVEN_REGISTRY,
         state.NETWORK_CONTRACTS.MINTER,
         state.NETWORK_CONTRACTS.OVEN_FACTORY,
-        NETWORK === NETWORKS.SANDBOX ? 'http://127.0.0.1:8000' : undefined
+        NETWORK === Network.Sandbox ? 'http://127.0.0.1:8000' : undefined
     ),
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
