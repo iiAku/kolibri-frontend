@@ -17,18 +17,10 @@
         </nav>
 
         <div v-if="$store.walletPKH !== null" class="field is-grouped is-grouped-multiline">
-          <div v-if="pairName !== 'kDAO'" class="control">
+          <div class="control">
             <div class="tags has-addons">
               <span class="tag is-info">{{ pairName }} Holdings</span>
               <span v-if="holdingsData" class="tag is-light">{{ holdingsData.balance.dividedBy(decimalsMap[pairName].mantissa).toFixed(2) }} {{ pairName }}</span>
-              <span v-else class="tag is-light"><div class="loader"></div></span>
-            </div>
-          </div>
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-info">kDAO Holdings</span>
-              <span v-if="$store.kdaoHoldings === undefined" class="tag is-light">0.00 kDAO</span>
-              <span v-else-if="$store.kdaoHoldings" class="tag is-light">{{ $store.kdaoHoldings.balance.dividedBy(decimalsMap.kDAO.mantissa).toFixed(2) }} kDAO</span>
               <span v-else class="tag is-light"><div class="loader"></div></span>
             </div>
           </div>
@@ -240,6 +232,7 @@ export default {
     async updateTokenBalance(){
       const balanceMap = this.decimalsMap[this.pairName].balances()
       const holdingsData = await balanceMap.get(this.$store.walletPKH)
+      debugger;
       if (holdingsData === undefined){
         this.holdingsData = {balance: new BigNumber(0)}
       } else {
@@ -321,10 +314,12 @@ export default {
   computed: {
     poolRate(){
       const minutesPerWeek = 10080;
+      // Testnet uses 30s blocks, mainnet is 1m. TODO: Will need updated for granada
+      const blocksPerWeek = this.$store.isTestnet ? minutesPerWeek * 2 : minutesPerWeek
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {
-        return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(minutesPerWeek).dividedBy(this.decimalsMap.kDAO.mantissa)
+        return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(blocksPerWeek).dividedBy(this.decimalsMap.kDAO.mantissa)
       }
     },
     currentReward(){
@@ -385,6 +380,10 @@ export default {
         'kDAO': {
           mantissa: new BigNumber(10).pow(18),
           balances: () => this.tokenContractData.balances,
+        },
+        'kUSD Quipu LP': {
+          mantissa: new BigNumber(10).pow(6),
+          balances: () => this.tokenContractData.storage.ledger,
         },
         'QLPkUSD': {
           mantissa: new BigNumber(10).pow(36),

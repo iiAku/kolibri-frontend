@@ -19,7 +19,7 @@ function dontIndexTestnets(){
 
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((window.location.hostname === 'localhost' ||
-    // window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = Network.Florence
@@ -28,13 +28,15 @@ if ((window.location.hostname === 'localhost' ||
     isSandbox = false
 
     farmContracts = {
+        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
         'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
-        'kUSD_LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
     }
 
     dontIndexTestnets()
-} else if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'sandbox.kolibri.finance') {
+} else if (
+    // window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'sandbox.kolibri.finance') {
     NODE_URL = 'http://127.0.0.1:8732'
     NETWORK = Network.Sandbox
 
