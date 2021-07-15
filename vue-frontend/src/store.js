@@ -30,7 +30,7 @@ if ((window.location.hostname === 'localhost' ||
     farmContracts = {
         'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
-        // 'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+        'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
     }
 
     dontIndexTestnets()
