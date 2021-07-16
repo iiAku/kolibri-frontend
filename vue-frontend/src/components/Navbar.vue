@@ -48,7 +48,6 @@
         <router-link
           :to="{name: 'Farming'}"
           class="navbar-item"
-          v-if="$store.isTestnet"
         >
           Farming
           <div class="new-badge">New!</div>

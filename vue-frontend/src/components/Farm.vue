@@ -232,7 +232,6 @@ export default {
     async updateTokenBalance(){
       const balanceMap = this.decimalsMap[this.pairName].balances()
       const holdingsData = await balanceMap.get(this.$store.walletPKH)
-      debugger;
       if (holdingsData === undefined){
         this.holdingsData = {balance: new BigNumber(0)}
       } else {

@@ -85,7 +85,11 @@ if ((window.location.hostname === 'localhost' ||
     isTestnet = false
     isSandbox = false
 
-    farmContracts = {}
+    farmContracts = {
+        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+        'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+    }
 }
 
 const ovenNameMapping = window.localStorage.getItem('oven-names')
