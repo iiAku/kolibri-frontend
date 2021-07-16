@@ -260,6 +260,8 @@
   import _ from "lodash";
   import PublicOven from "@/components/PublicOven";
 
+  BigNumber.set({ DECIMAL_PLACES: 36 })
+
   export default {
     name: "LiquidityPool",
     components: {PublicOven},
