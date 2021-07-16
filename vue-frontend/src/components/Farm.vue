@@ -136,7 +136,7 @@
                   <div class="control">
                     <input v-model="depositInput" class="input" type="number" placeholder="1.234">
                     <div
-                      @click="depositInput = holdingsData.balance.dividedBy(decimalsMap[pairName].mantissa)"
+                      @click="depositInput = holdingsData.balance.dividedBy(decimalsMap[pairName].mantissa).toFixed(36)"
                       class="max-button heading"
                     >
                       Max
@@ -207,6 +207,8 @@
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
 import Popover from "@/components/Popover";
+
+BigNumber.set({ DECIMAL_PLACES: 36 })
 
 export default {
   name: 'Farm',
@@ -355,10 +357,13 @@ export default {
         ? plannedRewards.minus(claimedRewards)
         : outstandingReward;
 
-      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(reward.times(1000000).div(this.farmContractData.farmLpTokenBalance))
+      const lpMantissa = new BigNumber(10).pow(36)
+
+      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(reward.times(lpMantissa).div(this.farmContractData.farmLpTokenBalance))
 
       const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
-      return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
+      return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(lpMantissa)
+      // return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
     },
   },
   data(){
