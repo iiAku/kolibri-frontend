@@ -389,7 +389,7 @@ export default {
           mantissa: new BigNumber(10).pow(6),
           balances: () => this.tokenContractData.storage.ledger,
         },
-        'QLPkUSD': {
+        'QLkUSD': {
           mantissa: new BigNumber(10).pow(36),
           balances: () => this.tokenContractData.balances,
         },

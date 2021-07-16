@@ -30,7 +30,7 @@ if ((window.location.hostname === 'localhost' ||
     farmContracts = {
         'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
-        'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+        'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
     }
 
     dontIndexTestnets()
@@ -63,7 +63,7 @@ if ((window.location.hostname === 'localhost' ||
     isSandbox = true
 
     farmContracts = {
-        'QLPkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
+        'QLkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
     }
 
     dontIndexTestnets()
@@ -88,7 +88,7 @@ if ((window.location.hostname === 'localhost' ||
     farmContracts = {
         'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
-        'QLPkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+        'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
     }
 }
 
