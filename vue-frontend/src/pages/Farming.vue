@@ -4,7 +4,7 @@
     <div class="columns is-centered is-gapless">
       <div class="column is-half-desktop">
         <div class="notification is-info">
-          Welcome to the Kolibri Farm! Here you can deposit LP tokens (and others) to earn <b><a rel="noopener" target="_blank" href="https://kolibri-xtz.medium.com/announcing-kolibri-dao-6687eb528cb">kDAO governance tokens</a></b>, which let you vote and propose governance actions within the Kolibri protocol!
+          Welcome to the Kolibri Farm! Here you can deposit LP tokens (and others) to farm <b><a rel="noopener" target="_blank" href="https://kolibri-xtz.medium.com/announcing-kolibri-dao-6687eb528cb">kDAO governance tokens</a></b>, which let you vote and propose governance actions within the Kolibri protocol!
         </div>
       </div>
     </div>
