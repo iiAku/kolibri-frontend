@@ -198,6 +198,13 @@ export default {
                 return `https://tzkt.io/${contractOrOp}`
             }
         },
+        bcdLink(contractOrOp){
+            if (this.$store.network === 'florencenet'){
+                return `https://better-call.dev/florencenet/${contractOrOp}`
+            } else {
+                return `https://better-call.dev/mainnet/${contractOrOp}`
+            }
+        },
         liquidatablePrice(ovenAddress){
             let rateDelta = 1 - this.currentCollateralRate(ovenAddress).dividedBy(100).toNumber()
             let currentPrice = this.$store.priceData.price.dividedBy(Math.pow(10, 6))

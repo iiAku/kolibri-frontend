@@ -10,6 +10,9 @@
           <div class="level-left">
             <div class="level-item">
               <h1 class="title has-text-white">{{ pairName }} Farm</h1>
+              <a target="_blank" rel="noopener"
+                 :href="bcdLink(contract)"
+                 class="contract-src"><img src="../assets/contract.svg"></a>
             </div>
           </div>
 
@@ -57,7 +60,19 @@
           </div>
 
           <div class="level-right">
-            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentReward.toFixed(2)) }} kDAO / Week Per {{ pairName }}</p>
+            <popover extra-classes="small-price">
+              <strong
+                slot="popup-content"
+                class="is-marginless"
+              >
+                {{ numberWithCommas(currentReward.toFixed(10)) }} kDAO / Week Per {{ pairName }}
+              </strong>
+              <a>
+                <strong class="has-text-white is-underlined">{{ numberWithCommas(currentReward.toFixed(2)) }}</strong>
+              </a>
+            </popover>
+
+            <p class="has-text-white has-text-weight-bold padded-left">kDAO / Week Per {{ pairName }}</p>
           </div>
         </nav>
 
@@ -97,7 +112,21 @@
               </div>
 
               <div class="level-right">
-                <p v-if="depositedTokens !== undefined && !this.depositedTokens.lpTokenBalance.isZero()" class="has-text-white has-text-weight-bold">{{ numberWithCommas(currentDripRate.toFixed(2)) }} kDAO / Week</p>
+                <div class="is-flex" v-if="depositedTokens !== undefined && !this.depositedTokens.lpTokenBalance.isZero()">
+                  <popover extra-classes="small-price">
+                    <strong
+                      slot="popup-content"
+                      class="is-marginless"
+                    >
+                      {{ numberWithCommas(currentDripRate.toFixed(10)) }} kDAO / Week
+                    </strong>
+                    <a>
+                      <strong class="has-text-white is-underlined">{{ numberWithCommas(currentDripRate.toFixed(2)) }}</strong>
+                    </a>
+                  </popover>
+
+                  <p class="has-text-white has-text-weight-bold padded-left">kDAO / Week</p>
+                </div>
                 <p v-else class="has-text-white has-text-weight-bold">0.00 kDAO / Week</p>
               </div>
             </nav>
@@ -125,7 +154,20 @@
               </div>
 
               <div class="level-right">
-                <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO.mantissa).toFixed(2)) }} kDAO</p>
+                <p class="has-text-white has-text-weight-bold">
+                  <popover extra-classes="small-price">
+                    <strong
+                      slot="popup-content"
+                      class="is-marginless"
+                    >
+                      {{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO.mantissa).toFixed(10)) }} kDAO
+                    </strong>
+                    <a>
+                      <strong class="has-text-white is-underlined">{{ numberWithCommas(estimatedRewards.dividedBy(this.decimalsMap.kDAO.mantissa).toFixed(2)) }}</strong>
+                    </a>
+                  </popover>
+                </p>
+                <p class="has-text-white has-text-weight-bold padded-left">kDAO</p>
               </div>
             </nav>
 <br>
@@ -359,11 +401,11 @@ export default {
 
       const lpMantissa = new BigNumber(10).pow(36)
 
-      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(reward.times(lpMantissa).div(this.farmContractData.farmLpTokenBalance))
+      const rewardRatio = reward.times(lpMantissa).div(this.farmContractData.farmLpTokenBalance)
+      const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(rewardRatio)
 
       const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
       return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(lpMantissa)
-      // return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(Math.pow(10, 6))
     },
   },
   data(){
@@ -406,6 +448,19 @@ export default {
   @import '../assets/sass/globals';
 
   .farm{
+    .padded-left{
+      margin-left: .25rem;
+    }
+    .contract-src{
+      margin-left: .5rem;
+      margin-bottom: 0.3rem;
+      img{
+        max-height: 2rem;
+        &:hover{
+          filter: contrast(0.8);
+        }
+      }
+    }
     .control{
       &:hover{
         .max-button{
