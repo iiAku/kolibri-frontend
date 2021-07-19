@@ -211,7 +211,7 @@
                     <button
                       @click="withdrawTokens"
                       :class="{'is-loading': networkSending}"
-                      :disabled="networkSending || Math.sign(withdrawInput) < 1 || withdrawInput > depositedTokens.lpTokenBalance.dividedBy(decimalsMap[pairName].mantissa)"
+                      :disabled="withdrawShouldBeDisabled"
                       class="button is-info"
                     >
                       Withdraw {{ pairName }}
@@ -355,6 +355,13 @@ export default {
     }
   },
   computed: {
+    withdrawShouldBeDisabled(){
+      if (this.networkSending) { return true }
+      if (Math.sign(this.withdrawInput) < 1) { return true }
+      return new BigNumber(this.withdrawInput).isGreaterThan(
+        this.depositedTokens.lpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa)
+      )
+    },
     poolRate(){
       const minutesPerWeek = 10080;
       // Testnet uses 30s blocks, mainnet is 1m. TODO: Will need updated for granada
