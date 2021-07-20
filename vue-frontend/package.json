@@ -69,7 +69,7 @@
     "not dead"
   ],
   "dependencies": {
-    "@airgap/beacon-sdk": "^2.2.5",
+    "@airgap/beacon-sdk": "^2.2.9",
     "@taquito/beacon-wallet": "^8.0.6-beta.0"
   }
 }
