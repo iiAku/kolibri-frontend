@@ -48,7 +48,8 @@
           </div>
 
           <div class="level-right">
-            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(poolRate.toFixed(2)) }} kDAO / Week</p>
+            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(poolRatePerWeek.toFixed(2)) }} kDAO /
+              Week</p>
           </div>
         </nav>
 
@@ -60,19 +61,24 @@
           </div>
 
           <div class="level-right">
-            <popover extra-classes="small-price">
+            <span>
+              <strong class="has-text-white">
+                1 kDAO / Week Per
+              </strong>
+            </span>
+            <popover class="padded-left" extra-classes="small-price">
               <strong
                 slot="popup-content"
                 class="is-marginless"
               >
-                {{ numberWithCommas(currentReward.toFixed(10)) }} kDAO / Week Per {{ pairName }}
+                {{ numberWithCommas(currentRatePerTokenPerWeek.toFixed(10)) }} {{ pairName }}
               </strong>
-              <a>
-                <strong class="has-text-white is-underlined">{{ numberWithCommas(currentReward.toFixed(2)) }}</strong>
-              </a>
+                <a>
+                  <strong class="has-text-white is-underlined">{{ numberWithCommas(currentRatePerTokenPerWeek.toFixed(2)) }}</strong>
+                </a>
             </popover>
 
-            <p class="has-text-white has-text-weight-bold padded-left">kDAO / Week Per {{ pairName }}</p>
+            <p class="has-text-white has-text-weight-bold padded-left">{{ pairName }}</p>
           </div>
         </nav>
 
@@ -362,7 +368,7 @@ export default {
         this.depositedTokens.lpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa)
       )
     },
-    poolRate(){
+    poolRatePerWeek(){
       const minutesPerWeek = 10080;
       // Testnet uses 30s blocks, mainnet is 1m. TODO: Will need updated for granada
       const blocksPerWeek = this.$store.isTestnet ? minutesPerWeek * 2 : minutesPerWeek
@@ -372,11 +378,14 @@ export default {
         return this.farmContractData.farm.plannedRewards.rewardPerBlock.times(blocksPerWeek).dividedBy(this.decimalsMap.kDAO.mantissa)
       }
     },
-    currentReward(){
+    currentRatePerTokenPerWeek(){
+      return new BigNumber(1).dividedBy(this.currentRewardPerWeek)
+    },
+    currentRewardPerWeek(){
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {
-        return this.poolRate.dividedBy(this.farmContractData.farmLpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa))
+        return this.poolRatePerWeek.dividedBy(this.farmContractData.farmLpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa))
       }
     },
     currentPoolPercentage(){
@@ -387,7 +396,7 @@ export default {
       }
     },
     currentDripRate(){
-      return this.currentPoolPercentage.times(this.poolRate)
+      return this.currentPoolPercentage.times(this.poolRatePerWeek)
     },
     estimatedRewards(){
       if (this.depositedTokens === undefined || this.depositedTokens.lpTokenBalance.isZero()){

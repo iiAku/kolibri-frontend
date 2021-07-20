@@ -8,6 +8,13 @@
         </div>
       </div>
     </div>
+    <div class="columns is-centered is-gapless">
+      <div class="column is-half-desktop">
+        <div class="notification is-warning">
+          <strong>Please note!</strong><br> Mainnet currently uses 1 min block times, so farms are currently emitting at <strong>50%</strong> of their planned schedule until the <a target="_blank" rel="noopener" href="https://tzstats.com/election/29"><strong>Granada proposal</strong></a> goes live. Once live, farm emissions will double from their current drip rate (lasting ~1 year).
+        </div>
+      </div>
+    </div>
     <div class="columns is-centered is-gapless farms">
       <div class="column is-half-desktop">
         <farm
