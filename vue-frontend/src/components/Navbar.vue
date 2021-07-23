@@ -35,7 +35,7 @@
             :to="{name: 'ProjectInfoRoot'}"
             class="navbar-item"
         >
-          Project Info
+          Docs
         </router-link>
 
         <router-link
@@ -52,6 +52,17 @@
           Farming
           <div class="new-badge">New!</div>
         </router-link>
+
+
+        <a :href="$store.isTestnet ? 'https://testnet-governance.kolibri.finance' : 'https://governance.kolibri.finance'"
+           target="_blank"
+           rel="noopener"
+           class="navbar-item"
+        >
+          Governance
+          <div class="new-badge">New!</div>
+        </a>
+        
       </div>
 
       <div class="navbar-end">
