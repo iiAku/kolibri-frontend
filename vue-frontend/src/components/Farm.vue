@@ -9,7 +9,12 @@
         <nav class="level is-marginless">
           <div class="level-left">
             <div class="level-item">
-              <h1 class="title has-text-white">{{ pairName }} Farm</h1>
+
+              <popover>
+                <p slot="popup-content" v-html="decimalsMap[pairName].description"></p>
+                <h1 class="title"><a class="has-text-white">{{ pairName }} Farm</a></h1>
+              </popover>
+
               <a target="_blank" rel="noopener"
                  :href="bcdLink(contract)"
                  class="contract-src"><img src="../assets/contract.svg"></a>
@@ -435,21 +440,23 @@ export default {
       withdrawInput: null,
       depositInput: null,
       decimalsMap: {
+        'kDAO': {
+          mantissa: new BigNumber(10).pow(18),
+        },
         'kUSD': {
           mantissa: new BigNumber(10).pow(18),
           balances: () => this.tokenContractData.balances,
-        },
-        'kDAO': {
-          mantissa: new BigNumber(10).pow(18),
-          balances: () => this.tokenContractData.balances,
+          description: "The kUSD farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://kolibri.finance/'>kUSD</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
         },
         'kUSD Quipu LP': {
           mantissa: new BigNumber(10).pow(6),
           balances: () => this.tokenContractData.storage.ledger,
+          description: "The kUSD Quipu LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://analytics.quipuswap.com/pairs/KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6'>Quipuswap XTZ/kUSD LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
         },
         'QLkUSD': {
           mantissa: new BigNumber(10).pow(36),
           balances: () => this.tokenContractData.balances,
+          description: "The QLkUSD farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://kolibri.finance/liquidity-pool'>Kolibri Liquidity Pool Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
         },
       }
     }
@@ -464,6 +471,9 @@ export default {
   @import '../assets/sass/globals';
 
   .farm{
+    .popper{
+      max-width: 35rem;
+    }
     .padded-left{
       margin-left: .25rem;
     }

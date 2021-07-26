@@ -100,26 +100,31 @@
             </div>
           </div>
 
-          <nav v-if="$store.lpData !== null && poolBalance !== null" class="level lp-stats">
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Pool Size</p>
-                <p class="title">{{ parseFloat(poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">kUSD</span></p>
+          <div v-if="$store.lpData !== null && poolBalance !== null">
+            <nav class="level lp-stats">
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Pool Size</p>
+                  <p class="title">{{ parseFloat(poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">kUSD</span></p>
+                </div>
               </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Liquidation Reward</p>
-                <p class="title">{{ $store.lpData.rewardPercent }}%</p>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Liquidation Reward</p>
+                  <p class="title">{{ $store.lpData.rewardPercent }}%</p>
+                </div>
               </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">LP Tokens Total</p>
-                <p class="title">{{ parseFloat($store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }}</p>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">LP Tokens Total</p>
+                  <p class="title">{{ parseFloat($store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }}</p>
+                </div>
               </div>
+            </nav>
+            <div class="container has-text-centered">
+              <p><strong>1 QLkUSD</strong> is currently redeemable for <strong>{{ poolBalance.dividedBy(Math.pow(10, 18)).dividedBy($store.lpData.totalSupply.dividedBy($store.lpMantissa)).toFixed(2) }} kUSD</strong> </p>
             </div>
-          </nav>
+          </div>
           <div v-else class="loader-wrapper">
             <div class="loader is-large is-primary"></div>
           </div>
