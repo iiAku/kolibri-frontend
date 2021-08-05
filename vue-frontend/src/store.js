@@ -7,6 +7,7 @@ import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 
+// const FORCE_MAINNET = true
 const FORCE_MAINNET = false
 
 function dontIndexTestnets(){
@@ -105,6 +106,8 @@ if (ovenNameMapping !== null) {
 } else {
     ovenNames = {}
 }
+
+NODE_URL = localStorage.getItem('nodeOverride') ? localStorage.getItem('nodeOverride') : NODE_URL
 
 let state = Vue.observable({
     currentBlockHeight: null,

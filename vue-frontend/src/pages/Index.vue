@@ -1,9 +1,5 @@
 <template>
   <div class="index">
-    <portal-target name="manage-modal" />
-    <portal-target name="delegate-modal" />
-    <portal-target name="new-oven-modal" />
-
     <div
         v-if="$store.walletBalance !== null && $store.walletBalanceXTZ !== null"
         class="holdings animate__animated animate__fadeInRight"
@@ -138,7 +134,7 @@ export default {
     min-height: calc(100vh - 4rem - 5px);
     background: $light-grey;
     position: relative;
-    z-index: 40;
+    z-index: 39;
     .top-notification{
       padding-top: 1rem;
     }

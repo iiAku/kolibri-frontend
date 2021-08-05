@@ -1,5 +1,12 @@
 <template>
   <div>
+    <portal-target name="manage-modal" />
+    <portal-target name="delegate-modal" />
+    <portal-target name="new-oven-modal" />
+    <portal-target name="project-info-modal" />
+
+    <options />
+
     <sandbox-override v-if="$store.isSandbox"/>
     <navbar />
     <keep-alive>
@@ -13,10 +20,12 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import BigNumber from "bignumber.js";
 import SandboxOverride from "@/components/SandboxOverrides";
+import Options from "@/components/Options";
 
 export default {
   name: 'App',
   components: {
+    Options,
     SandboxOverride,
     Navbar
   },

@@ -451,7 +451,7 @@ export default {
         'kUSD Quipu LP': {
           mantissa: new BigNumber(10).pow(6),
           balances: () => this.tokenContractData.storage.ledger,
-          description: "The kUSD Quipu LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://analytics.quipuswap.com/pairs/KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6'>Quipuswap XTZ/kUSD LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
+          description: "The kUSD Quipu LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://analytics.quipuswap.com/pairs/KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6'>Quipuswap XTZ/kUSD LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.<br><br><strong>Please note!</strong> Baking rewards are usually paid to the LP holder (see <a rel='noopener' target='_blank' href='https://madfish.crunch.help/quipu-swap/how-to-get-trading-fees-and-baking-rewards-on-quipu-swap'><b>this article</b></a>), but by depositing them in the farm the baking rewards for the XTZ portion of the pair go to the DAO instead.",
         },
         'QLkUSD': {
           mantissa: new BigNumber(10).pow(36),

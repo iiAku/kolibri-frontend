@@ -1,7 +1,5 @@
 <template>
   <div class="liquidity-pool animate__animated animate__fadeIn">
-    <portal-target name="project-info-modal" />
-
     <transition
       name="custom-classes-transition"
       enter-active-class="animate__fadeIn"
