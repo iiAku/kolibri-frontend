@@ -8,7 +8,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!$store.isTestnet || $store.currentBlockHeight === null" class="columns is-centered is-gapless">
+    <div v-if="!$store.isTestnet && $store.currentBlockHeight !== null" class="columns is-centered is-gapless">
       <div class="column is-half-desktop">
         <div v-if="$store.currentBlockHeight <= 1589248" class="notification is-warning">
           <strong>Please note!</strong><br> Mainnet currently uses 1 min block times, so farms are currently emitting at <strong>50%</strong> of their planned schedule until the <a target="_blank" rel="noopener" href="https://tzstats.com/election/29"><strong>Granada proposal</strong></a> goes live. Once live, farm emissions will double from their current drip rate (lasting ~1 year)

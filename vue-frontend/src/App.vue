@@ -36,7 +36,7 @@ export default {
     }
   },
   async mounted(){
-    this.updateBlockHeight()
+    await this.updateBlockHeight()
     await this.updatePriceInfo()
     await this.updateAllOvenData()
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
