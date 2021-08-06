@@ -375,8 +375,7 @@ export default {
     },
     poolRatePerWeek(){
       const minutesPerWeek = 10080;
-      // Testnet uses 30s blocks, mainnet is 1m. TODO: Will need updated for granada
-      const blocksPerWeek = this.$store.isTestnet ? minutesPerWeek * 2 : minutesPerWeek
+      const blocksPerWeek = minutesPerWeek * 2
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {
