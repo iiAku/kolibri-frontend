@@ -74,7 +74,7 @@ export default {
     min-height: calc(100vh - 4rem - 5px);
     background: $light-grey;
     position: relative;
-    z-index: 40;
+    z-index: 39;
     .columns{
       &:first-child{
         padding-top: 2.5rem;
