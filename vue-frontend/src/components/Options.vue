@@ -87,7 +87,7 @@ export default {
     return {
       nodes: {
         Giganode: {
-          testnet: 'https://testnet-tezos.giganode.io',
+          testnet: 'https://florence-tezos.giganode.io',
           mainnet: 'https://mainnet-tezos.giganode.io',
         },
         SmartPy: {
