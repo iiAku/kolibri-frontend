@@ -5,6 +5,8 @@
     <portal-target name="new-oven-modal" />
     <portal-target name="project-info-modal" />
 
+    <pending-tx-info />
+
     <options />
 
     <sandbox-override v-if="$store.isSandbox"/>
@@ -21,10 +23,12 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import SandboxOverride from "@/components/SandboxOverrides";
 import Options from "@/components/Options";
+import PendingTxInfo from "@/components/PendingTransactionInfo";
 
 export default {
   name: 'App',
   components: {
+    PendingTxInfo,
     Options,
     SandboxOverride,
     Navbar

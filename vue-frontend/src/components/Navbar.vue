@@ -50,7 +50,6 @@
           class="navbar-item"
         >
           Farming
-          <div class="new-badge">New!</div>
         </router-link>
 
         <a :href="$store.isTestnet ? 'https://testnet-governance.kolibri.finance' : 'https://governance.kolibri.finance'"
@@ -59,7 +58,6 @@
            class="navbar-item"
         >
           Governance
-          <div class="new-badge">New!</div>
         </a>
 
       </div>

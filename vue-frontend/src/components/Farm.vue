@@ -198,8 +198,8 @@
                   <div class="control">
                     <button
                       @click="depositTokens"
-                      :class="{'is-loading': networkSending}"
-                      :disabled="this.networkSending || Math.sign(depositInput) < 1"
+                      :class="{'is-loading': networkSending || globalSending}"
+                      :disabled="this.networkSending || globalSending || Math.sign(depositInput) < 1"
                       class="button is-info"
                     >
                       Deposit {{ pairName }}
@@ -221,7 +221,7 @@
                   <div class="control">
                     <button
                       @click="withdrawTokens"
-                      :class="{'is-loading': networkSending}"
+                      :class="{'is-loading': networkSending || globalSending}"
                       :disabled="withdrawShouldBeDisabled"
                       class="button is-info"
                     >
@@ -234,8 +234,8 @@
 
             <div class="buttons is-right">
               <button
-                :disabled="networkSending || estimatedRewards.isZero()"
-                :class="{'is-loading': networkSending}"
+                :disabled="networkSending || globalSending || estimatedRewards.isZero()"
+                :class="{'is-loading': networkSending || globalSending}"
                 @click="claim"
                 class="button is-info"
               >
@@ -265,10 +265,16 @@ BigNumber.set({ DECIMAL_PLACES: 36 })
 
 export default {
   name: 'Farm',
-  props: ['pairName', 'contract'],
+  props: ['pairName', 'contract', 'globalSending'],
   mixins: [Mixins],
   async mounted(){
     this.$nextTick(this.initialize)
+
+    // Refresh farms on request
+    this.$eventBus.$on('refresh-farms', () => {
+      Object.assign(this.$data, this.$options.data.apply(this))
+      this.$nextTick(this.initialize)
+    })
   },
   methods: {
     async initialize(){
@@ -283,6 +289,8 @@ export default {
       } else {
         this.$eventBus.$on('wallet-connected', this.updateTokenBalance)
       }
+
+      this.$emit('initialized', {contract: farmContract, claimable: this.estimatedRewards})
     },
     async updateTokenBalance(){
       const balanceMap = this.decimalsMap[this.pairName].balances()
@@ -367,7 +375,7 @@ export default {
   },
   computed: {
     withdrawShouldBeDisabled(){
-      if (this.networkSending) { return true }
+      if (this.networkSending || this.globalSending) { return true }
       if (Math.sign(this.withdrawInput) < 1) { return true }
       return new BigNumber(this.withdrawInput).isGreaterThan(
         this.depositedTokens.lpTokenBalance.dividedBy(this.decimalsMap[this.pairName].mantissa)

@@ -1,6 +1,5 @@
 <template>
   <div class="farming">
-    <pending-tx-info />
     <div class="columns is-centered is-gapless">
       <div class="column is-half-desktop">
         <div class="notification is-info">
@@ -20,11 +19,17 @@
     </div>
     <div class="columns is-centered is-gapless farms">
       <div class="column is-half-desktop">
+        <div class="buttons is-centered">
+          <button @click="claimAll" :disabled="!isDoneGettingClaimableRewards || networkSending || totalClaimable.isLessThan(0.005)" :class="{'is-loading': !isDoneGettingClaimableRewards || networkSending}" class="button is-info is-medium has-text-weight-bold">🧑‍🌾 Claim All {{ totalClaimable.dividedBy(Math.pow(10, 18)).toFixed(2) }} kDAO</button>
+        </div>
+
         <farm
           v-for="(contract, pairName) in $store.farmContracts"
           :key="pairName"
           :contract="contract"
           :pair-name="pairName"
+          :global-sending="networkSending"
+          @initialized="addContractHoldings($event)"
         />
       </div>
     </div>
@@ -34,7 +39,7 @@
 <script>
 import Mixins from "@/mixins";
 import Farm from "@/components/Farm";
-import PendingTxInfo from "@/components/PendingTransactionInfo";
+import BigNumber from "bignumber.js";
 
 export default {
   name: 'Farming',
@@ -49,15 +54,58 @@ export default {
   },
   data(){
     return {
-
+      globalClaimableRewards: [],
+      networkSending: false
     }
   },
   components: {
-    PendingTxInfo,
     Farm
+  },
+  computed: {
+     isDoneGettingClaimableRewards(){
+       const farmCount = Object.keys(this.$store.farmContracts).length
+       const rewardInfoCount = this.globalClaimableRewards.length
 
+       return farmCount === rewardInfoCount
+     },
+     totalClaimable(){
+       let total = new BigNumber(0)
+       for (const rewardInfo of this.globalClaimableRewards){
+         total = total.plus(rewardInfo.claimable)
+       }
+       return total
+     }
   },
   methods: {
+    async claimAll(){
+      this.networkSending = true
+      try {
+        let batch = await this.$store.tezosToolkit.wallet.batch([])
+
+        for (const rewardInfo of this.globalClaimableRewards){
+          if (rewardInfo.claimable.dividedBy(Math.pow(10, 18)).isGreaterThan(0.005)) {
+            batch = batch.withContractCall(rewardInfo.contract.methods.claim(null))
+          }
+        }
+
+        const sendResult = await batch.send()
+
+        this.$eventBus.$emit('tx-submitted', sendResult)
+
+        await sendResult.confirmation(1)
+
+        this.globalClaimableRewards = []
+        this.$eventBus.$emit('refresh-farms')
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.networkSending = false
+        this.$eventBus.$emit('tx-finished')
+      }
+    },
+    addContractHoldings(contractHoldingsInfo){
+      this.globalClaimableRewards.push(contractHoldingsInfo)
+    },
     async updatekDAOHoldings(){
       this.$store.kdaoHoldings = null
       const kDAOToken = await this.$store.tezosToolkit.wallet.at(this.$store.daoToken)

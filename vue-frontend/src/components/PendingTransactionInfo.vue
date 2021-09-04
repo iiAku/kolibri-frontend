@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="pending-tx-info animate__animated animate__fadeInUp">
+  <div v-if="show" class="pending-tx-info animate__animated animate__fadeInRight">
     <h4 class="has-text-weight-bold has-text-white is-flex is-align-items-center">Pending Transaction <div class="loader is-white is-inline-block"></div></h4>
     <a target="_blank" rel="noopener" :href="tzktLink(currentTx)" class="has-text-white">{{ truncateChars(currentTx, 20) }}</a>
   </div>
@@ -59,10 +59,10 @@ export default {
   background: $primary;
   padding: 1rem;
   position: fixed;
-  bottom: 0;
-  right: 1rem;
+  top: 5rem;
+  right: 0;
   border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
   z-index: 99;
   .loader{
     margin-left: .5rem;
