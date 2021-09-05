@@ -74,7 +74,7 @@
     methods: {
       async signPayload(){
         this.signatureResult = await this.$store.wallet.client.requestSignPayload({payload: this.message})
-        console.log(this.signatureResult)
+        this.$log(this.signatureResult)
       }
     },
     computed: {

@@ -114,12 +114,12 @@ export default {
 
         const walletCopy = _.defaultsDeep({}, this.$store.wallet)
 
-        console.log("Creating oven...")
+        this.$log("Creating oven...")
         let result = await this.$store.stableCoinClient.deployOven(walletCopy)
 
         this.pendingCreateOvenTx = result.opHash
 
-        console.log("Pending hash -", result.opHash)
+        this.$log("Pending hash -", result.opHash)
 
         await result.confirmation(1)
 

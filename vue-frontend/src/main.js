@@ -9,6 +9,8 @@ Vue.config.productionTip = false
 
 Vue.prototype.$store = store
 Vue.prototype.$eventBus = new Vue();
+// Vue.prototype.$log = message => console.log(message)
+Vue.prototype.$log = () => {}
 
 Vue.directive('focus', {
   inserted: function (el) {

@@ -63,10 +63,13 @@ export default {
         clearInterval(this.updateTimer)
         this.updateTimer = null
         this.$store.wallet = null
+        this.$store.walletPKH = null
         this.$store.walletBalance = null
         this.$store.walletState = WalletStates.DISCONNECTED
+
+        this.$eventBus.$emit('refresh-farms')
+
         await this.connectWallet()
-        this.$eventBus.$emit('refresh-all-ovens')
       } catch (e) {
         if (e.name !== 'NotGrantedThanosWalletError') {
           throw e
@@ -74,8 +77,6 @@ export default {
       }
     },
     async connectWallet(activeAccount) {
-      this.$store.walletState = WalletStates.CONNECTING
-
       try {
         if (activeAccount === undefined){
           await this.beaconWallet.requestPermissions({
@@ -88,7 +89,7 @@ export default {
         this.$store.wallet = this.beaconWallet
 
         this.$eventBus.$emit('wallet-connected')
-
+        this.$eventBus.$emit('refresh-all-ovens')
         // Update wallet balances for kUSD
         await this.updateBalance()
         this.updateTimer = setInterval(this.updateBalance, 60 * 1000)

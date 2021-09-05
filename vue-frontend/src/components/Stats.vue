@@ -218,7 +218,7 @@ export default {
   name: "Stats",
   mixins: [Mixins],
   created() {
-    console.log("Stats component created");
+    this.$log("Stats component created");
     setInterval(() => {
       this.now = moment();
     }, 1000);

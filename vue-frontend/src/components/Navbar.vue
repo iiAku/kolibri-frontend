@@ -66,8 +66,6 @@
         <div class="navbar-item wallet-connector">
           <div v-if="$store.wallet === null || $store.wallet.connected === false" class="buttons">
             <button
-              :disabled="$store.walletState === WalletStates.CONNECTING"
-              :class="{'is-loading': $store.walletState === WalletStates.CONNECTING}"
               @click="$eventBus.$emit('wallet-connect-request')"
               class="button connect-button is-primary is-small"
             >

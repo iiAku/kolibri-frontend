@@ -272,12 +272,15 @@ export default {
 
     // Refresh farms on request
     this.$eventBus.$on('refresh-farms', () => {
+      this.$log("Refreshing farms!")
       Object.assign(this.$data, this.$options.data.apply(this))
+      this.$log("Done refreshing farms")
       this.$nextTick(this.initialize)
     })
   },
   methods: {
     async initialize(){
+      this.$log("Farm.initialize called!")
       const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
       this.farmContractData = await farmContract.storage()
 
@@ -411,7 +414,7 @@ export default {
       return this.currentPoolPercentage.times(this.poolRatePerWeek)
     },
     estimatedRewards(){
-      if (this.depositedTokens === undefined || this.depositedTokens.lpTokenBalance.isZero()){
+      if (this.depositedTokens === undefined || this.depositedTokens === null || this.depositedTokens.lpTokenBalance.isZero()){
         return new BigNumber(0)
       }
       const accRewardPerShareStart = this.depositedTokens.accumulatedRewardPerShareStart

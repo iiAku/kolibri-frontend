@@ -343,7 +343,7 @@
             .withContractCall(lpContract.methods.deposit(sendAmt))
             .send()
 
-          console.log(sendResult)
+          this.$log(sendResult)
 
           await sendResult.confirmation(1)
 
@@ -371,7 +371,7 @@
             .withContractCall(lpContract.methods.redeem(redeemAmt.toFixed(0)))
             .send()
 
-          console.log(sendResult)
+          this.$log(sendResult)
 
           await sendResult.confirmation(1)
 

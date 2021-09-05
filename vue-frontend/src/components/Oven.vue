@@ -461,7 +461,7 @@ export default {
         await txResult.confirmation(1);
         this.updatingData = true;
         this.pendingTransaction = false;
-        console.log("Deposit Finished! Refreshing data", txResult);
+        this.$log("Deposit Finished! Refreshing data", txResult);
         await this.updateOvenData();
 
         this.$set(this.$store, 'walletBalance', await this.$store.tokenClient.getBalance(this.$store.walletPKH))
