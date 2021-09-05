@@ -9,6 +9,8 @@ Vue.config.productionTip = false
 
 Vue.prototype.$store = store
 Vue.prototype.$eventBus = new Vue();
+
+// Enable/disable logging
 // Vue.prototype.$log = message => console.log(message)
 Vue.prototype.$log = () => {}
 
