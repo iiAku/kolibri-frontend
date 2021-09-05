@@ -29,6 +29,7 @@
           :contract="contract"
           :pair-name="pairName"
           :global-sending="networkSending"
+          @new-estimated-rewards="updateClaimableRewards($event)"
           @initialized="addContractHoldings($event)"
         />
       </div>
@@ -54,7 +55,7 @@ export default {
   },
   data(){
     return {
-      globalClaimableRewards: [],
+      globalClaimableRewards: {},
       networkSending: false
     }
   },
@@ -64,25 +65,33 @@ export default {
   computed: {
      isDoneGettingClaimableRewards(){
        const farmCount = Object.keys(this.$store.farmContracts).length
-       const rewardInfoCount = this.globalClaimableRewards.length
+       const rewardInfoCount = Object.keys(this.globalClaimableRewards).length
 
        return farmCount === rewardInfoCount
      },
      totalClaimable(){
        let total = new BigNumber(0)
-       for (const rewardInfo of this.globalClaimableRewards){
+       for (const rewardInfo of Object.values(this.globalClaimableRewards)){
          total = total.plus(rewardInfo.claimable)
        }
        return total
      }
   },
   methods: {
+    async updateClaimableRewards({contract, estimatedRewards}){
+      if (this.globalClaimableRewards[contract] === undefined){ return }
+      this.$set(
+        this.globalClaimableRewards[contract],
+        'claimable',
+        estimatedRewards
+      )
+    },
     async claimAll(){
       this.networkSending = true
       try {
         let batch = await this.$store.tezosToolkit.wallet.batch([])
 
-        for (const rewardInfo of this.globalClaimableRewards){
+        for (const rewardInfo of Object.values(this.globalClaimableRewards)){
           if (rewardInfo.claimable.dividedBy(Math.pow(10, 18)).isGreaterThan(0.005)) {
             batch = batch.withContractCall(rewardInfo.contract.methods.claim(null))
           }
@@ -94,7 +103,7 @@ export default {
 
         await sendResult.confirmation(1)
 
-        this.globalClaimableRewards = []
+        this.globalClaimableRewards = {}
         this.$eventBus.$emit('refresh-farms')
       } catch (e) {
         console.error(e)
@@ -104,7 +113,11 @@ export default {
       }
     },
     addContractHoldings(contractHoldingsInfo){
-      this.globalClaimableRewards.push(contractHoldingsInfo)
+      this.$set(
+        this.globalClaimableRewards,
+        contractHoldingsInfo.contractAddress,
+        contractHoldingsInfo
+      )
     },
     async updatekDAOHoldings(){
       this.$store.kdaoHoldings = null

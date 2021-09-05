@@ -19,18 +19,15 @@ export default {
 
     // Go check for an active account, and if it exists just use that
     const activeAccount = await this.beaconWallet.client.getActiveAccount()
-    console.log("Active Account - ", activeAccount)
     if (activeAccount !== undefined){
       this.$eventBus.$emit('wallet-connect-request', activeAccount)
     }
 
     this.$eventBus.$on('refresh-holdings', async () => {
-      console.log("Updating holdings")
       this.$store.lpData = null
       this.$store.lpBalance = null
       this.$store.walletBalance = null
       await this.updateBalance()
-      console.log('Done updating holdings')
     })
 
   },
@@ -61,7 +58,6 @@ export default {
 
     },
     async reconnectWallet(){
-      console.log("Reconnecting wallet!")
       try {
         await this.beaconWallet.clearActiveAccount()
         clearInterval(this.updateTimer)
@@ -79,7 +75,6 @@ export default {
     },
     async connectWallet(activeAccount) {
       this.$store.walletState = WalletStates.CONNECTING
-      console.log("Connecting wallet!");
 
       try {
         if (activeAccount === undefined){

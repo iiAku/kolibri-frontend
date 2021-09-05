@@ -80,7 +80,6 @@ export default {
       // const headerTimestamp = moment(currentBlock.header.timestamp).add(1, 'minute').add(5, 'seconds')
       // const nextCheckTime = headerTimestamp - moment()
       this.$store.currentBlockHeight = currentBlock.header.level
-      console.log("Updating block height - ", currentBlock.header.level)
       // setTimeout(this.updateBlockHeight, nextCheckTime)
       setTimeout(this.updateBlockHeight, 10 * 1000)
     },

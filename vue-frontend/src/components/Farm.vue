@@ -290,7 +290,7 @@ export default {
         this.$eventBus.$on('wallet-connected', this.updateTokenBalance)
       }
 
-      this.$emit('initialized', {contract: farmContract, claimable: this.estimatedRewards})
+      this.$emit('initialized', {contractAddress: this.contract, contract: farmContract, claimable: this.estimatedRewards})
     },
     async updateTokenBalance(){
       const balanceMap = this.decimalsMap[this.pairName].balances()
@@ -433,7 +433,15 @@ export default {
       const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(rewardRatio)
 
       const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
-      return accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(lpMantissa)
+
+      const estimatedRewards = accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(lpMantissa)
+
+      this.$emit('new-estimated-rewards', {
+        contract: this.contract,
+        estimatedRewards,
+      })
+
+      return estimatedRewards
     },
   },
   data(){
