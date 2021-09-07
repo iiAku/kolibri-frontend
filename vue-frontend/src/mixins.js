@@ -198,11 +198,13 @@ export default {
                 return `https://tzkt.io/${contractOrOp}`
             }
         },
-        bcdLink(contractOrOp){
+        bcdLink(contract){
             if (this.$store.network === 'florencenet'){
-                return `https://better-call.dev/florencenet/${contractOrOp}`
+                return `https://better-call.dev/florencenet/${contract}`
+            } else if (this.$store.isSandbox) {
+                return `https://sandbox-bcd.hover.engineering/sandboxnet/${contract}`
             } else {
-                return `https://better-call.dev/mainnet/${contractOrOp}`
+                return `https://better-call.dev/mainnet/${contract}`
             }
         },
         liquidatablePrice(ovenAddress){

@@ -9,6 +9,19 @@
 
         <button @click="open = false" class="delete"></button>
 
+        <div class="contracts">
+          <h1 class="title is-5 has-text-white is-marginless">Contracts</h1>
+          <div class="content">
+            <ul class="has-text-white">
+              <li :key="contractKey" v-for="(contractName, contractKey) in contracts">
+                <b>
+                  <a class="has-text-white" target="_blank" rel="noopener" :href="bcdLink($store.contracts[contractKey])">{{ contractName }}</a>
+                </b>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <nav class="level">
           <div class="level-item form-label">
             <div class="is-flex is-align-items-center">
@@ -19,7 +32,11 @@
           <div class="level-item">
             <div class="select">
               <select v-model="selectedNode">
-                <option :key="nodeName" :value="$store.isTestnet ? nodeAddresses.testnet : nodeAddresses.mainnet" v-for="(nodeAddresses, nodeName) in nodes">
+                <option
+                  :key="nodeName"
+                  :value="nodeAddresses[$store.network]"
+                  v-for="(nodeAddresses, nodeName) in nodes"
+                >
                   {{ nodeName }}
                 </option>
                 <option v-if="getItem('nodeOverride') && !nodesContainsNode(getItem('nodeOverride'))" :value="getItem('nodeOverride')">{{ getItem('nodeOverride') }}</option>
@@ -31,7 +48,7 @@
           </div>
         </nav>
 
-        <div v-if="!isIPFSLocation && false" class="buttons is-centered">
+        <div v-if="!isIPFSLocation" class="buttons is-centered">
           <a
             target="_blank"
             rel="noopener"
@@ -52,10 +69,12 @@
 
 <script>
 import axios from "axios";
+import Mixins from '../mixins';
 
 export default {
   name: 'Options',
   props: [],
+  mixins: [Mixins],
   mounted(){
 
   },
@@ -84,25 +103,44 @@ export default {
 
   },
   data(){
-    return {
-      nodes: {
+    let nodes
+    if (this.$store.isSandbox) {
+      nodes = {
+        "Hover Labs' Sandbox": {
+          sandbox: 'https://sandbox.hover.engineering',
+        },
+        "127.0.0.1:8732": {
+          sandbox: 'http://127.0.0.1:8732',
+        },
+      }
+    } else {
+      nodes = {
         Giganode: {
-          testnet: 'https://florence-tezos.giganode.io',
+          florencenet: 'https://florence-tezos.giganode.io',
           mainnet: 'https://mainnet-tezos.giganode.io',
         },
         SmartPy: {
-          testnet: 'https://florencenet.smartpy.io',
+          florencenet: 'https://florencenet.smartpy.io',
           mainnet: 'https://mainnet.smartpy.io',
         },
         TZBeta: {
-          testnet: 'https://rpctest.tzbeta.net',
+          florencenet: 'https://rpctest.tzbeta.net',
           mainnet: 'https://rpc.tzbeta.net',
         }
+      }
+    }
+
+    return {
+      contracts: {
+        DAO: "Kolibri DAO",
+        COMMUNITY_FUND: "DAO Community Fund",
+        TOKEN: "kDAO Token",
       },
       open: false,
       currentNodeURL: null,
       selectedNode: this.$store.nodeURL,
       networkLoading: false,
+      nodes
     }
   },
   watch: {
@@ -180,7 +218,6 @@ export default {
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 40;
   .options-button{
     cursor: pointer;
     border-radius: 50%;
@@ -197,6 +234,9 @@ export default {
         animation: rotateForever 1.5s linear infinite;
       }
     }
+  }
+  .contracts{
+    margin-bottom: 1rem;
   }
   .menu{
     background: $primary;

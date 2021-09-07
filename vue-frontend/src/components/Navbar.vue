@@ -52,7 +52,7 @@
           Farming
         </router-link>
 
-        <a :href="$store.isTestnet ? 'https://testnet-governance.kolibri.finance' : 'https://governance.kolibri.finance'"
+        <a :href="govLink()"
            target="_blank"
            rel="noopener"
            class="navbar-item"
@@ -112,6 +112,15 @@ export default {
     }
   },
   methods: {
+    govLink(){
+      if (this.$store.isTestnet){
+        return 'https://testnet-governance.kolibri.finance'
+      } else if (this.$store.isSandbox){
+        return 'https://governance-sandbox.kolibri.finance'
+      } else {
+        return 'https://governance.kolibri.finance'
+      }
+    },
     avatarSvg(){
       return avatars.create(this.$store.walletPKH.toString(), {
         width: 48,

@@ -80,7 +80,10 @@ export default {
       try {
         if (activeAccount === undefined){
           await this.beaconWallet.requestPermissions({
-            network: {type: this.$store.network, rpcUrl: this.$store.nodeURL}
+            network: {
+              type: this.$store.network === 'sandbox' ? 'custom' : this.$store.network,
+              rpcUrl: this.$store.nodeURL
+            }
           })
         }
 

@@ -65,7 +65,7 @@
             </div>
           </div>
 
-          <div class="level-right">
+          <div v-if="!currentRewardPerWeek.isZero()" class="level-right">
             <span>
               <strong class="has-text-white">
                 1 kDAO / Week Per
@@ -84,6 +84,13 @@
             </popover>
 
             <p class="has-text-white has-text-weight-bold padded-left">{{ pairName }}</p>
+          </div>
+          <div v-else class="level-right">
+            <span>
+              <strong class="has-text-white">
+                0 kDAO / Week ({{ pairName }} farm is inactive)
+              </strong>
+            </span>
           </div>
         </nav>
 

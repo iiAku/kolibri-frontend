@@ -20,9 +20,9 @@ function dontIndexTestnets(){
 
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
+    // window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://florence-tezos.giganode.io'
+    NODE_URL = 'https://florencenet.smartpy.io'
     NETWORK = Network.Florence
     NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
@@ -35,36 +35,33 @@ if ((window.location.hostname === 'localhost' ||
     }
 
     dontIndexTestnets()
-} else if (
-    // window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === 'sandbox.kolibri.finance') {
-    NODE_URL = 'http://127.0.0.1:8732'
-    NETWORK = Network.Sandbox
+} else if ((
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'sandbox.kolibri.finance') && !FORCE_MAINNET) {
+    NODE_URL = 'https://sandbox.hover.engineering'
+    NETWORK = 'sandbox'
 
-    NETWORK_CONTRACTS  = {
-        MINTER: "KT1WoJNcdahhq767m3Sbwdd2GBY6Y9MEPaq6",
-        OVEN_PROXY: "KT1TNBZ1swd3h5WBA7RiDP2xTeGbAk3XLRua",
-        OVEN_FACTORY: "KT19Li9kJ7zioJ9DUfsvTKwSMmWW5aruHtBW",
-        TOKEN: "KT1LU771Mf1Qbpz69Ed7Tt8JdkxZJnKhW1sP",
-        OVEN_REGISTRY: "KT19dyTijSBa4vWQYqSS1wJibndQ4jSHVhB1",
-        DEVELOPER_FUND: "KT1Cz1vfanKTSMe2MMYSmBkLUK2Gh6EoVVgA",
-        STABILITY_FUND: "KT1A3byBQZmoXbL3Tei6oZBV2komH8vnMEAt",
-        ORACLE: "KT1V93P9QvzvNxbt98cSEMmGuo4DiwZfX9xq",
-        HARBINGER_NORMALIZER: 'KT1MyzVhLxNEuuK2g6gkqnNJky24ZBsBg7kj',
-        LIQUIDITY_POOL: "KT1MVwgSoNUNS717ypAPFc4USteWm1g33czN",
-        DEXTER_POOL: '',
-        QUIPUSWAP_POOL: "KT1UTS2tZQHdtq8NDHKfZT4w1bwGRc1Xctgw",
-        KOLIBRI_BAKER: 'tz3WXYtyDUNL91qfiCJtVUX746QpNv5i5ve5',
-        GOVERNOR: '',
-        PAUSE_GUARDIAN: '',
-        FUND_ADMIN: '',
+    NETWORK_CONTRACTS = {
+        TOKEN: "KT1LrCSMUKKyZwhnKh9EXhvTspJ4YP1et95U",
+        ORACLE: "KT1PKen2GEgadnzzvxhSCNmAZc2EKKzssUYv",
+        HARBINGER_NORMALIZER: 'KT1LV3DjqarkgQ4PvCZCgbAKYi438WYcehTu',
+        DEVELOPER_FUND: "KT1BEDFemDcC5K6QYVXF2oW6bcjw2Q9yVchw",
+        STABILITY_FUND: "KT1DaCndUJwZzCr7BiZRH8mxr6mpPu88mJpe",
+        OVEN_REGISTRY: "KT1NeEZDA2HuLpuhwRJ4fZ7sqcYfgxpGBoya",
+        OVEN_FACTORY: "KT1CmUwZTtHFgoELFbipZKKR1X3WPz88Zdnh",
+        OVEN_PROXY: "KT1C39aEForRcXyjw1sHwSThX1tKHnTxRUdo",
+        MINTER: "KT1Vwqaf7RCKfzcQ6r6JpQN1cWmy6Z2z2qu1",
+        LIQUIDITY_POOL: "KT1LgMkgxNiNoRc6niDjcjwBCnFJMsET8LNq",
+        QUIPUSWAP_POOL: "KT1N3YZz4yq732Jdy7BSEWbFsSvvoTDFa1si",
     }
 
-    isTestnet = true
+    isTestnet = false
     isSandbox = true
 
     farmContracts = {
-        'QLkUSD': 'KT1QM5uKDCkEDNoXubRiYou7p92KKkxrTQUV',
+        'kUSD': 'KT1M97HUZBVibMipbNdk3qTxaaYpnEsvnonY',
+        'QLkUSD': 'KT1Rdit9FA79UbDebKmd6oYcTigXiTZkk9vS',
+        'kUSD Quipu LP': 'KT1T5dQ2839MUXF6DqwgD1gMdHi3nCDqqmmQ'
     }
 
     dontIndexTestnets()

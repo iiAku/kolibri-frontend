@@ -145,7 +145,7 @@
     >
       <h1 class="subtitle is-marginless has-text-weight-normal">
         Latest
-        <a href="https://harbinger.live" target="_blank" rel="noopener">
+        <a :href="harbingerLink()" target="_blank" rel="noopener">
           XTZ/USD Oracle
         </a>
         Price:
@@ -207,6 +207,7 @@
 <script>
 import moment from "moment";
 import BigNumber from "bignumber.js";
+BigNumber.config({ POW_PRECISION: 18 })
 
 import { ConversionUtils } from '@hover-labs/kolibri-js'
 import Popover from "@/components/Popover";
@@ -238,6 +239,15 @@ export default {
     };
   },
   methods: {
+    harbingerLink(){
+      if (this.$store.isTestnet){
+        return 'https://testnet.harbinger.live'
+      } else if (this.$store.isSandbox){
+        return 'https://sandbox.harbinger.live'
+      } else {
+        return 'https://harbinger.live'
+      }
+    },
     updateStatsData() {
       this.$store.stableCoinClient.getOvenCount()
         .then((count) => {
@@ -249,20 +259,16 @@ export default {
           this.$store.ovenCount = "?";
         });
 
-      axios
-        .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/apy.json`)
-        .then((result) => {
-          this.$store.stabilityFee = new BigNumber(result.data.apy);
-        })
-        .catch(async () => {
-          try {
-            const minter = await this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
-            const minterStorage = await minter.storage()
-            this.$store.stabilityFee = minterStorage.stabilityFee
-          } catch(e) {
-            clearInterval(this.statsUpdateTimer)
-            this.$store.stabilityFee = "?";
-          }
+      this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
+        .then(async (contract) => {
+          const minterStorage = await contract.storage()
+          const mantissa = new BigNumber(10).pow(18)
+          this.$store.stabilityFee = minterStorage.stabilityFee
+                                       .dividedBy(mantissa)
+                                       .plus(1)
+                                       .pow(365 * 24 * 60)
+                                       .minus(1)
+                                       .times(mantissa)
         })
 
       axios

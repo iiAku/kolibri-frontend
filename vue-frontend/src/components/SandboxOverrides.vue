@@ -67,7 +67,7 @@ export default {
         }
         newOverride[key] = result
       }
-      this.sandboxOverride = JSON.stringify({NETWORK_CONTRACTS: newOverride}, null, 2)
+      this.sandboxOverride = JSON.stringify({contracts: newOverride}, null, 2)
       localStorage.setItem('sandbox-overrides', this.sandboxOverride)
       location.reload()
     },
