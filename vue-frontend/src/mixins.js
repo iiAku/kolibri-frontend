@@ -202,7 +202,7 @@ export default {
             if (this.$store.network === 'florencenet'){
                 return `https://better-call.dev/florencenet/${contract}`
             } else if (this.$store.isSandbox) {
-                return `https://sandbox-bcd.hover.engineering/sandboxnet/${contract}`
+                return `https://bcd.hover.engineering/sandboxnet/${contract}`
             } else {
                 return `https://better-call.dev/mainnet/${contract}`
             }
