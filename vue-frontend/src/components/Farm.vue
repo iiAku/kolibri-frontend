@@ -393,7 +393,8 @@ export default {
     },
     poolRatePerWeek(){
       const minutesPerWeek = 10080;
-      const blocksPerWeek = minutesPerWeek * 2
+      const secondsPerWeek = minutesPerWeek * 60
+      const blocksPerWeek = this.$store.network === 'sandbox' ? (secondsPerWeek / 4) : minutesPerWeek * 2
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {

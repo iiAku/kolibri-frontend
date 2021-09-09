@@ -15,7 +15,7 @@
             <ul class="has-text-white">
               <li :key="contractKey" v-for="(contractName, contractKey) in contracts">
                 <b>
-                  <a class="has-text-white" target="_blank" rel="noopener" :href="bcdLink($store.contracts[contractKey])">{{ contractName }}</a>
+                  <a class="has-text-white" target="_blank" rel="noopener" :href="bcdLink($store.NETWORK_CONTRACTS[contractKey])">{{ contractName }}</a>
                 </b>
               </li>
             </ul>
@@ -47,18 +47,6 @@
             </div>
           </div>
         </nav>
-
-        <div v-if="!isIPFSLocation" class="buttons is-centered">
-          <a
-            target="_blank"
-            rel="noopener"
-            href="https://ipfs.io/ipns/k51qzi5uqu5djh7kn7aqel48jmy1zmd8y9faz5jtmcsnrvlcectuo8bu4bhbv0"
-            class="button is-small is-outlined is-white"
-          >
-            <b>Visit IPFS Site</b>
-          </a>
-        </div>
-
       </div>
       <div :key="'cog'" @click="open = true" v-else class="options-button is-flex">
         <img src="../assets/cog.svg" />
@@ -79,9 +67,6 @@ export default {
 
   },
   computed: {
-    isIPFSLocation(){
-      return window.location.href.includes('k51qzi5uqu5djh7kn7aqel48jmy1zmd8y9faz5jtmcsnrvlcectuo8bu4bhbv0')
-    }
   },
   methods: {
     getItem(itemKey){
@@ -132,9 +117,15 @@ export default {
 
     return {
       contracts: {
-        DAO: "Kolibri DAO",
-        COMMUNITY_FUND: "DAO Community Fund",
-        TOKEN: "kDAO Token",
+        MINTER: 'Minter',
+        TOKEN: 'kUSD Token',
+        OVEN_PROXY: 'Oven Proxy',
+        OVEN_FACTORY: 'Oven Factory',
+        OVEN_REGISTRY: 'Oven Registry',
+        DEVELOPER_FUND: 'Developer Fund',
+        STABILITY_FUND: 'Stability Fund',
+        ORACLE: 'Oracle',
+        LIQUIDITY_POOL: 'Liquidity Pool',
       },
       open: false,
       currentNodeURL: null,
@@ -218,6 +209,7 @@ export default {
   position: fixed;
   bottom: 0;
   right: 0;
+  z-index: 40;
   .options-button{
     cursor: pointer;
     border-radius: 50%;

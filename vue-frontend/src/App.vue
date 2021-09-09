@@ -24,6 +24,7 @@ import BigNumber from "bignumber.js";
 import SandboxOverride from "@/components/SandboxOverrides";
 import Options from "@/components/Options";
 import PendingTxInfo from "@/components/PendingTransactionInfo";
+import _ from 'lodash'
 
 export default {
   name: 'App',
@@ -65,8 +66,57 @@ export default {
           return Object.assign(ovenData, { ovenAddress, ovenOwner })
         })
       } catch (e){
+        // If we're in the sandbox, just manually resolve these data
+        if (this.$store.network === 'sandbox'){
+          console.log("Manually resolving ovens...")
+          // Clear this if we're manually resolving to show loader
+          this.$store.balanceData = null
+          this.$store.allOvensData = await this.manuallyResolveOvens()
+          this.$store.balanceData = this.manuallyCalculateBalanceData()
+        }
+
         clearInterval(this.updateAllOvenDataTimer)
         console.error(e)
+      }
+    },
+    async manuallyResolveOvens(){
+      // If no data exists, fall back on manual resolution/calculation
+      const ovens = await this.$store.stableCoinClient.getAllOvens()
+      return await Promise.all(
+        ovens.map(async (oven) => {
+          const ovenClient = this.$store.getOvenClient(this.$store.$wallet, oven.ovenAddress)
+
+          const keys = [
+            'baker',
+            'balance',
+            'borrowedTokens',
+            'stabilityFee',
+            'isLiquidated'
+          ]
+
+          const values = await Promise.all([
+            ovenClient.getBaker(),
+            ovenClient.getBalance(),
+            ovenClient.getBorrowedTokens(),
+            ovenClient.getStabilityFees(),
+            ovenClient.isLiquidated(),
+          ])
+
+          const ovenData = _.zipObject(keys, values)
+          ovenData.outstandingTokens = ovenData.borrowedTokens.plus(ovenData.stabilityFee)
+
+          return Object.assign(oven, ovenData)
+        })
+      )
+    },
+    manuallyCalculateBalanceData() {
+      return {
+        totalBalance: _(this.$store.allOvensData).reduce((acc, oven) => {
+          return oven.balance.plus(acc)
+        }, 0),
+        totalTokens: _(this.$store.allOvensData).reduce((acc, oven) => {
+          return oven.outstandingTokens.plus(acc)
+        }, 0).dividedBy(Math.pow(10, 18))
       }
     },
     updatePriceInfo(){
@@ -77,11 +127,8 @@ export default {
     },
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
-      // const headerTimestamp = moment(currentBlock.header.timestamp).add(1, 'minute').add(5, 'seconds')
-      // const nextCheckTime = headerTimestamp - moment()
       this.$store.currentBlockHeight = currentBlock.header.level
-      // setTimeout(this.updateBlockHeight, nextCheckTime)
-      setTimeout(this.updateBlockHeight, 10 * 1000)
+      setTimeout(this.updateBlockHeight, this.$store.network === 'sandbox' ? 4 * 1000 : 10 * 1000)
     },
   }
 }

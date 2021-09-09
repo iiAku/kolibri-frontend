@@ -143,7 +143,7 @@ let state = Vue.observable({
     farmContracts,
 })
 
-if (NETWORK === Network.Sandbox){
+if (NETWORK === 'sandbox'){
     const sandboxOverrides = localStorage.getItem('sandbox-overrides')
     if (sandboxOverrides !== null){
         const newState = JSON.parse(sandboxOverrides)
@@ -162,7 +162,8 @@ state = _.merge(state, {
         state.NETWORK_CONTRACTS.OVEN_REGISTRY,
         state.NETWORK_CONTRACTS.MINTER,
         state.NETWORK_CONTRACTS.OVEN_FACTORY,
-        NETWORK === Network.Sandbox ? 'http://127.0.0.1:8000' : undefined
+        // If on our sandbox, load from
+        NETWORK === 'sandbox' ? 'https://bcd.hover.engineering' : undefined
     ),
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
