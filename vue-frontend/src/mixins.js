@@ -192,15 +192,15 @@ export default {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
         tzktLink(contractOrOp){
-            if (this.$store.network === 'florencenet'){
-                return `https://florencenet.tzkt.io/${contractOrOp}`
+            if (this.$store.network === 'granadanet'){
+                return `https://granadanet.tzkt.io/${contractOrOp}`
             } else {
                 return `https://tzkt.io/${contractOrOp}`
             }
         },
         bcdLink(contract){
-            if (this.$store.network === 'florencenet'){
-                return `https://better-call.dev/florencenet/${contract}`
+            if (this.$store.network === 'granadanet'){
+                return `https://better-call.dev/granadanet/${contract}`
             } else if (this.$store.isSandbox) {
                 return `https://bcd.hover.engineering/sandboxnet/${contract}`
             } else {

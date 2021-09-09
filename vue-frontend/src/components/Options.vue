@@ -101,15 +101,15 @@ export default {
     } else {
       nodes = {
         Giganode: {
-          florencenet: 'https://florence-tezos.giganode.io',
+          granadanet: 'https://testnet-tezos.giganode.io',
           mainnet: 'https://mainnet-tezos.giganode.io',
         },
         SmartPy: {
-          florencenet: 'https://florencenet.smartpy.io',
+          granadanet: 'https://granadanet.smartpy.io',
           mainnet: 'https://mainnet.smartpy.io',
         },
         TZBeta: {
-          florencenet: 'https://rpctest.tzbeta.net',
+          granadanet: 'https://rpctest.tzbeta.net',
           mainnet: 'https://rpc.tzbeta.net',
         }
       }

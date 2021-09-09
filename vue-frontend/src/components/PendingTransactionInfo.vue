@@ -41,8 +41,8 @@ export default {
         fullStr.substr(fullStr.length - backChars);
     },
     tzktLink(contractOrOp){
-      if (this.$store.network === 'florencenet'){
-        return `https://florencenet.tzkt.io/${contractOrOp}`
+      if (this.$store.network === 'granadanet'){
+        return `https://granadanet.tzkt.io/${contractOrOp}`
       } else {
         return `https://tzkt.io/${contractOrOp}`
       }

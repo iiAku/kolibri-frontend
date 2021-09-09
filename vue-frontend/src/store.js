@@ -10,7 +10,7 @@ import _ from 'lodash'
 // const FORCE_MAINNET = true
 const FORCE_MAINNET = false
 
-function dontIndexTestnets(){
+function dontIndexTestnets() {
     // If we're in testnet tell google not to index
     const link = document.createElement('meta');
     link.setAttribute('name', 'robots');
@@ -22,7 +22,7 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((window.location.hostname === 'localhost' ||
     // window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://florencenet.smartpy.io'
+    NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = Network.Florence
     NETWORK_CONTRACTS = CONTRACTS.TEST
     isTestnet = true
@@ -94,7 +94,7 @@ const ovenNameMapping = window.localStorage.getItem('oven-names')
 let ovenNames
 if (ovenNameMapping !== null) {
     try {
-         ovenNames = JSON.parse(ovenNameMapping)
+        ovenNames = JSON.parse(ovenNameMapping)
     } catch (e) {
         // There's a problem loading oven names
         localStorage.setItem('oven-names', null)
@@ -143,9 +143,9 @@ let state = Vue.observable({
     farmContracts,
 })
 
-if (NETWORK === 'sandbox'){
+if (NETWORK === 'sandbox') {
     const sandboxOverrides = localStorage.getItem('sandbox-overrides')
-    if (sandboxOverrides !== null){
+    if (sandboxOverrides !== null) {
         const newState = JSON.parse(sandboxOverrides)
         state = _.merge(state, newState)
     }
