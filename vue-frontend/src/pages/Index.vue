@@ -64,7 +64,7 @@
               <h2 class="subtitle has-text-weight-light is-huge">Stablecoin</h2>
               <div>
                 <router-link :to="{name: 'ProjectInfoRoot'}" class="button is-primary is-outlined has-text-weight-bold">Learn More</router-link>
-                <a target="_blank" rel="noopener" class="button is-primary is-outlined has-text-weight-bold stats-link" :href="`https://p.datadoghq.com/sb/e72980047-19c18eb0c4504886f0ba9bef6660b723?from_ts=1612934825236&live=true&theme=dark&to_ts=1613021225236&tpl_var_Network=${this.$store.network}&tv_mode=true`">
+                <a target="_blank" rel="noopener" class="button is-primary is-outlined has-text-weight-bold stats-link" :href="`https://metrics.kolibri.finance/?network=${this.$store.network}`">
                   Metrics
                 </a>
               </div>
