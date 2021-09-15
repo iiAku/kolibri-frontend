@@ -60,7 +60,7 @@ export default {
           // Coerce back into bignumbers
           ovenData.balance = new BigNumber(oven.balance)
           ovenData.borrowedTokens = new BigNumber(oven.borrowedTokens)
-          ovenData.stabilityFee = new BigNumber(oven.stabilityFee)
+          ovenData.stabilityFee = new BigNumber(oven.stabilityFees)
           ovenData.outstandingTokens = new BigNumber(oven.outstandingTokens)
 
           return Object.assign(ovenData, { ovenAddress: oven.ovenAddress, ovenOwner: oven.ovenOwner })
