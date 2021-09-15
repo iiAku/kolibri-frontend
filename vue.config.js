@@ -7,14 +7,14 @@ module.exports = {
         disableHostCheck: true,
         before(app, server) {
             chokidar.watch([
-                '../documentation/**/*' // watch all my laravel view templates
+                'documentation/**/*' // watch all my laravel view templates
             ]).on('all', function() {
                 server.sockWrite(server.sockets, 'content-changed');
             })
         },
     },
     chainWebpack: config => {
-        // GraphQL Loader
+        // Markdown Loader
         config.module
             .rule('markdown')
             .test(/\.md$/)
