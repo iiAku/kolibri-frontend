@@ -1,4 +1,4 @@
-# vue-frontend
+# Kolibri Frontend!
 
 ## Project setup
 ```
