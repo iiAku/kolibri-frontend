@@ -55,15 +55,15 @@ export default {
         const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
 
         this.$store.allOvensData = response.data.allOvenData.map((oven) => {
-          let { ovenAddress, ovenOwner, ovenData } = oven
+          const ovenData = {}
 
           // Coerce back into bignumbers
-          ovenData.balance = new BigNumber(ovenData.balance)
-          ovenData.borrowedTokens = new BigNumber(ovenData.borrowedTokens)
-          ovenData.stabilityFee = new BigNumber(ovenData.stabilityFee)
-          ovenData.outstandingTokens = new BigNumber(ovenData.outstandingTokens)
+          ovenData.balance = new BigNumber(oven.balance)
+          ovenData.borrowedTokens = new BigNumber(oven.borrowedTokens)
+          ovenData.stabilityFee = new BigNumber(oven.stabilityFee)
+          ovenData.outstandingTokens = new BigNumber(oven.outstandingTokens)
 
-          return Object.assign(ovenData, { ovenAddress, ovenOwner })
+          return Object.assign(ovenData, { ovenAddress: oven.ovenAddress, ovenOwner: oven.ovenOwner })
         })
       } catch (e){
         // If we're in the sandbox, just manually resolve these data
