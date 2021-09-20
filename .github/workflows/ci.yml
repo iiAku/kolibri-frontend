@@ -46,7 +46,7 @@ jobs:
       with:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'sandbox'
-    
+
     - uses: cloudflare/wrangler-action@1.2.0
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -62,6 +62,22 @@ jobs:
       with:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'production'
+
+  build_and_deploy_ipfs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: "Build & Deploy Frontend"
+        env:
+          IPFS_URL: ${{ secrets.IPFS_URL }}
+          IPFS_AUTH: ${{ secrets.IPFS_AUTH }}
+          IPFS_BUILD: 1
+        run: |
+          npm i
+          npm run build
+          npm install ipfs-http-client  # Keep this out of direct deps
+          node scripts/ipfs-upload.js
 
   notify_complete:
     runs-on: ubuntu-latest

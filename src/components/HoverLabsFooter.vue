@@ -4,14 +4,14 @@
       <div class="columns">
         <div class="column">
           <div
-            class="hover-logo is-flex is-flex-direction-column is-align-items-flex-end"
+            class="hover-logo is-flex is-flex-direction-column"
           >
             <img class="logo" src="../assets/hover-logo.svg" />
             <img class="shadow" src="../assets/shadow.svg" />
           </div>
         </div>
         <div
-          class="column is-flex-direction-column is-align-items-flex-start has-text-left is-flex is-justify-content-center"
+          class="column links is-flex-direction-column has-text-left is-flex is-justify-content-center"
         >
           <p class="is-marginless">
             Built by the nerds at
@@ -79,9 +79,20 @@ export default {
 </script>
 
 <style lang="scss" type="text/scss">
+@import "../assets/sass/globals";
 .hover-footer {
   padding: 3rem;
+  .links{
+    align-items: flex-end;
+    @include until($tablet){
+      align-items: center;
+    }
+  }
   .hover-logo {
+    align-items: flex-end;
+    @include until($tablet){
+      align-items: center;
+    }
     img {
       max-width: 12rem;
       max-height: 15rem;

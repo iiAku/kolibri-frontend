@@ -49,9 +49,10 @@ async function handleEvent(event) {
 
     response.headers.set('X-XSS-Protection', '1; mode=block')
     response.headers.set('X-Content-Type-Options', 'nosniff')
-    response.headers.set('X-Frame-Options', 'DENY')
-    response.headers.set('Referrer-Policy', 'unsafe-url')
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN')
+    response.headers.set('Referrer-Policy', 'same-origin')
     response.headers.set('Feature-Policy', 'none')
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
 
     return response
 

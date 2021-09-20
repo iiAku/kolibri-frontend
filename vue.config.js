@@ -25,4 +25,13 @@ module.exports = {
         config.output.filename('js/[name].[hash:8].js')
         config.output.chunkFilename('js/[name].[hash:8].js')
     },
+    publicPath: process.env['IPFS_BUILD'] ? './' : '/',
+    css: {
+        loaderOptions: {
+            css: {
+                url: !process.env['IPFS_BUILD'],
+            }
+        }
+    }
 };
+
