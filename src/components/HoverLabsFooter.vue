@@ -61,6 +61,17 @@
                 src="../assets/medium-icon.svg"
               />
             </a>
+            <a
+              target="_blank"
+              rel="noopener"
+              href="https://discuss.kolibri.finance/"
+            >
+              <img
+                class="image is-24x24 link-icon"
+                style="margin: 10px 0px 0px 15px"
+                src="../assets/icon-discourse.svg"
+              />
+            </a>
           </p>
         </div>
       </div>
