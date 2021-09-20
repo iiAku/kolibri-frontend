@@ -84,6 +84,7 @@ jobs:
     needs:
       - notify_init
       - build_and_deploy_frontend
+      - build_and_deploy_ipfs
     steps:
     - name: Add SHORT_SHA env property with commit short sha
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV

@@ -83,7 +83,7 @@ export default {
 .hover-footer {
   padding: 3rem;
   .links{
-    align-items: flex-end;
+    align-items: flex-start;
     @include until($tablet){
       align-items: center;
     }
