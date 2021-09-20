@@ -22,7 +22,7 @@
           </div>
         </div>
 
-        <nav class="level">
+        <nav class="level node-selector">
           <div class="level-item form-label">
             <div class="is-flex is-align-items-center">
               <div v-show="networkLoading" class="loader is-white"></div>
@@ -47,6 +47,30 @@
             </div>
           </div>
         </nav>
+
+        <div class="ipfs-links">
+          <p class="has-text-white">This site is continuously deployed to <a target="_blank" rel="noopener" href="https://docs.ipfs.io/concepts/what-is-ipfs/" class="has-text-white has-text-weight-bold">IPFS</a> with the url:</p>
+          <pre>ipns://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn</pre>
+          <p class="help has-text-white has-text-centered">* Make sure to bookmark it!</p>
+          <div class="buttons is-centered">
+            <a
+              target="_blank"
+              rel="noopener"
+              href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.dweb.link"
+              class="button is-outlined is-white"
+            >
+              <b>dWeb IPFS Site</b>
+            </a>
+            <a
+              target="_blank"
+              rel="noopener"
+              href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.cf-ipfs.com"
+              class="button is-outlined is-white"
+            >
+              <b>Cloudflare IPFS Site</b>
+            </a>
+          </div>
+        </div>
       </div>
       <div :key="'cog'" @click="open = true" v-else class="options-button is-flex">
         <img src="../assets/cog.svg" />
@@ -209,7 +233,16 @@ export default {
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 40;
+  z-index: 99;
+  max-width: 30rem;
+  @media screen and (max-width: 30rem){
+    max-width: 97%;
+  }
+  .node-selector{
+    border-top: 1px solid white;
+    margin-bottom: 0 !important;
+    padding: 1rem;
+  }
   .options-button{
     cursor: pointer;
     border-radius: 50%;
@@ -252,6 +285,16 @@ export default {
       &::before, &::after {
         background-color: $primary;
       }
+    }
+  }
+  .ipfs-links{
+    border-top: 1px solid white;
+    padding: 1rem;
+    pre{
+      padding: 0.25rem 0.5rem;
+    }
+    .buttons{
+      margin-top: 1rem;
     }
   }
 }
