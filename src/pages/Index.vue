@@ -43,6 +43,20 @@
     </div>
 
     <section class="cta">
+      <div v-if="$store.isTestnet" class="columns is-centered top-piece">
+        <div class="column is-half-desktop">
+          <div class="notification is-warning">
+            <b>Please Note!</b> This is a <b>testnet instance</b>, currently running on the <b style="text-transform: capitalize">{{ $store.network }}</b> network.
+          </div>
+        </div>
+      </div>
+      <div v-if="$store.isSandbox" class="columns is-centered top-piece">
+        <div class="column is-half-desktop">
+          <div class="notification is-warning">
+            <b>Please Note!</b> This is a <b>sandbox instance</b>, do not expect changes to persist and data may be reverted at any time!
+          </div>
+        </div>
+      </div>
       <div class="columns is-marginless">
         <div class="column cta-column is-6 is-offset-3">
           <div class="columns">
