@@ -32,7 +32,7 @@
         </router-link>
 
         <router-link
-            :to="{name: 'ProjectInfoRoot'}"
+            :to="{name: 'DocsRoot'}"
             class="navbar-item"
         >
           Docs

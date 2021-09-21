@@ -134,7 +134,7 @@
             rel="noopener"
             target="_blank"
             :to="{
-              name: 'ProjectInfo',
+              name: 'Docs',
               params: { folder: 'liquidation', page: 'overview' },
             }"
             >Liquidated</router-link

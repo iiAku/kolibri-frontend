@@ -67,7 +67,7 @@
                   rel="noopener"
                   target="_blank"
                   class="has-text-weight-bold"
-                  :to="{ name: 'ProjectInfo', params: { folder: 'security', page: 'risks' } }"
+                  :to="{ name: 'Docs', params: { folder: 'security', page: 'risks' } }"
                 >
                   risks page
                 </router-link> as part of the Kolibri documentation for more info about the general risks with using smart contracts on Tezos.

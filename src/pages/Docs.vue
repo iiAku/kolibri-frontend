@@ -19,7 +19,7 @@
                 </p>
                 <ul :key="JSON.stringify(pages)" class="menu-list">
                   <li :key="url" v-for="[page, url] in sortPages(pages)">
-                    <router-link :to="{ name: 'ProjectInfo', params: { folder: pageFolder, page: page } }">{{ titleCase(page.replaceAll('-', ' ')) }}</router-link>
+                    <router-link :to="{ name: 'Docs', params: { folder: pageFolder, page: page } }">{{ titleCase(page.replaceAll('-', ' ')) }}</router-link>
                   </li>
                 </ul>
               </template>
@@ -48,7 +48,7 @@ const allDocs = (ctx => {
 })(require.context('../../documentation/public/', true, /.md$/));
 
 export default {
-  name: 'ProjectInfo',
+  name: 'Docs',
   async mounted(){
     this.syncPage()
   },
@@ -76,7 +76,7 @@ export default {
     syncPage(){
       if (
           // If we have a requested page that doesn't exist, redirect them to the intro
-          (this.$route.name === 'ProjectInfo' || this.$route.name === 'ProjectInfoRoot') &&
+          (this.$route.name === 'Docs' || this.$route.name === 'DocsRoot') &&
           (
               this.$route.params.folder === undefined ||
               this.$route.params.page === undefined ||
@@ -95,7 +95,7 @@ export default {
       }
     },
     resetPage(){
-      return this.$router.replace({ name: 'ProjectInfo', params: { folder: 'general', page: 'intro' } })
+      return this.$router.replace({ name: 'Docs', params: { folder: 'general', page: 'intro' } })
     },
     titleCase(str) {
       return str.toLowerCase().split(' ').map(function(word) {
@@ -105,7 +105,7 @@ export default {
   },
   watch:{
     $route (to){
-      if (to.name === 'ProjectInfo' || to.name === 'ProjectInfoRoot'){
+      if (to.name === 'Docs' || to.name === 'DocsRoot'){
         this.pageContent = null
         this.syncPage()
       }

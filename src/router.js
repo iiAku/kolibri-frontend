@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import Index from '@/pages/Index'
-import ProjectInfo from "@/pages/ProjectInfo";
+import Docs from "@/pages/Docs";
 import AllOvens from "@/pages/AllOvens";
 import NotFound from "@/pages/NotFound";
 import TOS from "@/pages/TOS";
@@ -22,12 +22,22 @@ const routes = [
     {
         path: '/project-info',
         name: 'ProjectInfoRoot',
-        component: ProjectInfo,
+        redirect: {name: 'DocsRoot'},
     },
     {
         path: '/project-info/:folder/:page',
         name: 'ProjectInfo',
-        component: ProjectInfo,
+        redirect: {name: 'Docs'},
+    },
+    {
+        path: '/docs',
+        name: 'DocsRoot',
+        component: Docs,
+    },
+    {
+        path: '/docs/:folder/:page',
+        name: 'Docs',
+        component: Docs,
     },
     {
         path: '/all-ovens',

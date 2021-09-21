@@ -22,7 +22,7 @@
             rel="noopener"
             target="_blank"
             :to="{
-              name: 'ProjectInfo',
+              name: 'Docs',
               params: { folder: 'security', page: 'security-audit' },
             }"
         >
@@ -77,7 +77,7 @@
               <h1 class="title has-text-weight-bold is-huge">Kolibri</h1>
               <h2 class="subtitle has-text-weight-light is-huge">Stablecoin</h2>
               <div>
-                <router-link :to="{name: 'ProjectInfoRoot'}" class="button is-primary is-outlined has-text-weight-bold">Learn More</router-link>
+                <router-link :to="{name: 'DocsRoot'}" class="button is-primary is-outlined has-text-weight-bold">Learn More</router-link>
                 <a target="_blank" rel="noopener" class="button is-primary is-outlined has-text-weight-bold stats-link" :href="`https://metrics.kolibri.finance/?network=${this.$store.network}`">
                   Metrics
                 </a>
