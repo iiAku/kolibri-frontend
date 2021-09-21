@@ -105,7 +105,7 @@ export default {
         this.$store.defaultOvenBaker = ovenFactoryStorage.initialDelegate
 
       } catch(e) {
-        this.beaconWallet.clearActiveAccount()
+        await this.beaconWallet.clearActiveAccount()
         console.error(e)
         this.$swal(
           "Could Not Connect",
