@@ -80,7 +80,7 @@ export default {
         }
         location.reload()
       } catch(e) {
-        alert("Error setting override! ", e.toString())
+        alert(`Error setting override! ${e.toString()}`)
       }
     }
   },

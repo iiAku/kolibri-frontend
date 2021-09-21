@@ -5,9 +5,9 @@
       leave-active-class="animate__animated animate__fadeOutDown animate__faster"
       mode="out-in"
     >
-      <div :key="'menu'" v-if="open" class="menu">
+      <div :key="'menu'" v-if="popupOpen" class="menu">
 
-        <button @click="open = false" class="delete"></button>
+        <button @click="popupOpen = false" class="delete"></button>
 
         <div class="contracts">
           <h1 class="title is-5 has-text-white is-marginless">Contracts</h1>
@@ -72,7 +72,7 @@
           </div>
         </div>
       </div>
-      <div :key="'cog'" @click="open = true" v-else class="options-button is-flex">
+      <div :key="'cog'" @click="popupOpen = true" v-else class="options-button is-flex">
         <img src="../assets/cog.svg" />
       </div>
     </transition>
@@ -151,7 +151,7 @@ export default {
         ORACLE: 'Oracle',
         LIQUIDITY_POOL: 'Liquidity Pool',
       },
-      open: false,
+      popupOpen: false,
       selectedNode: this.$store.nodeURL,
       networkLoading: false,
       nodes

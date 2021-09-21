@@ -170,31 +170,23 @@
       ></span>
       <strong v-else>
         <popover v-if="duration($store.priceData.time) > 30 * 60 * 1000">
-          <div slot="popup-title">
-            <strong class="has-text-danger">⛔ Warning</strong>
-          </div>
-          <div slot="popup-content">
-            <strong>
-              The price oracle has lagged behind longer than 30 minutes, so most
-              functionality has been disabled by the protocol.
-            </strong>
-          </div>
+          <strong slot="popup-title" class="has-text-danger">⛔ Warning</strong>
+          <strong slot="popup-content">
+            The price oracle has lagged behind longer than 30 minutes, so most
+            functionality has been disabled by the protocol.
+          </strong>
           <span class="has-text-danger">
             ⛔️{{ humanTime($store.priceData.time) }} Ago
           </span>
         </popover>
 
         <popover v-else-if="duration($store.priceData.time) > 25 * 60 * 1000">
-          <div slot="popup-title">
-            <strong class="has-text-danger">⚠️ Warning</strong>
-          </div>
-          <div slot="popup-content">
-            <strong>
-              The price oracle seems to be lagging behind. If the oracle is more
-              than 30 mins off, some functionality within the ovens is disabled
-              by the protocol out of an abundance of caution.
-            </strong>
-          </div>
+          <strong slot="popup-title" class="has-text-danger">⚠️ Warning</strong>
+          <strong slot="popup-content">
+            The price oracle seems to be lagging behind. If the oracle is more
+            than 30 mins off, some functionality within the ovens is disabled
+            by the protocol out of an abundance of caution.
+          </strong>
           <span>⚠️️{{ humanTime($store.priceData.time) }} Ago</span>
         </popover>
 

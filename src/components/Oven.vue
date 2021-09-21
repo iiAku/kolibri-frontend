@@ -150,30 +150,29 @@
           >
             <p class="heading">
               Delegated Baker:
-              <strong v-if="ovenData.baker"
-                ><a
+              <strong v-if="ovenData.baker">
+                <a
                   class="address"
                   @click="$emit('show-delegate-modal', ovenAddress)"
-                  >{{ ovenData.baker }}</a
-                ></strong
-              >
+                  >
+                    {{ ovenData.baker }}
+                </a>
+              </strong>
 
               <popover v-else>
-                <div slot="popup-title">
-                  <strong class="has-text-danger">⚠️ Warning</strong>
-                </div>
-                <div slot="popup-content">
-                  <strong>
-                    This oven is currently <i>not</i> delegated to any baker,
-                    and is not
-                    <br />
-                    receiving staking rewards. Please
-                    <a @click="$emit('show-delegate-modal', ovenAddress)"
-                      >click here</a
-                    >
-                    to delegate to a baker.
-                  </strong>
-                </div>
+                <strong slot="popup-title" class="has-text-danger">⚠️ Warning</strong>
+
+                <strong slot="popup-content">
+                  This oven is currently <i>not</i> delegated to any baker,
+                  and is not
+                  <br />
+                  receiving staking rewards. Please
+                  <a @click="$emit('show-delegate-modal', ovenAddress)"
+                    >click here</a
+                  >
+                  to delegate to a baker.
+                </strong>
+
                 <strong class="has-text-danger">
                   <a @click="$emit('show-delegate-modal', ovenAddress)"
                     >⚠️ Set a baker</a
@@ -476,12 +475,6 @@ export default {
       } finally {
         this.pendingTransaction = false;
       }
-    },
-    async withdraw() {
-      this.$emit("modal-open-requested", "withdraw", this.ovenAddress);
-    },
-    async payBack() {
-      this.$emit("modal-open-requested", "pay-back", this.ovenAddress);
     },
   },
   data() {
