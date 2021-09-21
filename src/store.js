@@ -99,7 +99,6 @@ if (ovenNameMapping !== null) {
 }
 
 const nodeOverrideKey = `${NETWORK}-nodeOverride`
-
 NODE_URL = localStorage.getItem(nodeOverrideKey) ? localStorage.getItem(nodeOverrideKey) : NODE_URL
 
 let state = Vue.observable({

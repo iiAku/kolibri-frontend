@@ -98,11 +98,7 @@ export default {
     },
     nodesContainsNode(nodeURL){
       const result = Object.values(this.nodes).find((addresses) => {
-        if (this.$store.isTestnet){
-          return nodeURL === addresses.testnet
-        } else {
-          return nodeURL === addresses.mainnet
-        }
+        return nodeURL === addresses[this.$store.network]
       })
 
       return result !== undefined

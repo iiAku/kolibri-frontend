@@ -162,6 +162,9 @@ export default {
       margin-top: 1rem;
     }
   }
+  .swal2-confirm{
+    background-color: #3EBD93;
+  }
 
   .loader-wrapper{
     padding: 1rem;
@@ -183,7 +186,7 @@ export default {
       height: 2rem;
     }
     &.is-primary{
-      border: 2px solid $primary;
+      border: 2px solid #3EBD93;
       border-right-color: transparent;
       border-top-color: transparent;
     }
