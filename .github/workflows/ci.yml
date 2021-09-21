@@ -42,6 +42,7 @@ jobs:
       run: npm run build
 
     - uses: cloudflare/wrangler-action@1.2.0
+      name: "Deploy testnet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
         USER: root
@@ -50,6 +51,7 @@ jobs:
         environment: 'testnet'
 
     - uses: cloudflare/wrangler-action@1.2.0
+      name: "Deploy sandbox.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
         USER: root
@@ -58,6 +60,7 @@ jobs:
         environment: 'sandbox'
 
     - uses: cloudflare/wrangler-action@1.2.0
+      name: "Deploy zeronet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
         USER: root
@@ -66,6 +69,7 @@ jobs:
         environment: 'zeronet'
 
     - uses: cloudflare/wrangler-action@1.2.0
+      name: "Deploy kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
         USER: root
