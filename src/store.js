@@ -83,6 +83,7 @@ if ((window.location.hostname === 'localhost' ||
     }
 }
 
+// Custom oven names
 const ovenNameMapping = window.localStorage.getItem('oven-names')
 let ovenNames
 if (ovenNameMapping !== null) {
@@ -97,7 +98,9 @@ if (ovenNameMapping !== null) {
     ovenNames = {}
 }
 
-NODE_URL = localStorage.getItem('nodeOverride') ? localStorage.getItem('nodeOverride') : NODE_URL
+const nodeOverrideKey = `${NETWORK}-nodeOverride`
+
+NODE_URL = localStorage.getItem(nodeOverrideKey) ? localStorage.getItem(nodeOverrideKey) : NODE_URL
 
 let state = Vue.observable({
     currentBlockHeight: null,
@@ -129,6 +132,7 @@ let state = Vue.observable({
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
+    nodeOverrideKey,
     daoToken: NETWORK_CONTRACTS.DAO_TOKEN,
     isTestnet,
     isSandbox,

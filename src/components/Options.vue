@@ -39,7 +39,7 @@
                 >
                   {{ nodeName }}
                 </option>
-                <option v-if="getItem('nodeOverride') && !nodesContainsNode(getItem('nodeOverride'))" :value="getItem('nodeOverride')">{{ getItem('nodeOverride') }}</option>
+                <option v-if="getItem($store.nodeOverrideKey) && !nodesContainsNode(getItem($store.nodeOverrideKey))" :value="getItem($store.nodeOverrideKey)">{{ getItem($store.nodeOverrideKey) }}</option>
                 <option value="CUSTOM">
                   Custom
                 </option>
@@ -152,7 +152,6 @@ export default {
         LIQUIDITY_POOL: 'Liquidity Pool',
       },
       open: false,
-      currentNodeURL: null,
       selectedNode: this.$store.nodeURL,
       networkLoading: false,
       nodes
@@ -198,14 +197,14 @@ export default {
         }
 
         if (result.isConfirmed){
-          localStorage.setItem('nodeOverride', result.value)
+          localStorage.setItem(this.$store.nodeOverrideKey, result.value)
           location.reload()
         }
       } else {
         this.networkLoading = true
         try {
           await axios.get(newValue + '/chains/main/blocks/head/header')
-          localStorage.setItem('nodeOverride', newValue)
+          localStorage.setItem(this.$store.nodeOverrideKey, newValue)
           location.reload()
         } catch(e) {
           //
