@@ -4,6 +4,7 @@
 import { WalletStates } from "@/enums";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import BigNumber from "bignumber.js";
+import {Network} from "@hover-labs/kolibri-js";
 
 export default {
   name: 'WalletManager',
@@ -81,7 +82,7 @@ export default {
         if (activeAccount === undefined){
           await this.beaconWallet.requestPermissions({
             network: {
-              type: this.$store.network === 'sandbox' ? 'custom' : this.$store.network,
+              type: this.$store.network === Network.Sandbox ? 'custom' : this.$store.network,
               rpcUrl: this.$store.nodeURL
             }
           })

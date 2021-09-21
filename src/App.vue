@@ -25,6 +25,7 @@ import SandboxOverride from "@/components/SandboxOverrides";
 import Options from "@/components/Options";
 import PendingTxInfo from "@/components/PendingTransactionInfo";
 import _ from 'lodash'
+import {Network} from "@hover-labs/kolibri-js";
 
 export default {
   name: 'App',
@@ -67,7 +68,7 @@ export default {
         })
       } catch (e){
         // If we're in the sandbox, just manually resolve these data
-        if (this.$store.network === 'sandbox'){
+        if (this.$store.network === Network.Sandbox){
           console.log("Manually resolving ovens...")
           // Clear this if we're manually resolving to show loader
           this.$store.balanceData = null
@@ -128,7 +129,7 @@ export default {
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
       this.$store.currentBlockHeight = currentBlock.header.level
-      setTimeout(this.updateBlockHeight, this.$store.network === 'sandbox' ? 4 * 1000 : 10 * 1000)
+      setTimeout(this.updateBlockHeight, this.$store.network === Network.Sandbox ? 4 * 1000 : 10 * 1000)
     },
   }
 }

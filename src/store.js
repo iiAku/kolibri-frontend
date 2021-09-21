@@ -24,44 +24,35 @@ if ((window.location.hostname === 'localhost' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://testnet-tezos.giganode.io'
     NETWORK = Network.Granada
+
     NETWORK_CONTRACTS = CONTRACTS.TEST
+
     isTestnet = true
     isSandbox = false
 
     farmContracts = {
-        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
         'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
     }
 
     dontIndexTestnets()
 } else if ((
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'sandbox.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://sandbox.hover.engineering'
-    NETWORK = 'sandbox'
 
-    NETWORK_CONTRACTS = {
-        TOKEN: "KT1LrCSMUKKyZwhnKh9EXhvTspJ4YP1et95U",
-        ORACLE: "KT1PKen2GEgadnzzvxhSCNmAZc2EKKzssUYv",
-        HARBINGER_NORMALIZER: 'KT1LV3DjqarkgQ4PvCZCgbAKYi438WYcehTu',
-        DEVELOPER_FUND: "KT1BEDFemDcC5K6QYVXF2oW6bcjw2Q9yVchw",
-        STABILITY_FUND: "KT1DaCndUJwZzCr7BiZRH8mxr6mpPu88mJpe",
-        OVEN_REGISTRY: "KT1NeEZDA2HuLpuhwRJ4fZ7sqcYfgxpGBoya",
-        OVEN_FACTORY: "KT1CmUwZTtHFgoELFbipZKKR1X3WPz88Zdnh",
-        OVEN_PROXY: "KT1C39aEForRcXyjw1sHwSThX1tKHnTxRUdo",
-        MINTER: "KT1Vwqaf7RCKfzcQ6r6JpQN1cWmy6Z2z2qu1",
-        LIQUIDITY_POOL: "KT1LgMkgxNiNoRc6niDjcjwBCnFJMsET8LNq",
-        QUIPUSWAP_POOL: "KT1N3YZz4yq732Jdy7BSEWbFsSvvoTDFa1si",
-    }
+    NODE_URL = 'https://sandbox.hover.engineering'
+    NETWORK = Network.Sandbox
+
+    NETWORK_CONTRACTS = CONTRACTS.SANDBOX
 
     isTestnet = false
     isSandbox = true
 
     farmContracts = {
-        'kUSD': 'KT1M97HUZBVibMipbNdk3qTxaaYpnEsvnonY',
-        'QLkUSD': 'KT1Rdit9FA79UbDebKmd6oYcTigXiTZkk9vS',
-        'kUSD Quipu LP': 'KT1T5dQ2839MUXF6DqwgD1gMdHi3nCDqqmmQ'
+        'kUSD': CONTRACTS.SANDBOX.FARMS.KUSD.farm,
+        'QLkUSD': CONTRACTS.SANDBOX.FARMS.QLKUSD.farm,
+        'kUSD Quipu LP': CONTRACTS.SANDBOX.FARMS.KUSD_LP.farm
     }
 
     dontIndexTestnets()
@@ -76,10 +67,12 @@ if ((window.location.hostname === 'localhost' ||
 
     dontIndexTestnets()
 } else {
-    NODE_URL = 'https://rpc.tzbeta.net'
     // NODE_URL = 'https://mainnet-tezos.giganode.io'
+    NODE_URL = 'https://rpc.tzbeta.net'
+
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
+
     isTestnet = false
     isSandbox = false
 
@@ -143,7 +136,7 @@ let state = Vue.observable({
     farmContracts,
 })
 
-if (NETWORK === 'sandbox') {
+if (NETWORK === Network.Sandbox) {
     const sandboxOverrides = localStorage.getItem('sandbox-overrides')
     if (sandboxOverrides !== null) {
         const newState = JSON.parse(sandboxOverrides)
@@ -163,7 +156,7 @@ state = _.merge(state, {
         state.NETWORK_CONTRACTS.MINTER,
         state.NETWORK_CONTRACTS.OVEN_FACTORY,
         // If on our sandbox, load from
-        NETWORK === 'sandbox' ? 'https://bcd.hover.engineering' : undefined
+        NETWORK === Network.Sandbox ? 'https://bcd.hover.engineering' : undefined
     ),
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)

@@ -267,6 +267,7 @@
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
 import Popover from "@/components/Popover";
+import {Network} from "@hover-labs/kolibri-js";
 
 BigNumber.set({ DECIMAL_PLACES: 36 })
 
@@ -394,7 +395,7 @@ export default {
     poolRatePerWeek(){
       const minutesPerWeek = 10080;
       const secondsPerWeek = minutesPerWeek * 60
-      const blocksPerWeek = this.$store.network === 'sandbox' ? (secondsPerWeek / 4) : minutesPerWeek * 2
+      const blocksPerWeek = this.$store.network === Network.Sandbox ? (secondsPerWeek / 4) : minutesPerWeek * 2
       if (this.farmContractData.farmLpTokenBalance.isZero()){
         return this.farmContractData.farmLpTokenBalance
       } else {

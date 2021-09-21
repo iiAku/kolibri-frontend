@@ -116,10 +116,10 @@ export default {
     if (this.$store.isSandbox) {
       nodes = {
         "Hover Labs' Sandbox": {
-          sandbox: 'https://sandbox.hover.engineering',
+          sandboxnet: 'https://sandbox.hover.engineering',
         },
         "127.0.0.1:8732": {
-          sandbox: 'http://127.0.0.1:8732',
+          sandboxnet: 'http://127.0.0.1:8732',
         },
       }
     } else {
