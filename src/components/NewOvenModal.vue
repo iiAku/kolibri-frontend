@@ -24,7 +24,7 @@
                 <div v-if="createdOven"><img class="check" src="../assets/check.svg" /></div>
                 <div v-else class="loader is-primary"></div>
               </div>
-              <div v-if="this.$store.defaultOvenBaker === null || selectedDelegate !== this.$store.defaultOvenBaker" class="step">
+              <div v-if="selectedDelegate !== this.$store.defaultOvenBaker && selectedDelegate !== null && selectedDelegate !== ''" class="step">
                 <p
                     :class="{'has-text-grey-light': !createdOven, 'has-text-primary': createdOven}"
                 >
@@ -37,14 +37,22 @@
               </div>
             </div>
           </div>
-          <div class="submission-form">
+          <div v-if="!sendingTransactions" class="submission-form">
             <p>
-              You'll need to set a baker for your Oven.
-              <b><a target="_blank" rel="noopener" href="https://www.tessellatedgeometry.com/">Tessellated Geometry</a></b>
-              (<b><a @click="selectedDelegate = $store.NETWORK_CONTRACTS.KOLIBRI_BAKER">{{ truncateChars($store.NETWORK_CONTRACTS.KOLIBRI_BAKER, 18) }}</a></b>)
-              is the preferred baker for Kolibri ovens, and a portion of Baking income from oven delegations is used to to support Kolibri's development.
+              You'll need to (optionally) set a baker for your Oven.
 
-              If you'd like a different baker, please set one below. You can always change the baker for your oven at any time in the future, by selecting the baker next to the "DELEGATED BAKER" field in your oven.
+              <br>
+
+              <span v-if="$store.NETWORK_CONTRACTS.KOLIBRI_BAKER !== null">
+                <br>
+                <b><a target="_blank" rel="noopener" href="https://www.tessellatedgeometry.com/">Tessellated Geometry</a></b>
+                (<b><a @click="selectedDelegate = $store.NETWORK_CONTRACTS.KOLIBRI_BAKER">{{ truncateChars($store.NETWORK_CONTRACTS.KOLIBRI_BAKER, 18) }}</a></b>)
+                is the preferred baker for Kolibri ovens, and a portion of Baking income from oven delegations is used to to support Kolibri's development. If you'd like a different baker, please set one below.
+                <br>
+              </span>
+
+              <br>
+              You can always change the baker for your oven at any time in the future, by selecting the baker next to the "DELEGATED BAKER" field in your oven.
             </p>
             <hr>
 
@@ -55,7 +63,7 @@
               </div>
             </div>
 
-            <baker-info :baker-address="selectedDelegate" />
+            <baker-info v-if="selectedDelegate !== null && !sendingTransactions" :baker-address="selectedDelegate" />
           </div>
         </section>
         <footer class="modal-card-foot is-justify-content-flex-end">
@@ -143,7 +151,9 @@ export default {
         this.$set(this.$store, 'ovenCount', this.$store.ovenCount + 1)
 
         // If we have to set a different delegate, go set a delegate
-        if (this.$store.isTestnet || this.selectedDelegate !== this.$store.defaultOvenBaker){
+        if (this.selectedDelegate !== this.$store.defaultOvenBaker &&
+            this.selectedDelegate !== null &&
+            this.selectedDelegate !== ''){
           result = await this.ovenClient(ovenAddress).setBaker(this.selectedDelegate)
           this.$eventBus.$emit("tx-submitted", result, ovenAddress, 'set baker')
         }
@@ -181,7 +191,7 @@ export default {
   }
   .summary-overlay{
     width: 100%;
-    height: 100%;
+    //height: 100%;
     justify-content: center;
     display: flex;
     align-items: center;

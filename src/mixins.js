@@ -1,5 +1,5 @@
 import _, { find } from 'lodash'
-import {ContractErrors, CONTRACTS} from '@hover-labs/kolibri-js'
+import {ContractErrors} from '@hover-labs/kolibri-js'
 import BigNumber from "bignumber.js";
 import axios from "axios";
 
@@ -41,15 +41,10 @@ export default {
                     acc[baker.address] = _.omit(baker,'address');
                     return acc
                 }, {})
-
-                // Treat the testnet kolibri baker as the same as the prod baker data on testnet
-                if (this.$store.isTestnet){
-                    this.$store.bakers[CONTRACTS.TEST.KOLIBRI_BAKER] = this.$store.bakers[CONTRACTS.MAIN.KOLIBRI_BAKER]
-                }
             }
         },
         validBakerAddress(address){
-            return address && address.length === 36;
+            return address === null || address === '' || address.length === 36;
         },
         truncateChars(fullStr, strLen, separator) {
             if (fullStr.length <= strLen) return fullStr;

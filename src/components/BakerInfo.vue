@@ -1,7 +1,6 @@
 <template>
   <transition
       enter-active-class="animate__animated animate__fadeIn fast"
-      leave-active-class="animate__animated animate__fadeOut fast"
   >
     <div v-if="$store.bakers !== null && bakerAddress && this.validBakerAddress(bakerAddress)" class="new-baker-info">
       <div v-if="$store.bakers[bakerAddress]" class="box baker-info is-flex is-flex-direction-row">
