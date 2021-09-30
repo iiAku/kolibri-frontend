@@ -73,9 +73,10 @@ const routes = [
 ]
 
 const isIPFS = window.location.host.indexOf('k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn') !== -1
+const isFileProtocol = window.location.protocol === 'file:'
 
 export default new VueRouter({
-    mode: isIPFS ? 'hash' : 'history',
+    mode: (isIPFS || isFileProtocol) ? 'hash' : 'history',
     linkActiveClass: 'is-active',
     routes
 })

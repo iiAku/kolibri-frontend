@@ -28,7 +28,19 @@ Vue.use(VueSweetalert2);
 import PortalVue from 'portal-vue'
 Vue.use(PortalVue)
 
-new Vue({
+window.app = new Vue({
   render: h => h(App),
   router
 }).$mount('#app')
+
+// In electron land we listen for this event to know to start doing integration stuff
+window.app.$nextTick(() => {
+  window.dispatchEvent(
+      new CustomEvent('vue-app-loaded', {
+        detail: {
+          appName: 'Kolibri',
+          app: window.app,
+        }
+      })
+  )
+})
