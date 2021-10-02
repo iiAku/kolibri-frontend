@@ -2,9 +2,13 @@
   <nav class="navbar animate__animated animate__fadeIn">
     <wallet-manager />
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">
+      <router-link
+        :to="{name: 'Index'}"
+        exact
+        class="navbar-item"
+      >
         <img src="../assets/kolibri-brand.png">
-      </a>
+      </router-link>
 
       <a @click="menuOpen=!menuOpen" role="button" v-on:clickout="menuOpen=false" class="navbar-burger" :class="{'is-active': menuOpen}">
         <span aria-hidden="true"></span>

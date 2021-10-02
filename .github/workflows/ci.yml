@@ -95,6 +95,7 @@ jobs:
         run: npm install
 
       - name: "Build & Deploy Frontend"
+        if: github.ref == 'refs/heads/master' # Only deploy on merge to master
         env:
           IPFS_URL: ${{ secrets.IPFS_URL }}
           IPFS_AUTH: ${{ secrets.IPFS_AUTH }}
