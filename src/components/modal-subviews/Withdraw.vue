@@ -28,7 +28,19 @@
       <p class="heading">
         <strong>Oven Collateral: </strong>
         <strong class="price-view">
-          {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ
+          <popover extra-classes="small-price">
+            <strong
+              slot="popup-content"
+              class="has-text-primary heading is-marginless"
+            >
+              {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(6)) }} ꜩ
+            </strong>
+
+            <strong class="price-has-popover">
+              {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ
+            </strong>
+          </popover>
+
         </strong>
       </p>
     </div>
@@ -99,9 +111,11 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
+import Popover from "@/components/Popover";
 
 export default {
   name: "Withdraw",
+  components: {Popover},
   mixins: [Mixins],
   props: {
     ovenAddress: {
@@ -125,7 +139,7 @@ export default {
             .toFixed()
         );
         this.$eventBus.$emit(
-          "tx-submitted",
+          "oven-tx-submitted",
           withdrawResult,
           this.ovenAddress,
           "withdraw"
@@ -147,13 +161,17 @@ export default {
       const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress); // kUSD
       const ovenValue = this.ovenDollarValue(this.ovenAddress); // USD
 
-      return ovenValue
+      let ovenValueFormatted = ovenValue
         .dividedBy(2)
         .minus(borrowedTokens)
         .dividedBy(this.currentPriceFormatted())
         .times(2)
-        .times(0.999999) // FIXME Dirty hack to prevent from going under collat
-        .decimalPlaces(6);
+
+      if (borrowedTokens.isGreaterThan(0)){
+        ovenValueFormatted = ovenValueFormatted.times(0.999999) // FIXME Dirty hack to prevent from going under collat
+      }
+
+      return ovenValueFormatted.decimalPlaces(6);
     },
     shouldAllowWithdraw() {
       if (!this.withdrawAmount || this.withdrawAmount <= 0) {

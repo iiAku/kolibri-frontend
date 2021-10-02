@@ -27,8 +27,11 @@ import PendingTxInfo from "@/components/PendingTransactionInfo";
 import _ from 'lodash'
 import {Network} from "@hover-labs/kolibri-js";
 
+import Mixins from './mixins'
+
 export default {
   name: 'App',
+  mixins: [Mixins],
   components: {
     PendingTxInfo,
     Options,
@@ -42,15 +45,33 @@ export default {
     }
   },
   async mounted(){
-    await this.updateBlockHeight()
-    await this.updatePriceInfo()
-    await this.updateAllOvenData()
+    await Promise.all([
+      this.updateBlockHeight(),
+      this.updateMinterData(),
+      this.updatePriceInfo(),
+      this.updateAllOvenData()
+    ])
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
     this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
     this.updatePriceInfoTimer = setInterval(this.updatePriceInfo, 60 * 1000) // Go grab oracle data every minute
     this.updateAllOvenDataTimer = setInterval(this.updateAllOvenData, 60 * 1000) // Go grab all oven data every minute
   },
   methods:{
+    async updateMinterData(){
+      const contract = await this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
+
+      const minterStorage = await contract.storage()
+      const mantissa = new BigNumber(10).pow(18)
+      this.$store.stabilityFee = minterStorage.stabilityFee
+        .dividedBy(mantissa)
+        .plus(1)
+        .pow(365 * 24 * 60)
+        .minus(1)
+        .times(mantissa)
+
+      this.$store.collateralRate = minterStorage.collateralizationPercentage;
+      this.$store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold;
+    },
     async updateAllOvenData(){
       try {
         const response = await axios.get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/oven-data.json`)
@@ -99,7 +120,7 @@ export default {
             ovenClient.getBaker(),
             ovenClient.getBalance(),
             ovenClient.getBorrowedTokens(),
-            ovenClient.getStabilityFees(),
+            ovenClient.getStabilityFees(this.calculateSandboxStabFeeTime()),
             ovenClient.isLiquidated(),
           ])
 
@@ -195,6 +216,10 @@ export default {
       border-right-color: transparent;
       border-top-color: transparent;
     }
+  }
+  .price-has-popover {
+    cursor: pointer;
+    border-bottom: 1px solid $primary;
   }
 
 </style>

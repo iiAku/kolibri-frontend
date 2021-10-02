@@ -9,7 +9,7 @@
               <a
                 target="_blank"
                 rel="noopener"
-                :href="tzktLink(oven.ovenAddress)"
+                :href="tzktLinkContract(oven.ovenAddress)"
                 >
                 {{ oven.ovenAddress }}
               </a>
@@ -17,16 +17,53 @@
           </div>
         </div>
         <div class="level-right">
-          <div class="level-item">
+          <div class="level-item liquidation-buttons">
             <slot name="liquidation-button">
+              <popover v-if="privateLiquidationThreshold.isGreaterThan(collatoralizedRateForOven(oven))">
+                <strong
+                  slot="popup-content"
+                  class="has-text-primary is-marginless"
+                >
+                  You can only privately liquidate ovens that are above {{ $store.collateralRate.minus($store.privateLiquidationThreshold).dividedBy(Math.pow(10, 18)) }}% ({{ privateLiquidationThreshold }}%+ utilization)
+                </strong>
+
+                <a
+                  :disabled="pendingTransaction || privateLiquidationThreshold.isGreaterThan(collatoralizedRateForOven(oven))"
+                  v-if="
+                    $store.wallet !== null &&
+                    !oven.isLiquidated &&
+                    lpLiquidationThreshold.isLessThan(collatoralizedRateForOven(oven))
+                  "
+                  :class="{'is-loading': networkLoading}"
+                  class="button is-danger is-small">
+                  Liquidate
+                </a>
+
+              </popover>
               <button
+                v-else
                 :disabled="pendingTransaction"
-                v-if="$store.wallet !== null && !oven.isLiquidated && collatoralizedRateForOven(oven) > 100"
-                @click="liquidateOven()"
                 :class="{'is-loading': networkLoading}"
+                @click="liquidateOven()"
                 class="button is-danger is-small">
                 Liquidate
               </button>
+
+              <router-link
+                :to="{name: 'LiquidityPool'}"
+                tag="button"
+                :disabled="pendingTransaction"
+                v-if="
+                  $store.wallet !== null &&
+                  !oven.isLiquidated &&
+                  $store.collateralRate
+                    .dividedBy(Math.pow(10, 18))
+                    .dividedBy(2)
+                    .isLessThan(collatoralizedRateForOven(oven))
+                "
+                class="button is-danger is-small">
+                Liquidate via Liquidity Pool
+              </router-link>
             </slot>
           </div>
         </div>
@@ -40,7 +77,7 @@
             v-if="pendingTransaction !== true"
             target="_blank"
             rel="noopener"
-            :href="tzktLink(pendingTransaction)"
+            :href="tzktLinkTx(pendingTransaction)"
         >
           Transaction Pending...
         </a>
@@ -75,7 +112,7 @@
                     target="_blank"
                     rel="noopener"
                     class="has-text-weight-semibold"
-                    :href="tzktLink(oven.ovenOwner)"
+                    :href="tzktLinkContract(oven.ovenOwner)"
                 >
                   {{ oven.ovenOwner }}
                 </a>
@@ -153,7 +190,7 @@
               <div
                 class="is-flex is-flex-direction-column is-align-items-center"
               >
-                <p class="heading">Borrowed Tokens</p>
+                <p class="heading">Loan Amt</p>
                 <popover extra-classes="small-price">
                   <strong
                     slot="popup-content"
@@ -288,7 +325,17 @@ export default {
     };
   },
   computed: {
-
+    privateLiquidationThreshold(){
+      return this.$store.collateralRate
+        .plus(this.$store.privateLiquidationThreshold)
+        .dividedBy(Math.pow(10, 18))
+        .dividedBy(2)
+    },
+    lpLiquidationThreshold(){
+      return this.$store.collateralRate
+        .dividedBy(Math.pow(10, 18))
+        .dividedBy(2)
+    }
   },
   components: {
     Popover,
@@ -308,6 +355,11 @@ export default {
         max-width: 90vw;
         overflow: hidden;
       }
+    }
+  }
+  .liquidation-buttons{
+    button:not(first-child){
+      margin-left: .5rem;
     }
   }
 }

@@ -186,11 +186,22 @@ export default {
         ovenClient(ovenAddress) {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
-        tzktLink(contractOrOp){
+        tzktLinkContract(contract){
             if (this.$store.network === 'granadanet'){
-                return `https://granadanet.tzkt.io/${contractOrOp}`
+                return `https://granadanet.tzkt.io/${contract}`
+            } else if (this.$store.isSandbox) {
+                return `https://bcd.hover.engineering/sandboxnet/${contract}`
             } else {
-                return `https://tzkt.io/${contractOrOp}`
+                return `https://tzkt.io/${contract}`
+            }
+        },
+        tzktLinkTx(opHash){
+            if (this.$store.network === 'granadanet'){
+                return `https://granadanet.tzkt.io/${opHash}`
+            } else if (this.$store.isSandbox) {
+                return `https://bcd.hover.engineering/sandboxnet/opg/${opHash}`
+            } else {
+                return `https://tzkt.io/${opHash}`
             }
         },
         bcdLink(contract){
@@ -208,6 +219,16 @@ export default {
 
             return currentPrice.minus(currentPrice.times(rateDelta))
         },
+        calculateSandboxStabFeeTime(){
+            const epochTimeSeconds = new Date('Mon 06 Sep 2021 04:07:58 PM GMT-0400').getTime() / 1000
+            const epochBlock = 17397
+
+            const blockDiff = this.$store.currentBlockHeight - epochBlock
+
+            const newFakeTimestamp = epochTimeSeconds - (blockDiff * 4)
+
+            return new Date(newFakeTimestamp * 1000)
+        }
     },
     computed: {
         ovenCapFormattedInXTZ(){

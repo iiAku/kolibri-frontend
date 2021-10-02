@@ -163,9 +163,15 @@
                 </div>
                 <div class="field-body">
                   <div class="field has-addons">
-                    <p class="control is-expanded">
+                    <div class="control is-expanded">
                       <input v-model="depositInput" class="input" type="number" placeholder="10">
-                    </p>
+                      <div
+                        @click="depositInput = $store.walletBalance.dividedBy(Math.pow(10, 18))"
+                        class="max-button heading"
+                      >
+                        Max
+                      </div>
+                    </div>
                     <p class="control">
                       <a class="button is-static has-text-weight-bold">
                         kUSD
@@ -186,9 +192,15 @@
                 </div>
                 <div class="field-body">
                   <div class="field has-addons">
-                    <p class="control is-expanded">
+                    <div class="control is-expanded">
                       <input v-model="redeemInput" class="input" type="number" placeholder="10">
-                    </p>
+                      <div
+                        @click="redeemInput = $store.lpBalance.dividedBy($store.lpMantissa).toFixed(36)"
+                        class="max-button heading"
+                      >
+                        Max
+                      </div>
+                    </div>
                     <p class="control">
                       <a class="button is-static has-text-weight-bold">
                         QLkUSD
@@ -343,11 +355,11 @@
             .withContractCall(lpContract.methods.deposit(sendAmt))
             .send()
 
+          this.$eventBus.$emit('tx-submitted', sendResult)
+
           this.$log(sendResult)
 
           await sendResult.confirmation(1)
-
-          this.depositInput = ''
 
           this.$eventBus.$emit('refresh-holdings')
 
@@ -357,6 +369,8 @@
           this.handleWalletError(e, 'Unable To Deposit Liquidity', 'We were unable to deposit kUSD into the LP.')
         } finally {
           this.txPending = false
+          this.$eventBus.$emit('tx-finished')
+          this.depositInput = null
         }
       },
       async redeemLPTokens(){
@@ -470,6 +484,44 @@
     }
     .lp-value{
       padding: 1rem 3rem 0;
+    }
+
+    .control{
+      &:hover{
+        .max-button{
+          opacity: 1;
+        }
+      }
+      input:focus + .max-button{
+        opacity: 1;
+      }
+    }
+    .max-button{
+      position: absolute;
+      top: 0.75rem;
+      color: $primary;
+      right: .5rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      z-index: 9;
+      opacity: 0;
+      transition: opacity 250ms linear;
+      &:hover{
+        border-bottom: 1px solid $primary;
+      }
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
     }
 
   }

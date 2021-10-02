@@ -14,24 +14,6 @@
       </div>
     </div>
 
-    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="prerelease-warning is-flex is-justify-content-center">
-      <div class="notification is-warning">
-        <button @click="showWarning = false" class="delete"></button>
-        <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>100 XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our
-        <router-link
-            rel="noopener"
-            target="_blank"
-            :to="{
-              name: 'Docs',
-              params: { folder: 'security', page: 'security-audit' },
-            }"
-        >
-          audit report status page
-        </router-link>
-        for more details.
-      </div>
-    </div>
-
     <div v-if="false" class="columns is-gapless has-background-white is-marginless is-justify-content-center top-notification">
       <div class="column is-half is-centered">
         <div class="notification is-primary">

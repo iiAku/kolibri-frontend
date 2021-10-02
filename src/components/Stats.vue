@@ -251,18 +251,6 @@ export default {
           this.$store.ovenCount = "?";
         });
 
-      this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
-        .then(async (contract) => {
-          const minterStorage = await contract.storage()
-          const mantissa = new BigNumber(10).pow(18)
-          this.$store.stabilityFee = minterStorage.stabilityFee
-                                       .dividedBy(mantissa)
-                                       .plus(1)
-                                       .pow(365 * 24 * 60)
-                                       .minus(1)
-                                       .times(mantissa)
-        })
-
       axios
         .get(`https://kolibri-data.s3.amazonaws.com/${this.$store.network}/totals.json`)
         .then((result) => {
@@ -283,12 +271,6 @@ export default {
           const storage = await token.storage()
           this.$store.debtCeiling = storage.debtCeiling
         })
-
-      this.$store.stableCoinClient
-        .getRequiredCollateralizationRatio()
-        .then((rate) => {
-          this.$store.collateralRate = rate;
-        });
 
       this.$store.tokenClient.getBalance(this.$store.NETWORK_CONTRACTS.STABILITY_FUND)
         .then((holdings) => {

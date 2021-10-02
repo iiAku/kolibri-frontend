@@ -3,7 +3,7 @@
     <div class="oven-info">
       <div class="is-flex is-flex-direction-row is-justify-content-center is-align-items-center">
         <h1 class="title is-marginless is-4">
-          This oven is <a target="_blank" rel="noopener" :href="tzktLink(opHash)">being built</a></h1>
+          This oven is <a target="_blank" rel="noopener" :href="tzktLinkTx(opHash)">being built</a></h1>
         <div class="loader"></div>
       </div>
       <br>

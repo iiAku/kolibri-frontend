@@ -158,7 +158,7 @@ export default {
           borrowAmt.toFixed()
         );
         this.$eventBus.$emit(
-          "tx-submitted",
+          "oven-tx-submitted",
           borrowResult,
           this.ovenAddress,
           "borrow"
