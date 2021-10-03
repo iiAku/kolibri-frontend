@@ -144,7 +144,7 @@ export default {
                 })
                 .filter((oven) => {
                   if (this.searchTerm !== null && this.searchTerm.length > 0){
-                    if (oven.baker !== null && oven.baker.toLowerCase().includes(this.searchTerm.toLowerCase())){
+                    if (oven.baker && oven.baker.toLowerCase().includes(this.searchTerm.toLowerCase())){
                       return true
                     } else if (oven.ovenOwner.toLowerCase().includes(this.searchTerm.toLowerCase())){
                       return true
