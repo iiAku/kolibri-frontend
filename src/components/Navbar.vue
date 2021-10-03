@@ -62,6 +62,12 @@
            class="navbar-item"
         >
           Governance
+          <transition
+            enter-active-class="animate__animated animate__fadeIn"
+            leave-active-class="animate__animated animate__fadeOut"
+          >
+            <div v-if="$store.daoStorage && $store.daoStorage.poll !== null" class="new-badge">New Proposal!</div>
+          </transition>
         </a>
 
       </div>
@@ -116,15 +122,6 @@ export default {
     }
   },
   methods: {
-    govLink(){
-      if (this.$store.isTestnet){
-        return 'https://testnet-governance.kolibri.finance'
-      } else if (this.$store.isSandbox){
-        return 'https://governance-sandbox.kolibri.finance'
-      } else {
-        return 'https://governance.kolibri.finance'
-      }
-    },
     avatarSvg(){
       return avatars.create(this.$store.walletPKH.toString(), {
         width: 48,

@@ -107,6 +107,7 @@ let state = Vue.observable({
     priceData: null,
     ovenCount: null,
     stabilityFee: null,
+    privateLiquidationThreshold: null,
     collateralRate: null,
     ownedOvens: null,
     balanceData: null,
@@ -128,6 +129,7 @@ let state = Vue.observable({
     lpBalance: null,
     lpTokenAddress: null,
     lpMantissa: new BigNumber(10).pow(36),
+    daoStorage: null,
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
@@ -165,5 +167,10 @@ state = _.merge(state, {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },
 })
+
+// Update polling interval to 2s in sandbox mode
+if (isSandbox){
+    state.tezosToolkit.setProvider({config: {confirmationPollingIntervalSecond: 2}})
+}
 
 export default state

@@ -25,18 +25,26 @@
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Borrowed kUSD:</strong>
-        <strong class="price-view"
-          >{{
-            numberWithCommas(outstandingTokensFormatted(ovenAddress).toFixed(2))
-          }}
-          kUSD</strong
-        >
+        <strong>Borrowed kUSD: </strong>
+        <strong class="price-view">
+          <popover extra-classes="small-price">
+            <strong
+              slot="popup-content"
+              class="has-text-primary heading is-marginless"
+            >
+              {{numberWithCommas(outstandingTokensFormatted(ovenAddress).toFixed(18)) }} kUSD
+            </strong>
+
+            <strong class="price-has-popover">
+              {{numberWithCommas(outstandingTokensFormatted(ovenAddress).toFixed(2)) }} kUSD
+            </strong>
+          </popover>
+        </strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Wallet Holdings:</strong>
+        <strong>Wallet Holdings: </strong>
         <strong class="price-view"
           >{{
             numberWithCommas(
@@ -49,9 +57,9 @@
     </div>
     <div class="field is-grouped is-grouped-right">
       <p class="heading">
-        <strong>Max Payback Amount:</strong>
+        <strong>Max Payback Amount: </strong>
         <strong class="price-view">
-          <a @click="repayAmount = maxPaybackAmt">
+          <a @click="repayAmount = maxPaybackAmt.toFixed(18)">
             {{ numberWithCommas(maxPaybackAmt.toFixed(2)) }} kUSD
           </a>
         </strong>
@@ -143,9 +151,13 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
+import Popover from "@/components/Popover";
+
+BigNumber.config({ POW_PRECISION: 18 })
 
 export default {
   name: "Repay",
+  components: {Popover},
   mixins: [Mixins],
   props: {
     ovenAddress: {
@@ -169,7 +181,7 @@ export default {
           repayAmt.toFixed()
         );
         this.$eventBus.$emit(
-          "tx-submitted",
+          "oven-tx-submitted",
           repayResult,
           this.ovenAddress,
           "repay"

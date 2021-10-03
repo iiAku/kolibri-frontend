@@ -14,7 +14,7 @@
               <a
                 target="_blank"
                 rel="noopener"
-                :href="tzktLink(ovenAddress)"
+                :href="tzktLinkContract(ovenAddress)"
               >
                 {{ ovenName }}
               </a>
@@ -119,7 +119,7 @@
           v-if="pendingTransaction !== true"
           target="_blank"
           rel="noopener"
-          :href="tzktLink(pendingTransaction)"
+          :href="tzktLinkTx(pendingTransaction)"
           >Transaction Pending...</a
         >
         <span v-else>Transaction Pending...</span>
@@ -271,7 +271,7 @@
                     slot="popup-content"
                     class="has-text-primary heading is-marginless"
                   >
-                    {{numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6))) }} ꜩ
+                    {{numberWithCommas(ovenData.balance.dividedBy(Math.pow(10, 6)).toFixed(6)) }} ꜩ
                   </strong>
 
                   <strong class="price-has-popover">
@@ -284,7 +284,7 @@
               <div
                 class="is-flex is-flex-direction-column is-align-items-center"
               >
-                <p class="heading">Borrowed Tokens</p>
+                <p class="heading">Loan Amt</p>
                 <popover extra-classes="small-price">
                   <strong
                     slot="popup-content"
@@ -375,7 +375,7 @@ export default {
       await this.updateOvenData()
     }, 60 * 1000)
 
-    this.$eventBus.$on("tx-submitted", (txResult, ovenAddress, verb) => {
+    this.$eventBus.$on("oven-tx-submitted", (txResult, ovenAddress, verb) => {
       if (this.ovenAddress === ovenAddress) {
         this.waitForTxAndRefresh(txResult, verb);
       }
@@ -416,13 +416,15 @@ export default {
       }
 
       let currentValue = this.$store.priceData.price
-        .multipliedBy(ovenBalance)
-        .dividedBy(Math.pow(10, 10));
+        .dividedBy(Math.pow(10, 6))
+        .multipliedBy(ovenBalance.dividedBy(Math.pow(10, 6)))
+
       let valueHalf = currentValue.dividedBy(2);
 
       let rate = this.ovenData.outstandingTokens
+        .dividedBy(Math.pow(10, 18))
         .dividedBy(valueHalf)
-        .dividedBy(Math.pow(10, 14));
+        .times(100);
 
       return rate.toFixed(2);
     },
@@ -435,11 +437,18 @@ export default {
         "isLiquidated",
       ];
 
+      let stabFeeDate;
+      if (this.$store.isSandbox){
+        stabFeeDate = this.calculateSandboxStabFeeTime()
+      } else {
+        stabFeeDate = new Date()
+      }
+
       const values = await Promise.all([
         this.ovenClient(this.ovenAddress).getBaker(),
         this.ovenClient(this.ovenAddress).getBalance(),
         this.ovenClient(this.ovenAddress).getBorrowedTokens(),
-        this.ovenClient(this.ovenAddress).getStabilityFees(),
+        this.ovenClient(this.ovenAddress).getStabilityFees(stabFeeDate),
         this.ovenClient(this.ovenAddress).isLiquidated(),
       ]);
 

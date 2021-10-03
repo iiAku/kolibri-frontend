@@ -3,7 +3,7 @@
     <div class="container">
       <div class="box">
         <div class="header">
-          <h1 class="title is-4 is-marginless">Kolibri Documentation</h1>
+          <h1 class="title is-4 is-marginless">Documentation</h1>
           <a @click="menuOpen=!menuOpen" role="button" v-on:clickout="menuOpen=false" class="navbar-burger" :class="{'is-active': menuOpen}">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -25,7 +25,7 @@
               </template>
             </aside>
           </div>
-          <div class="column">
+          <div class="column docs-wrapper">
             <div v-if="pageContent !== null" v-html="pageContent" class="docs-content content"></div>
             <div v-else class="is-flex is-justify-content-center is-align-items-center is-height-full">
               <div class="loader is-large is-primary"></div>
@@ -140,6 +140,9 @@ export default {
     min-height: calc(100vh - 4rem - 5px);
     .container{
       padding: 3rem 0;
+      @include until($desktop){
+        padding-top: 1rem;
+      }
     }
     .is-height-full{
       height: 100%;
@@ -157,7 +160,7 @@ export default {
       .header{
         padding: 1rem 2rem;
         border-bottom: 2px solid $light-grey;
-        @include until($tablet) {
+        @include until($desktop) {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -180,6 +183,9 @@ export default {
           width: auto;
         }
       }
+    }
+    .docs-wrapper{
+      overflow: scroll;
     }
   }
 </style>

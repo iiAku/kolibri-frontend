@@ -14,35 +14,8 @@
       </div>
     </div>
 
-    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="prerelease-warning is-flex is-justify-content-center">
-      <div class="notification is-warning">
-        <button @click="showWarning = false" class="delete"></button>
-        <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>100 XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our
-        <router-link
-            rel="noopener"
-            target="_blank"
-            :to="{
-              name: 'Docs',
-              params: { folder: 'security', page: 'security-audit' },
-            }"
-        >
-          audit report status page
-        </router-link>
-        for more details.
-      </div>
-    </div>
-
-    <div v-if="false" class="columns is-gapless has-background-white is-marginless is-justify-content-center top-notification">
-      <div class="column is-half is-centered">
-        <div class="notification is-primary">
-          <strong>
-            As outlined in <a target="_blank" rel="noopener" href="https://forum.tezosagora.org/t/kolibri-governance-proposal-6-continuous-increase-of-the-stability-fee-to-reach-peg/2851">governance proposal #6</a>, the stability fee is increasing by 1% every day until the system can reach a stable peg. See <a target="_blank" rel="noopener" href="https://p.datadoghq.com/sb/e72980047-41e546b0c453a72015620c4d8002646b?live=true&theme=dark&tpl_var_network=mainnet&tv_mode=true">the Kolibri metrics timeboard</a> or <a rel="noopener" target="_blank" href="https://discord.gg/pCKVNTw6Pf">join the Kolibri discord</a> for more info.
-          </strong>
-        </div>
-      </div>
-    </div>
-
     <section class="cta">
+      <gov-proposal-notification />
       <div v-if="$store.isTestnet" class="columns is-centered top-piece">
         <div class="column is-half-desktop">
           <div class="notification is-warning">
@@ -117,6 +90,7 @@ import Stats from "@/components/Stats";
 import Ovens from "@/components/Ovens";
 import ConnectPrompt from "@/components/ConnectPrompt";
 import HoverLabsFooter from "@/components/HoverLabsFooter";
+import GovProposalNotification from "@/components/GovProposalNotification";
 
 export default {
   name: 'Index',
@@ -131,6 +105,7 @@ export default {
     }
   },
   components: {
+    GovProposalNotification,
     ConnectPrompt,
     Ovens,
     Stats,

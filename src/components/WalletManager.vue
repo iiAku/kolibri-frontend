@@ -6,6 +6,8 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import BigNumber from "bignumber.js";
 import {Network} from "@hover-labs/kolibri-js";
 
+BigNumber.set({ DECIMAL_PLACES: 36 })
+
 export default {
   name: 'WalletManager',
   async mounted(){

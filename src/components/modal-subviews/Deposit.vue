@@ -24,24 +24,23 @@
         </div>
       </div>
     </div>
-    <div v-if="!this.$store.isTestnet && this.$store.maxOvenValue !== null && showWarning" class="notification is-warning">
-      <button @click="showWarning = false" class="delete"></button>
-      <b>Please Note:</b> The Kolibri project code is undergoing a security audit. Until the audit is complete, there is a <b>{{ ovenCapFormattedInXTZ }} XTZ</b> oven maximum. Please use Kolibri at your own risk. Refer to our
-      <router-link
-          rel="noopener"
-          target="_blank"
-          :to="{
-              name: 'Docs',
-              params: { folder: 'security', page: 'security-audit' },
-            }"
-      >
-        audit report status page
-      </router-link>
-      for more details.
-    </div>
     <div class="field is-grouped is-grouped-right is-marginless">
       <p class="heading">
-        <strong>Oven Collateral: </strong> <strong class="price-view">{{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ</strong>
+        <strong>Oven Collateral: </strong>
+        <strong class="price-view">
+          <popover extra-classes="small-price">
+            <strong
+              slot="popup-content"
+              class="has-text-primary heading is-marginless"
+            >
+              {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(6)) }} ꜩ
+            </strong>
+
+            <strong class="price-has-popover">
+              {{ numberWithCommas(ovenBalanceFormatted(ovenAddress).toFixed(2)) }} ꜩ
+            </strong>
+          </popover>
+        </strong>
       </p>
     </div>
     <div class="field is-grouped is-grouped-right is-marginless">
@@ -108,9 +107,11 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from 'bignumber.js'
+import Popover from "@/components/Popover";
 
 export default {
   name: 'Deposit',
+  components: {Popover},
   mixins: [Mixins],
   props: {
     ovenAddress: {
@@ -134,7 +135,7 @@ export default {
         let depositResult = await this
                                     .ovenClient(this.ovenAddress)
                                     .deposit(depositAmtMutez)
-        this.$eventBus.$emit("tx-submitted", depositResult, this.ovenAddress, 'deposit')
+        this.$eventBus.$emit("oven-tx-submitted", depositResult, this.ovenAddress, 'deposit')
         this.$emit('close-requested')
       } catch (e) {
         this.handleWalletError(e, "Unable to deposit", "There was an issue with the deposit request.")
