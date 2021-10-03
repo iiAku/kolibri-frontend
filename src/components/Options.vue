@@ -8,7 +8,7 @@
       <div :key="'menu'" v-if="popupOpen" class="menu">
 
         <button @click="popupOpen = false" class="delete"></button>
-
+<div class="contents">
         <div class="contracts">
           <h1 class="title is-5 has-text-white is-marginless">Contracts</h1>
           <div class="content">
@@ -71,6 +71,7 @@
             </a>
           </div>
         </div>
+</div>
       </div>
       <div :key="'cog'" @click="popupOpen = true" v-else class="options-button is-flex">
         <img src="../assets/cog.svg" />
@@ -230,6 +231,10 @@ export default {
   right: 0;
   z-index: 99;
   max-width: 30rem;
+  .contents{
+    max-height: 90vh;
+    overflow-y: scroll;
+  }
   @media screen and (max-width: 30rem){
     max-width: 97%;
   }
@@ -257,6 +262,9 @@ export default {
   }
   .contracts{
     margin-bottom: 1rem;
+    ul{
+      column-count: 2;
+    }
   }
   .menu{
     background: $primary;

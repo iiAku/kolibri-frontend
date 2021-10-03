@@ -129,6 +129,7 @@ let state = Vue.observable({
     lpBalance: null,
     lpTokenAddress: null,
     lpMantissa: new BigNumber(10).pow(36),
+    daoStorage: null,
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,

@@ -228,7 +228,16 @@ export default {
             const newFakeTimestamp = epochTimeSeconds - (blockDiff * 4)
 
             return new Date(newFakeTimestamp * 1000)
-        }
+        },
+        govLink(){
+            if (this.$store.isTestnet){
+                return 'https://testnet-governance.kolibri.finance'
+            } else if (this.$store.isSandbox){
+                return 'https://governance-sandbox.kolibri.finance'
+            } else {
+                return 'https://governance.kolibri.finance'
+            }
+        },
     },
     computed: {
         ovenCapFormattedInXTZ(){

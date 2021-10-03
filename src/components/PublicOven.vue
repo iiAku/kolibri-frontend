@@ -2,7 +2,6 @@
   <div class="box oven public-oven">
     <div class="top">
       <nav class="level is-mobile">
-        <!-- Left side -->
         <div class="level-left">
           <div class="level-item">
             <h1 class="title is-5 is-family-monospace">
@@ -24,22 +23,24 @@
                   slot="popup-content"
                   class="has-text-primary is-marginless"
                 >
-                  You can only privately liquidate ovens that are above {{ $store.collateralRate.minus($store.privateLiquidationThreshold).dividedBy(Math.pow(10, 18)) }}% ({{ privateLiquidationThreshold }}%+ utilization)
+                  You can only privately liquidate ovens that are above {{ $store.collateralRate.minus($store.privateLiquidationThreshold).dividedBy(Math.pow(10, 18)) }}% ({{ privateLiquidationThreshold }}%+ utilization). Read more <a style="border-bottom: 1px solid #3EBD93;" target="_blank" rel="noopener" href="https://discuss.kolibri.finance/t/kip-006-prioritize-the-liquidation-pool-in-liquidations/58">here</a>
                 </strong>
 
-                <a
-                  :disabled="pendingTransaction || privateLiquidationThreshold.isGreaterThan(collatoralizedRateForOven(oven))"
-                  v-if="
-                    $store.wallet !== null &&
-                    !oven.isLiquidated &&
-                    lpLiquidationThreshold.isLessThan(collatoralizedRateForOven(oven))
-                  "
-                  :class="{'is-loading': networkLoading}"
-                  class="button is-danger is-small">
-                  Liquidate
-                </a>
-
+                <!-- Note, using v-if in a default scoped slot breaks the underlying popper library :-/ -->
+                <span>
+                  <a
+                    :disabled="pendingTransaction || privateLiquidationThreshold.isGreaterThan(collatoralizedRateForOven(oven))"
+                    v-if="
+                      $store.wallet !== null &&
+                      !oven.isLiquidated &&
+                      lpLiquidationThreshold.isLessThan(collatoralizedRateForOven(oven))"
+                    :class="{'is-loading': networkLoading}"
+                    class="button is-danger is-small">
+                    Liquidate
+                  </a>
+                </span>
               </popover>
+
               <button
                 v-else
                 :disabled="pendingTransaction"
@@ -107,7 +108,7 @@
           <div class="is-flex is-flex-direction-column is-justify-content-center left-info">
             <p class="heading">Delegated Baker: <strong><a target="_blank" rel="noopener" :href="`https://${this.$store.network === 'mainnet' ? '' : this.$store.network + '.'}tzkt.io/${oven.baker}/delegators`">{{ oven.baker }}</a></strong></p>
             <div class="is-flex is-justify-content-space-between">
-              <p class="heading">Owned By:
+              <p class="heading delegated-baker">Owned By:
                 <a
                     target="_blank"
                     rel="noopener"
@@ -146,12 +147,10 @@
                     ${{ numberWithCommas(ovenValue(oven.balance)) }} USD
                   </strong>
 
-                  <strong class="price-has-popover"
-                    >${{
+                  <strong class="price-has-popover">${{
                       numberWithCommas(ovenValue(oven.balance).toFixed(2))
-                    }}
-                    USD</strong
-                  >
+                    }} USD
+                  </strong>
                 </popover>
               </div>
             </div>
@@ -174,13 +173,11 @@
                       ꜩ
                     </strong>
 
-                    <strong class="price-has-popover"
-                      >{{
+                    <strong class="price-has-popover">{{
                         numberWithCommas(
                           oven.balance.dividedBy(Math.pow(10, 6)).toFixed(2)
                         )
-                      }}
-                      ꜩ
+                      }} ꜩ
                     </strong>
                   </popover>
                 </p>
@@ -204,16 +201,14 @@
                     kUSD
                   </strong>
 
-                  <strong class="price-has-popover"
-                    >{{
+                  <strong class="price-has-popover">{{
                       numberWithCommas(
                         oven.outstandingTokens
                           .dividedBy(Math.pow(10, 18))
                           .toFixed(2)
                       )
-                    }}
-                    kUSD</strong
-                  >
+                    }} kUSD
+                  </strong>
                 </popover>
               </div>
             </div>
@@ -235,14 +230,12 @@
                     kUSD
                   </strong>
 
-                  <strong class="price-has-popover"
-                    >{{
+                  <strong class="price-has-popover">{{
                       numberWithCommas(
                         oven.stabilityFee.dividedBy(Math.pow(10, 18)).toFixed(6)
                       )
-                    }}
-                    kUSD</strong
-                  >
+                    }} kUSD
+                  </strong>
                 </popover>
               </div>
             </div>
@@ -361,6 +354,12 @@ export default {
     button:not(first-child){
       margin-left: .5rem;
     }
+  }
+  .delegated-baker{
+    max-width: 60vw;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 </style>

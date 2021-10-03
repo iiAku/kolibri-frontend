@@ -87,7 +87,7 @@
     </transition>
 
     <div class="columns is-centered">
-      <div class="column is-half-desktop is-two-thirds-tablet">
+      <div class="column is-two-thirds-tablet">
         <div class="box is-paddingless">
           <div class="topper">
             <img class="pool" src="../assets/pool.svg">
@@ -195,7 +195,7 @@
                     <div class="control is-expanded">
                       <input v-model="redeemInput" class="input" type="number" placeholder="10">
                       <div
-                        @click="redeemInput = $store.lpBalance.dividedBy($store.lpMantissa).toFixed(36)"
+                        @click="redeemInput = $store.lpBalance.dividedBy($store.lpMantissa).decimalPlaces(36)"
                         class="max-button heading"
                       >
                         Max
@@ -293,7 +293,7 @@
       }
     },
     async mounted(){
-      if (!this.$store.isTestnet){
+      if (!this.$store.isTestnet && !this.$store.isSandbox){
         this.warningModalOpen = true
       }
 

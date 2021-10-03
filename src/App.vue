@@ -49,7 +49,8 @@ export default {
       this.updateBlockHeight(),
       this.updateMinterData(),
       this.updatePriceInfo(),
-      this.updateAllOvenData()
+      this.updateAllOvenData(),
+      this.loadDAOStorage()
     ])
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
     this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
@@ -57,6 +58,10 @@ export default {
     this.updateAllOvenDataTimer = setInterval(this.updateAllOvenData, 60 * 1000) // Go grab all oven data every minute
   },
   methods:{
+    async loadDAOStorage(){
+      const contract = await this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.DAO)
+      this.$store.daoStorage = await contract.storage()
+    },
     async updateMinterData(){
       const contract = await this.$store.tezosToolkit.contract.at(this.$store.NETWORK_CONTRACTS.MINTER)
 

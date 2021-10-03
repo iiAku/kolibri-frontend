@@ -1,7 +1,7 @@
 <template>
   <section class="all-ovens hero is-fullheight is-align-items-center">
     <div
-        v-if="$store.allOvensData !== null && $store.priceData !== null"
+        v-if="$store.allOvensData !== null && $store.priceData !== null && activeVaults.length > 10"
         class="floating-paginator animate__animated animate__fadeInUp">
       <Pagination
           class="is-centered"
@@ -17,22 +17,42 @@
       <div class="loader is-large is-primary"></div>
     </div>
     <div class="container oven-data is-fluid" v-else>
-      <div class="columns is-centered">
-        <div class="column is-three-quarters">
+      <div class="columns is-centered is-gapless">
+        <div class="column is-three-quarters box filters">
           <div class="paginator-widget">
-            <div class="is-flex is-justify-content-space-evenly">
-              <label class="checkbox">
-                <input v-model="hideEmptyOvens" type="checkbox">
-                Hide Empty Ovens?
-              </label>
-              <label class="checkbox">
-                <input v-model="hideLiquidatedOvens" type="checkbox">
-                Hide Liquidated Ovens?
-              </label>
-              <label class="checkbox">
-                <input v-model="orderByValue" type="checkbox">
-                Order Ovens By Value?
-              </label>
+            <div class="columns is-gapless">
+              <div class="column has-text-centered">
+                <label class="checkbox">
+                  <input v-model="hideEmptyOvens" type="checkbox">
+                  Hide Empty Ovens?
+                </label>
+              </div>
+              <div class="column has-text-centered">
+                <label class="checkbox">
+                  <input v-model="hideLiquidatedOvens" type="checkbox">
+                  Hide Liquidated Ovens?
+                </label>
+              </div>
+              <div class="column has-text-centered">
+                <label class="checkbox">
+                  <input v-model="orderByValue" type="checkbox">
+                  Order Ovens By Value?
+                </label>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-center search">
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">Search</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input v-model="searchTerm" class="input" type="text" placeholder="Any Contract or Wallet Address">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -70,6 +90,7 @@ export default {
       hideLiquidatedOvens: true,
       orderByCollateralization: true,
       orderByValue: false,
+      searchTerm: null,
       modals: {
         newOven: {
           opened: false
@@ -90,7 +111,10 @@ export default {
       return _(this.$store.allOvensData)
                 .reject((oven) => {
                   if (this.hideEmptyOvens) {
-                    return oven.balance.isLessThanOrEqualTo(0)
+                    if (!this.hideLiquidatedOvens && oven.isLiquidated) {
+                      return false
+                    }
+                    return oven.balance.isEqualTo(0)
                   }
                   return false
                 })
@@ -117,6 +141,19 @@ export default {
                     return 1
                   }
                   return 0
+                })
+                .filter((oven) => {
+                  if (this.searchTerm !== null && this.searchTerm.length > 0){
+                    if (oven.baker !== null && oven.baker.toLowerCase().includes(this.searchTerm.toLowerCase())){
+                      return true
+                    } else if (oven.ovenOwner.toLowerCase().includes(this.searchTerm.toLowerCase())){
+                      return true
+                    } else if (oven.ovenAddress.toLowerCase().includes(this.searchTerm.toLowerCase())){
+                      return true
+                    }
+                    return false
+                  }
+                  return true
                 })
                 .chunk(10)
                 .value()
@@ -156,9 +193,12 @@ export default {
       padding-top: 0 !important;
     }
     .paginator-widget{
-      margin-top: 1.5rem;
       .paginator-list {
         flex-wrap: nowrap;
+      }
+      .column{
+        padding: 1rem !important;
+        padding-bottom: 0 !important;
       }
     }
     &.is-fullheight{
@@ -180,6 +220,22 @@ export default {
       }
       @include from($desktop){
         padding: 2.5rem 5rem;
+      }
+    }
+    .box.filters{
+      margin-top: 1.5rem;
+    }
+    .search{
+      margin: 1.5rem;
+      .field{
+        width: 50%;
+        @include until($widescreen){
+          width: 75%;
+        }
+        @include until($tablet){
+          width: 100%;
+          padding-bottom: 1rem;
+        }
       }
     }
   }
