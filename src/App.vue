@@ -75,7 +75,7 @@ export default {
         .times(mantissa)
 
       this.$store.collateralRate = minterStorage.collateralizationPercentage;
-      this.$store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold;
+      this.$store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold || null;
     },
     async updateAllOvenData(){
       try {

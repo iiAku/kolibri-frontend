@@ -62,7 +62,12 @@
            class="navbar-item"
         >
           Governance
-          <div class="new-badge">New Proposal!</div>
+          <transition
+            enter-active-class="animate__animated animate__fadeIn"
+            leave-active-class="animate__animated animate__fadeOut"
+          >
+            <div v-if="$store.daoStorage && $store.daoStorage.poll !== null" class="new-badge">New Proposal!</div>
+          </transition>
         </a>
 
       </div>
