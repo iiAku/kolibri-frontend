@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer hover-footer">
+  <footer class="hover-footer">
     <div class="content has-text-centered">
       <div class="columns">
         <div class="column">
@@ -10,9 +10,7 @@
             <img class="shadow" src="../assets/shadow.svg" />
           </div>
         </div>
-        <div
-          class="column links is-flex-direction-column has-text-left is-flex is-justify-content-center"
-        >
+        <div class="column links is-flex-direction-column has-text-left is-flex is-justify-content-center">
           <p class="is-marginless">
             Built by the nerds at
             <a target="_blank" rel="noopener" href="https://hover.engineering"
@@ -82,6 +80,8 @@
 <script>
 export default {
   name: "HoverLabsFooter",
+  mounted() {
+  },
   data() {
     return {};
   },
