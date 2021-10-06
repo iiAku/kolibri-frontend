@@ -153,13 +153,6 @@ export default {
         this.$store.isTranslated = e.target.value !== 'en'
       })
     },
-    resetGoogleTranslate(){
-      const frame = document.getElementById(':1.container')
-      if (frame){
-        frame.contentDocument.getElementById(':1.restore').click()
-        this.$store.isTranslated = false
-      }
-    },
     getItem(itemKey){
       return localStorage.getItem(itemKey)
     },
@@ -371,7 +364,7 @@ export default {
   .options-button{
     cursor: pointer;
     border-radius: 50%;
-    padding: 0.4rem;
+    padding: 0.45rem;
     margin: 1rem 1.5rem;
     border: 2px solid white;
     background: $primary;
@@ -430,5 +423,21 @@ export default {
       margin-bottom: 0.25rem;
     }
   }
+}
+
+// Google translate stuff
+body > .skiptranslate{
+  display: none;
+}
+#goog-gt-tt{
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body{
+  top: 0 !important;
 }
 </style>

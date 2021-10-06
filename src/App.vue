@@ -229,22 +229,4 @@ export default {
     cursor: pointer;
     border-bottom: 1px solid $primary;
   }
-
-  // Google translate stuff
-  body > .skiptranslate{
-    display: none;
-  }
-  #goog-gt-tt{
-    display: none !important;
-  }
-  .goog-text-highlight {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-
-  body{
-    top: 0 !important;
-  }
-
 </style>
