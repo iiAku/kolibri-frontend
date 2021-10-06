@@ -6,8 +6,11 @@
 </template>
 
 <script>
+import Mixins from "@/mixins";
+
 export default {
   name: 'PendingTxInfo',
+  mixins: [Mixins],
   mounted() {
     this.$eventBus.$on('tx-submitted', (operation) => {
       this.currentTx = operation.opHash
@@ -39,13 +42,6 @@ export default {
       return fullStr.substr(0, frontChars) +
         separator +
         fullStr.substr(fullStr.length - backChars);
-    },
-    tzktLink(contractOrOp){
-      if (this.$store.network === 'granadanet'){
-        return `https://granadanet.tzkt.io/${contractOrOp}`
-      } else {
-        return `https://tzkt.io/${contractOrOp}`
-      }
     },
   },
   computed:{
