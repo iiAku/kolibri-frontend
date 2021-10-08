@@ -146,24 +146,12 @@ export default {
   },
   computed: {
     maxDepositAmt(){
-      let walletBalanceXTZ = this.walletBalanceXTZFormatted()
-      if (this.$store.maxOvenValue !== null){
-        return Math.min(this.ovenCapFormattedInXTZ - this.ovenBalanceFormatted(this.ovenAddress), walletBalanceXTZ)
-      } else {
-        return walletBalanceXTZ
-      }
+      return this.walletBalanceXTZFormatted()
     },
     shouldAllowDeposit(){
-      if (this.$store.maxOvenValue !== null){
-        return this.depositAmount !== null &&
-            this.depositAmount > 0 &&
-            this.depositAmount <= this.maxDepositAmt &&
-            this.depositAmount <= this.walletBalanceXTZFormatted();
-      } else {
-        return this.depositAmount !== null &&
-            this.depositAmount > 0 &&
-            this.depositAmount <= this.walletBalanceXTZFormatted();
-      }
+      return this.depositAmount !== null &&
+          this.depositAmount > 0 &&
+          this.depositAmount <= this.walletBalanceXTZFormatted();
     },
     collateralizedRateAfterDeposit(){
       let depositAmount = this.depositAmount

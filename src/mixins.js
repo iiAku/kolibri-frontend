@@ -1,6 +1,5 @@
 import _, { find } from 'lodash'
 import {ContractErrors} from '@hover-labs/kolibri-js'
-import BigNumber from "bignumber.js";
 import axios from "axios";
 
 const errorMap = {
@@ -240,8 +239,5 @@ export default {
         },
     },
     computed: {
-        ovenCapFormattedInXTZ(){
-            return new BigNumber(this.$store.maxOvenValue).dividedBy(Math.pow(10, 6))
-        },
     }
 }

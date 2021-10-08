@@ -53,7 +53,6 @@ export default {
       this.loadDAOStorage()
     ])
     this.$store.simpleStabilityFee = await this.$store.stableCoinClient.getSimpleStabilityFee()
-    this.$store.maxOvenValue = await this.$store.stableCoinClient.getMaximumOvenValue()
     this.updatePriceInfoTimer = setInterval(this.updatePriceInfo, 60 * 1000) // Go grab oracle data every minute
     this.updateAllOvenDataTimer = setInterval(this.updateAllOvenData, 60 * 1000) // Go grab all oven data every minute
   },

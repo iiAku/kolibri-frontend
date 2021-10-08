@@ -121,7 +121,6 @@ let state = Vue.observable({
     stabilityFundHoldings: null,
     devFundHoldings: null,
     kdaoHoldings: null,
-    maxOvenValue: null,
     debtCeiling: null,
     bakers: null,
     defaultOvenBaker: null,
