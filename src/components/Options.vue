@@ -8,70 +8,70 @@
       <div :key="'menu'" v-if="popupOpen" class="menu">
 
         <button @click="popupOpen = false" class="delete"></button>
-<div class="contents">
-        <div class="contracts">
-          <h1 class="title is-5 has-text-white is-marginless">Contracts</h1>
-          <div class="content">
-            <ul class="has-text-white">
-              <li :key="contractKey" v-for="(contractName, contractKey) in contracts">
-                <b>
-                  <a class="has-text-white" target="_blank" rel="noopener" :href="bcdLink($store.NETWORK_CONTRACTS[contractKey])">{{ contractName }}</a>
-                </b>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <nav class="level node-selector">
-          <div class="level-item form-label">
-            <div class="is-flex is-align-items-center">
-              <div v-show="networkLoading" class="loader is-white"></div>
-              <p class="has-text-weight-bold has-text-white">RPC Node</p>
+        <div class="contents">
+          <div class="contracts">
+            <h1 class="title is-5 has-text-white is-marginless">Contracts</h1>
+            <div class="content">
+              <ul class="has-text-white">
+                <li :key="contractKey" v-for="(contractName, contractKey) in contracts">
+                  <b>
+                    <a class="has-text-white" target="_blank" rel="noopener" :href="bcdLink($store.NETWORK_CONTRACTS[contractKey])">{{ contractName }}</a>
+                  </b>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="level-item">
-            <div class="select">
-              <select v-model="selectedNode">
-                <option
-                  :key="nodeName"
-                  :value="nodeAddresses[$store.network]"
-                  v-for="(nodeAddresses, nodeName) in nodes"
-                >
-                  {{ nodeName }}
-                </option>
-                <option v-if="getItem($store.nodeOverrideKey) && !nodesContainsNode(getItem($store.nodeOverrideKey))" :value="getItem($store.nodeOverrideKey)">{{ getItem($store.nodeOverrideKey) }}</option>
-                <option value="CUSTOM">
-                  Custom
-                </option>
-              </select>
+
+          <nav class="level node-selector">
+            <div class="level-item form-label">
+              <div class="is-flex is-align-items-center">
+                <div v-show="networkLoading" class="loader is-white"></div>
+                <p class="has-text-weight-bold has-text-white">RPC Node</p>
+              </div>
+            </div>
+            <div class="level-item">
+              <div class="select">
+                <select v-model="selectedNode">
+                  <option
+                    :key="nodeName"
+                    :value="nodeAddresses[$store.network]"
+                    v-for="(nodeAddresses, nodeName) in nodes"
+                  >
+                    {{ nodeName }}
+                  </option>
+                  <option v-if="getItem($store.nodeOverrideKey) && !nodesContainsNode(getItem($store.nodeOverrideKey))" :value="getItem($store.nodeOverrideKey)">{{ getItem($store.nodeOverrideKey) }}</option>
+                  <option value="CUSTOM">
+                    Custom
+                  </option>
+                </select>
+              </div>
+            </div>
+          </nav>
+
+          <div class="ipfs-links">
+            <p class="has-text-white">This site is continuously deployed to <a target="_blank" rel="noopener" href="https://docs.ipfs.io/concepts/what-is-ipfs/" class="has-text-white has-text-weight-bold">IPFS</a> with the url:</p>
+            <pre>ipns://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn</pre>
+            <p class="help has-text-white has-text-centered">* Make sure to bookmark it!</p>
+            <div class="buttons is-centered">
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.dweb.link"
+                class="button is-outlined is-white"
+              >
+                <b>dWeb IPFS Site</b>
+              </a>
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.cf-ipfs.com"
+                class="button is-outlined is-white"
+              >
+                <b>Cloudflare IPFS Site</b>
+              </a>
             </div>
           </div>
-        </nav>
-
-        <div class="ipfs-links">
-          <p class="has-text-white">This site is continuously deployed to <a target="_blank" rel="noopener" href="https://docs.ipfs.io/concepts/what-is-ipfs/" class="has-text-white has-text-weight-bold">IPFS</a> with the url:</p>
-          <pre>ipns://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn</pre>
-          <p class="help has-text-white has-text-centered">* Make sure to bookmark it!</p>
-          <div class="buttons is-centered">
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.dweb.link"
-              class="button is-outlined is-white"
-            >
-              <b>dWeb IPFS Site</b>
-            </a>
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.cf-ipfs.com"
-              class="button is-outlined is-white"
-            >
-              <b>Cloudflare IPFS Site</b>
-            </a>
-          </div>
         </div>
-</div>
       </div>
       <div :key="'cog'" @click="popupOpen = true" v-else class="options-button is-flex">
         <img src="../assets/cog.svg" />
@@ -121,6 +121,10 @@ export default {
       }
     } else {
       nodes = {
+        ECADLabs: {
+          granadanet: 'https://granadanet.api.tez.ie',
+          mainnet: 'https://mainnet.api.tez.ie',
+        },
         Giganode: {
           granadanet: 'https://testnet-tezos.giganode.io',
           mainnet: 'https://mainnet-tezos.giganode.io',
@@ -204,7 +208,12 @@ export default {
           localStorage.setItem(this.$store.nodeOverrideKey, newValue)
           location.reload()
         } catch(e) {
-          //
+          console.error(e)
+          this.$swal(
+            "Could Not Connect",
+            `There was an error in the selected node!<br><pre class="has-text-left">${JSON.stringify(e, null, 2)}</pre>`,
+            "error"
+          );
         } finally {
           this.networkLoading = false
         }
