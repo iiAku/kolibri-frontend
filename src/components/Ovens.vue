@@ -125,6 +125,9 @@ export default {
             return acc
           }, {})
       this.$set(this.$store, 'ownedOvens', ownedOvens)
+
+      // In electron land we listen for this event to know to start doing integration stuff
+      window.dispatchEvent(new CustomEvent('owned-ovens', {detail: {ownedOvens}}))
     },
     openDeleagateModal(ovenAddress){
       this.modal.delegate.opened = true
