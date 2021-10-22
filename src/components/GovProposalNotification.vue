@@ -9,7 +9,7 @@
           <h1 class="title is-4">🗳 Active Governance Proposal</h1>
           <p>There is currently an active governance proposal being voted over at the Kolibri Governance Portal. If you haven't already done so, please go cast your vote now.</p>
 
-          <h1 class="title is-5 proposal-name"><a target="_blank" rel="noopener" :href="govLink()">Proposal #{{ $store.daoStorage.poll.id }}: {{ $store.daoStorage.poll.proposal.title }}</a></h1>
+          <h1 class="title is-5 proposal-name"><a target="_blank" rel="noopener" :href="govLink()">Proposal #{{ $store.daoStorage.poll.id + 1 }}: {{ $store.daoStorage.poll.proposal.title }}</a></h1>
         </div>
       </div>
     </div>
