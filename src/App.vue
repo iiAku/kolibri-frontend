@@ -14,6 +14,7 @@
     <keep-alive>
       <router-view :key="$route.name"></router-view>
     </keep-alive>
+    <hover-labs-footer />
   </div>
 </template>
 
@@ -28,11 +29,13 @@ import _ from 'lodash'
 import {Network} from "@hover-labs/kolibri-js";
 
 import Mixins from './mixins'
+import HoverLabsFooter from "@/components/HoverLabsFooter";
 
 export default {
   name: 'App',
   mixins: [Mixins],
   components: {
+    HoverLabsFooter,
     PendingTxInfo,
     Options,
     SandboxOverride,
@@ -225,5 +228,4 @@ export default {
     cursor: pointer;
     border-bottom: 1px solid $primary;
   }
-
 </style>

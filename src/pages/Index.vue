@@ -47,7 +47,7 @@
 
             </div>
             <div class="column is-6 is-12-mobile is-flex is-justify-content-center is-flex-direction-column animate__animated animate__fadeIn animate">
-              <h1 class="title has-text-weight-bold is-huge">Kolibri</h1>
+              <h1 class="title has-text-weight-bold is-huge notranslate">Kolibri</h1>
               <h2 class="subtitle has-text-weight-light is-huge">Stablecoin</h2>
               <div>
                 <router-link :to="{name: 'DocsRoot'}" class="button is-primary is-outlined has-text-weight-bold">Learn More</router-link>
@@ -79,8 +79,6 @@
       <ovens v-if="$store.wallet !== null" />
       <connect-prompt v-else />
     </div>
-
-    <hover-labs-footer />
   </div>
 </template>
 
@@ -89,7 +87,6 @@ import Mixins from "@/mixins";
 import Stats from "@/components/Stats";
 import Ovens from "@/components/Ovens";
 import ConnectPrompt from "@/components/ConnectPrompt";
-import HoverLabsFooter from "@/components/HoverLabsFooter";
 import GovProposalNotification from "@/components/GovProposalNotification";
 
 export default {
@@ -108,8 +105,7 @@ export default {
     GovProposalNotification,
     ConnectPrompt,
     Ovens,
-    Stats,
-    HoverLabsFooter
+    Stats
   },
   methods: {
 
