@@ -68,7 +68,7 @@ if ((window.location.hostname === 'localhost' ||
     dontIndexTestnets()
 } else {
     // NODE_URL = 'https://mainnet-tezos.giganode.io'
-    NODE_URL = 'https://rpc.tzbeta.net'
+    NODE_URL = 'https://mainnet.api.tez.ie'
 
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
@@ -121,7 +121,6 @@ let state = Vue.observable({
     stabilityFundHoldings: null,
     devFundHoldings: null,
     kdaoHoldings: null,
-    maxOvenValue: null,
     debtCeiling: null,
     bakers: null,
     defaultOvenBaker: null,

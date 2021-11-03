@@ -17,7 +17,7 @@
         </div>
         <div class="level-right">
           <div class="level-item liquidation-buttons">
-            <slot name="liquidation-button">
+            <slot v-if="$store.walletPKH !== null" name="liquidation-button">
               <template v-if="$store.privateLiquidationThreshold">
                 <popover v-if="privateLiquidationThreshold.isGreaterThan(collatoralizedRateForOven(oven))">
                   <strong
