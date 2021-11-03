@@ -22,7 +22,7 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://testnet-tezos.giganode.io'
+    NODE_URL = 'https://granadanet.api.tez.ie'
     NETWORK = Network.Granada
 
     NETWORK_CONTRACTS = CONTRACTS.TEST
