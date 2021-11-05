@@ -12,6 +12,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import SigningTool from "@/pages/SigningTool";
 import LiquidityPool from "@/pages/LiquidityPool";
 import Farming from "@/pages/Farming";
+import SavingsRate from "@/pages/SavingsRate";
 
 const routes = [
     {
@@ -63,6 +64,11 @@ const routes = [
         path: '/liquidity-pool',
         name: 'LiquidityPool',
         component: LiquidityPool
+    },
+    {
+        path: '/savings-rate',
+        name: 'SavingsRate',
+        component: SavingsRate
     },
     {
         path: '/farming',
