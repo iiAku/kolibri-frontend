@@ -90,30 +90,6 @@
               Powered by <a rel="noopener" target="_blank" class="has-text-white has-text-weight-semibold" href="https://translate.google.com/">Google Translate</a>
             </p>
           </div>
-
-          <div class="ipfs-links">
-            <p class="has-text-white">This site is continuously deployed to <a target="_blank" rel="noopener" href="https://docs.ipfs.io/concepts/what-is-ipfs/" class="has-text-white has-text-weight-bold">IPFS</a> with the url:</p>
-            <pre>ipns://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn</pre>
-            <p class="help has-text-white has-text-centered">* Make sure to bookmark it!</p>
-            <div class="buttons is-centered">
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.dweb.link"
-                class="button is-outlined is-white"
-              >
-                <b>dWeb IPFS Site</b>
-              </a>
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.cf-ipfs.com"
-                class="button is-outlined is-white"
-              >
-                <b>Cloudflare IPFS Site</b>
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </transition>
