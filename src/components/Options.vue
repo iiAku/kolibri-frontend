@@ -58,15 +58,15 @@
                 href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.dweb.link"
                 class="button is-outlined is-white"
               >
-                <b>dWeb IPFS Site</b>
+                <b>dWeb IPNS Site</b>
               </a>
               <a
                 target="_blank"
                 rel="noopener"
-                href="https://k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn.ipns.cf-ipfs.com"
+                href="https://kusd.tez.page/"
                 class="button is-outlined is-white"
               >
-                <b>Cloudflare IPFS Site</b>
+                <b>Tezos Domains</b>
               </a>
             </div>
           </div>
@@ -263,7 +263,6 @@ export default {
               await axios.get(nodeURL + '/chains/main/blocks/head/header')
               return nodeURL
             } catch (e) {
-              debugger;
               await this.$swal.showValidationMessage(`Request failed: ${e}`)
               return false
             }
