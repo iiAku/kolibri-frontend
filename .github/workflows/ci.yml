@@ -102,7 +102,7 @@ jobs:
           IPFS_BUILD: 1
         run: |
           npm run build
-          npm install ipfs-http-client  # Keep this out of direct deps
+          npm install ipfs-http-client@52.0.5  # Keep this out of direct deps
           node scripts/ipfs-upload.js
 
   notify_complete:
