@@ -2,7 +2,15 @@ import Vue from 'vue'
 
 import { WalletStates } from './enums'
 
-import { CONTRACTS, HarbingerClient, OvenClient, StableCoinClient, TokenClient, Network } from "@hover-labs/kolibri-js";
+import {
+    CONTRACTS,
+    HarbingerClient,
+    OvenClient,
+    StableCoinClient,
+    TokenClient,
+    Network,
+    SavingsPoolClient
+} from "@hover-labs/kolibri-js";
 import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
@@ -19,8 +27,8 @@ function dontIndexTestnets() {
 }
 
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
-if ((window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
+if ((
+    // window.location.hostname === 'localhost' ||  window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://granadanet.api.tez.ie'
     NETWORK = Network.Granada
@@ -38,7 +46,7 @@ if ((window.location.hostname === 'localhost' ||
 
     dontIndexTestnets()
 } else if ((
-    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ||
     window.location.hostname === 'sandbox.kolibri.finance') && !FORCE_MAINNET) {
 
     NODE_URL = 'https://sandbox.hover.engineering'
@@ -162,6 +170,9 @@ state = _.merge(state, {
         // If on our sandbox, load from
         NETWORK === Network.Sandbox ? 'https://bcd.hover.engineering' : undefined
     ),
+    getSavingsPoolClient(wallet, poolAddress) {
+        return new SavingsPoolClient(state.nodeURL, wallet, poolAddress)
+    },
     getOvenClient(wallet, ovenAddress) {
         return new OvenClient(state.nodeURL, wallet, ovenAddress, this.stableCoinClient, this.harbingerClient)
     },

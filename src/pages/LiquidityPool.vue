@@ -103,7 +103,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Pool Size</p>
-                  <p class="title">{{ parseFloat(poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">kUSD</span></p>
+                  <p class="title">{{ formatNumber(poolBalance.dividedBy(Math.pow(10, 18)).toFixed(2)) }} <span class="heading is-inline-block">kUSD</span></p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -115,7 +115,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">LP Tokens Total</p>
-                  <p class="title">{{ parseFloat($store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }}</p>
+                  <p class="title">{{ formatNumber($store.lpData.totalSupply.dividedBy($store.lpMantissa).toFixed(2)) }}</p>
                 </div>
               </div>
             </nav>
@@ -216,7 +216,7 @@
               </div>
 
               <p class="has-text-centered lp-value" v-if="$store.lpBalance !== null && $store.lpData !== null">
-                Your <b>{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }} QLkUSD</b> is <b>~{{ $store.lpBalance.dividedBy($store.lpData.totalSupply).times(100).toFixed(2) }}%</b> of the total supply, entitling you to <b>{{ parseFloat($store.lpBalance.dividedBy($store.lpData.totalSupply).times(poolBalance).dividedBy(Math.pow(10, 18)).toFixed(2)).toLocaleString() }} kUSD</b> if you redeem it right now.
+                Your <b>{{ numberWithCommas($store.lpBalance.dividedBy($store.lpMantissa).toFixed(2)) }} QLkUSD</b> is <b>~{{ $store.lpBalance.dividedBy($store.lpData.totalSupply).times(100).toFixed(2) }}%</b> of the total supply, entitling you to <b>{{ formatNumber($store.lpBalance.dividedBy($store.lpData.totalSupply).times(poolBalance).dividedBy(Math.pow(10, 18)).toFixed(2)) }} kUSD</b> if you redeem it right now.
               </p>
             </div>
           </div>

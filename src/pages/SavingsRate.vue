@@ -12,24 +12,24 @@
             </div>
           </div>
 
-          <div v-if="savingsRateStorage !== null">
+          <div v-if="balancesUpdated === true">
             <nav class="level sr-stats">
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Locked kUSD</p>
-                  <p class="title">{{ parseFloat(savingsRateStorage.underlyingBalance.dividedBy(1e18).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">kUSD</span></p>
+                  <p class="title">{{ formatNumber(lockedkUSD) }} <span class="heading is-inline-block">kUSD</span></p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Interest Rate</p>
-                  <p class="title">{{ parseFloat(savingsRateStorage.interestRate.toFixed(2)).toLocaleString() }}<span class="heading is-inline-block">%</span></p>
+                  <p class="title">{{ currentInterestRate }}<span class="heading is-inline-block">%</span></p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">KSR Supply</p>
-                  <p class="title">{{ parseFloat(savingsRateStorage.totalSupply.dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }} <span class="heading is-inline-block">KSR</span></p>
+                  <p class="title">{{ formatNumber(ksrTokenTotal) }} <span class="heading is-inline-block">KSR</span></p>
                 </div>
               </div>
             </nav>
@@ -138,7 +138,7 @@
               </div>
 
               <p class="has-text-centered ksr-value" v-if="ksrBalance !== null">
-                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).dividedBy(1e18).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ parseFloat(ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).times(savingsRateStorage.underlyingBalance).dividedBy($store.lpMantissa).toFixed(2)).toLocaleString() }} kUSD</b> if you redeem it right now.
+                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).dividedBy(1e18).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ formatNumber(ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).times(savingsRateStorage.underlyingBalance).dividedBy($store.lpMantissa).toFixed(2)) }} kUSD</b> if you redeem it right now.
               </p>
               <div v-else class="loader-wrapper words-loader">
                 <div class="loader"></div>
@@ -173,17 +173,29 @@
     data() {
       return {
         savingsRateStorage: null,
+        savingsRateContract: null,
         ksrBalance: null,
         depositInput: '',
         redeemInput: '',
         now: moment(),
         txPending: false,
+        spClient: null,
+        lockedkUSD: null,
+        currentInterestRate: null,
+        ksrTokenTotal: null,
+
+        balancesUpdated: false,
       }
     },
     async mounted(){
+
       // TODO: get from kolibri-js
-      const contract = await this.$store.tezosToolkit.contract.at('KT1AxX6fFTEaTiRWaW26JPzMDdsTSMB4xskH')
-      this.savingsRateStorage = await contract.storage()
+      this.savingsRateContract = await this.$store.tezosToolkit.wallet.at('KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      this.savingsRateStorage = await this.savingsRateContract.storage()
+
+      // TODO: get address from kolibri-js
+      this.spClient = this.$store.getSavingsPoolClient(this.$store.wallet, 'KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      await this.updateTotals()
 
       setInterval(() => {
         this.now = moment()
@@ -200,6 +212,23 @@
         const duration = this.now.diff(moment(time))
         return moment.duration(duration).humanize()
       },
+      async updateTotals(){
+        this.balancesUpdated = false
+
+        this.savingsRateStorage = await this.savingsRateContract.storage()
+
+        this.lockedkUSD = null
+        this.currentInterestRate = null
+        this.ksrTokenTotal = null
+        this.ksrBalance = null
+
+        this.lockedkUSD = this.formatNumber((await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18)))
+        this.currentInterestRate = (await this.spClient.getInterestRateAPY(this.savingsRateStorage)).toFixed(2)
+        this.ksrTokenTotal = (await this.spClient.getLPTokenTotal(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(36)).toFixed(10)
+        await this.updateKSRBalance()
+
+        this.balancesUpdated = true
+      },
       async updateKSRBalance(){
         let balance = await this.savingsRateStorage.balances.get(this.$store.walletPKH)
 
@@ -215,17 +244,13 @@
         this.txPending = true
 
         try {
-          const ksrContract = await this.$store.tezosToolkit.wallet.at('KT1AxX6fFTEaTiRWaW26JPzMDdsTSMB4xskH')
           const kUSDContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.TOKEN)
 
           const sendAmt = new BigNumber(this.depositInput).multipliedBy(Math.pow(10, 18))
 
-          // Prime pool, only needed once
-          // await kUSDContract.methods.transfer(this.$store.walletPKH, 'KT1AxX6fFTEaTiRWaW26JPzMDdsTSMB4xskH', 1).send()
-
           const sendResult = await this.$store.tezosToolkit.wallet.batch([])
-            .withContractCall(kUSDContract.methods.approve('KT1AxX6fFTEaTiRWaW26JPzMDdsTSMB4xskH', sendAmt))
-            .withContractCall(ksrContract.methods.deposit(sendAmt))
+            .withContractCall(kUSDContract.methods.approve(this.spClient.savingsPoolAddress, sendAmt))
+            .withContractCall(await this.spClient.makeDepositTransaction(sendAmt, this.savingsRateContract))
             .send()
 
           this.$eventBus.$emit('tx-submitted', sendResult)
@@ -234,10 +259,8 @@
 
           await sendResult.confirmation(1)
 
-          this.reloadKey += 1
-
-          this.ksrBalance = null
-          await this.updateKSRBalance()
+          this.$eventBus.$emit('refresh-holdings')
+          await this.updateTotals()
         } catch(e){
           this.handleWalletError(e, 'Unable To Deposit Liquidity', 'We were unable to deposit kUSD into the LP.')
         } finally {
@@ -250,28 +273,24 @@
         this.txPending = true
 
         try {
-          const KSRContract = await this.$store.tezosToolkit.wallet.at('KT1AxX6fFTEaTiRWaW26JPzMDdsTSMB4xskH')
-
           const redeemAmt = new BigNumber(this.redeemInput).multipliedBy(this.$store.lpMantissa)
 
-          const sendResult = await this.$store.tezosToolkit.wallet.batch([])
-            .withContractCall(KSRContract.methods.redeem(redeemAmt.toFixed(0)))
-            .send()
+          const sendResult = await this.spClient.redeem(redeemAmt, this.savingsRateContract)
+
+          this.$eventBus.$emit('tx-submitted', sendResult)
 
           this.$log(sendResult)
 
           await sendResult.confirmation(1)
 
-          this.redeemInput = ''
-
           this.$eventBus.$emit('refresh-holdings')
-
-          this.ksrBalance = null
-          await this.updateKSRBalance()
+          await this.updateTotals()
         } catch(e){
           this.handleWalletError(e, 'Unable To Redeem KSR', 'We were unable to redeem KSR for kUSD.')
         } finally {
           this.txPending = false
+          this.$eventBus.$emit('tx-finished')
+          this.redeemInput = null
         }
       },
     },

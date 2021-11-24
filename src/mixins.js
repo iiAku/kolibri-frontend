@@ -237,6 +237,10 @@ export default {
                 return 'https://governance.kolibri.finance'
             }
         },
+        // BigNumber doesn't support toLocaleString properly, so wrap it here
+        formatNumber(num){
+            return parseFloat(num).toLocaleString()
+        }
     },
     computed: {
     }
