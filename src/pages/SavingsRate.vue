@@ -217,8 +217,7 @@
       }
     },
     async mounted(){
-      // if (!this.$store.isTestnet && !this.$store.isSandbox){
-      if (!this.$store.isTestnet){
+      if (!this.$store.isTestnet && !this.$store.isSandbox){
         this.warningModalOpen = true
       }
 
