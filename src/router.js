@@ -78,7 +78,8 @@ const routes = [
     { path: "*", component: NotFound }
 ]
 
-const isIPFS = window.location.host.indexOf('k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn') !== -1
+const isIPFS = window.location.host.indexOf('k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn') !== -1 ||
+               window.location.host === 'kusd.tez.page'
 const isFileProtocol = window.location.protocol === 'file:'
 
 export default new VueRouter({
