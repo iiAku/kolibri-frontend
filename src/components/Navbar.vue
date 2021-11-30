@@ -169,7 +169,9 @@ export default {
     font-weight: bold;
   }
   .navbar-brand{
-    min-width: 14.5rem;
+    @include from($widescreen){
+      min-width: 14.5rem;
+    }
   }
   .navbar-item.wallet-connector{
     min-width: 14.5rem;

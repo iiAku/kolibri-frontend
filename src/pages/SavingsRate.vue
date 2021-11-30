@@ -1,5 +1,32 @@
 <template>
   <div class="savings-rate animate__animated animate__fadeIn">
+
+    <transition
+      name="custom-classes-transition"
+      enter-active-class="animate__fadeIn"
+      leave-active-class="animate__fadeOut"
+    >
+      <div v-if="warningModalOpen" :class="{'is-active': warningModalOpen}" class="modal animate__animated animate__fast">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Safety Warning</p>
+          </header>
+          <section class="modal-card-body">
+            <div class="content">
+              <h4 class="title">The Kolibri Savings Rate contract has <span class="has-text-danger">not</span> undergone a security review yet.</h4>
+              <p>It has <span class="has-text-danger has-text-weight-bold">not</span> been audited by a 3rd party firm for security issues or correctness of operation, and while we've made efforts to review and test the pool, software bugs may still occur which could result in loss of funds.</p>
+              <p>You can find the source code for this savings rate contract at <a target="_blank" rel="noopener" href="https://github.com/Hover-Labs/kolibri-contracts/blob/master/smart_contracts/savings-pool.py"><b>hover-labs/kolibri-contracts</b></a></p>
+              <p><b>Use this pool at your own risk!</b></p>
+            </div>
+          </section>
+          <footer class="modal-card-foot is-justify-content-flex-end">
+            <button @click="warningModalOpen = !warningModalOpen" class="button is-primary has-text-weight-bold">Acknowledge</button>
+          </footer>
+        </div>
+      </div>
+    </transition>
+
     <div class="columns is-centered">
       <div class="column is-two-thirds-tablet">
         <div class="box is-paddingless">
@@ -8,7 +35,7 @@
             <div class="words">
               <h1 class="title has-text-white is-1">Kolibri</h1>
               <h3 class="subtitle has-text-white is-3">Savings Rate</h3>
-              <button class="button is-outlined is-white">Learn More</button>
+              <router-link :to="{ name: 'Docs', params: { folder: 'components', page: 'savings-rate' } }" class="button is-outlined is-white">Learn More</router-link>
             </div>
           </div>
 
@@ -16,7 +43,7 @@
             <nav class="level sr-stats">
               <div class="level-item has-text-centered">
                 <div>
-                  <p class="heading">Locked kUSD</p>
+                  <p class="heading">Total Pool Size</p>
                   <p class="title">{{ formatNumber(lockedkUSD) }} <span class="heading is-inline-block">kUSD</span></p>
                 </div>
               </div>
@@ -37,8 +64,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Interest Last Compounded</p>
-                  <p class="title is-4">{{ savingsRateStorage.lastInterestCompoundTime }}</p>
-                  <p class="help">(~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago)</p>
+                  <p class="title is-4">~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago</p>
                 </div>
               </div>
             </nav>
@@ -101,7 +127,7 @@
                   </div>
                   <div class="field">
                     <div class="control">
-                      <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button is-primary has-text-weight-bold">Deposit kUSD</button>
+                      <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button action-button is-primary has-text-weight-bold">Deposit kUSD</button>
                     </div>
                   </div>
                 </div>
@@ -131,7 +157,7 @@
                   </div>
                   <div class="field">
                     <div class="control">
-                      <button :class="{'is-loading': txPending}" @click="redeemKSR" :disabled="!redeemInput || txPending" class="button is-primary has-text-weight-bold">Redeem KSR</button>
+                      <button :class="{'is-loading': txPending}" @click="redeemKSR" :disabled="!redeemInput || txPending" class="button action-button is-primary has-text-weight-bold">Redeem KSR</button>
                     </div>
                   </div>
                 </div>
@@ -184,10 +210,17 @@
         currentInterestRate: null,
         ksrTokenTotal: null,
 
+        warningModalOpen: false,
+        learnMoreModalOpen: false,
+
         balancesUpdated: false,
       }
     },
     async mounted(){
+      // if (!this.$store.isTestnet && !this.$store.isSandbox){
+      if (!this.$store.isTestnet){
+        this.warningModalOpen = true
+      }
 
       // TODO: get from kolibri-js
       this.savingsRateContract = await this.$store.tezosToolkit.wallet.at('KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
@@ -201,10 +234,8 @@
         this.now = moment()
       }, 1000)
 
-      if (this.$store.walletPKH !== null){
-        await this.updateKSRBalance()
-      } else {
-        this.$eventBus.$on('wallet-connected', this.updateKSRBalance)
+      if (this.$store.walletPKH === null){
+        this.$eventBus.$on('wallet-connected', this.updateTotals)
       }
     },
     methods: {
@@ -230,6 +261,9 @@
         this.balancesUpdated = true
       },
       async updateKSRBalance(){
+        if (this.$store.walletPKH === null){
+          return
+        }
         let balance = await this.savingsRateStorage.balances.get(this.$store.walletPKH)
 
         if (balance === undefined){
@@ -309,6 +343,12 @@
     min-height: 100vh;
     z-index: 31;
     position: relative;
+    .button.is-static{
+      min-width: 5rem;
+    }
+    .action-button{
+      min-width: 9rem;
+    }
     .input-50{
       width: 50%;
     }
@@ -373,6 +413,17 @@
     }
     .stats-loader{
       padding: 4.5rem;
+    }
+
+    .management-buttons{
+      @include until($tablet){
+        > div > div.field{
+          padding: 1rem 2rem;
+          .input-50{
+            width: 100%;
+          }
+        }
+      }
     }
 
     /* Chrome, Safari, Edge, Opera */

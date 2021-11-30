@@ -7,7 +7,7 @@ module.exports = {
         disableHostCheck: true,
         before(app, server) {
             chokidar.watch([
-                'documentation/**/*' // watch all my laravel view templates
+                'kolibri-docs/**/*'
             ]).on('all', function() {
                 server.sockWrite(server.sockets, 'content-changed');
             })

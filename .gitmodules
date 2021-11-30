@@ -1,0 +1,3 @@
+[submodule "kolibri-docs"]
+	path = kolibri-docs
+	url = git@github.com:Hover-Labs/kolibri-docs.git
