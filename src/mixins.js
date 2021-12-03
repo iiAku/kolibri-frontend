@@ -1,6 +1,7 @@
 import _, { find } from 'lodash'
 import {ContractErrors} from '@hover-labs/kolibri-js'
 import axios from "axios";
+import moment from "moment";
 
 const errorMap = {
     Unknown: "An unknown error has occurred!",
@@ -249,7 +250,11 @@ export default {
         // BigNumber doesn't support toLocaleString properly, so wrap it here
         formatNumber(num, places){
             return parseFloat(num).toLocaleString(undefined, {minimumFractionDigits: places === undefined ? 2 : places, maximumFractionDigits: places === undefined ? 2 : places})
-        }
+        },
+        formatMoment(now, time){
+            const duration = now.diff(moment(time))
+            return moment.duration(duration).humanize()
+        },
     },
     computed: {
     }

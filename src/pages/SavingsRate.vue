@@ -180,17 +180,7 @@
                   <p>Sandbox doesn't have a tzkt.io indexer to use!</p>
                 </div>
                 <div v-else>
-                  <div class="box" :key="tx.id" v-for="tx in recentTransactions">
-
-                    <p class="title timestamp-title is-6">~{{ formatMoment(tx.timestamp) }} ago <span class="help"> ({{ tx.timestamp }}) </span></p>
-                    <span v-if="tx.parameter.entrypoint === 'deposit'">
-                      📈 Deposited <b>{{ formatNumber(parseInt(tx.parameter.value) / 1e18, 2) }}</b> kUSD
-                    </span>
-                    <span v-else-if="tx.parameter.entrypoint === 'redeem'">
-                      📉 Redeemed <b>{{ formatNumber(parseInt(tx.parameter.value) / 1e36, 2) }}</b> KSR
-                    </span>
-                    <span v-else>Unknown entrypoint! {{ tx.parameter.entrypoint }}</span>
-                  </div>
+                  <recent-activity-entry :now="now" :tx="tx" :key="tx.id" v-for="tx in recentTransactions" />
                   <div class="has-text-centered large-padding" v-if="recentTransactions.length === 0">
                     <p>No recent transactions...yet!</p>
                   </div>
@@ -222,11 +212,13 @@
   import BigNumber from "bignumber.js"
   import moment from 'moment'
   import axios from "axios";
+  import RecentActivityEntry from "@/components/RecentActivityEntry";
 
   BigNumber.set({ DECIMAL_PLACES: 36 })
 
   export default {
     name: "SavingsRate",
+    components: {RecentActivityEntry},
     mixins: [Mixins],
     data() {
       return {
@@ -276,10 +268,6 @@
 
     },
     methods: {
-      formatMoment(time){
-        const duration = this.now.diff(moment(time))
-        return moment.duration(duration).humanize()
-      },
       async updateTotals(){
         this.balancesUpdated = false
 
@@ -398,9 +386,6 @@
     .timestamp-title{
       display: flex;
       align-items: center;
-      span{
-        margin-left: 0.25rem;
-      }
     }
     .recent-transactions{
       padding: 1rem;
