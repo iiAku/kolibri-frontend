@@ -222,11 +222,11 @@
       }
 
       // TODO: get from kolibri-js
-      this.savingsRateContract = await this.$store.tezosToolkit.wallet.at('KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      this.savingsRateContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.SAVINGS_POOL)
       this.savingsRateStorage = await this.savingsRateContract.storage()
 
       // TODO: get address from kolibri-js
-      this.spClient = this.$store.getSavingsPoolClient(this.$store.wallet, 'KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      this.spClient = this.$store.getSavingsPoolClient(this.$store.wallet, this.$store.NETWORK_CONTRACTS.SAVINGS_POOL)
       await this.updateTotals()
 
       setInterval(() => {
