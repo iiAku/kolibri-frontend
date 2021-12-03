@@ -203,6 +203,15 @@ export default {
                 return `https://tzkt.io/${opHash}`
             }
         },
+        tzktAPILink(){
+            if (this.$store.network === 'granadanet'){
+                return `https://api.granadanet.tzkt.io`
+            } else if (this.$store.isSandbox) {
+                return null
+            } else {
+                return `https://api.tzkt.io`
+            }
+        },
         bcdLink(contract){
             if (this.$store.network === 'granadanet'){
                 return `https://better-call.dev/granadanet/${contract}`
@@ -238,8 +247,8 @@ export default {
             }
         },
         // BigNumber doesn't support toLocaleString properly, so wrap it here
-        formatNumber(num){
-            return parseFloat(num).toLocaleString()
+        formatNumber(num, places){
+            return parseFloat(num).toLocaleString(undefined, {minimumFractionDigits: places === undefined ? 2 : places, maximumFractionDigits: places === undefined ? 2 : places})
         }
     },
     computed: {

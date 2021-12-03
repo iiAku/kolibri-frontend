@@ -44,7 +44,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Total Pool Size</p>
-                  <p class="title">{{ formatNumber(lockedkUSD) }} <span class="heading is-inline-block">kUSD</span></p>
+                  <p class="title">{{ formatNumber(lockedkUSD, 2) }} <span class="heading is-inline-block">kUSD</span></p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -60,14 +60,14 @@
                 </div>
               </div>
             </nav>
-            <nav class="level sr-stats">
-              <div class="level-item has-text-centered">
-                <div>
-                  <p class="heading">Interest Last Compounded</p>
-                  <p class="title is-4">~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago</p>
-                </div>
-              </div>
-            </nav>
+<!--            <nav class="level sr-stats">-->
+<!--              <div class="level-item has-text-centered">-->
+<!--                <div>-->
+<!--                  <p class="heading">Interest Last Compounded</p>-->
+<!--                  <p class="title is-4">~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </nav>-->
           </div>
           <div v-else class="loader-wrapper stats-loader">
             <div class="loader is-large is-primary"></div>
@@ -163,11 +163,42 @@
                 </div>
               </div>
 
+              <hr class="is-marginless">
+
               <p class="has-text-centered ksr-value" v-if="ksrBalance !== null">
-                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).dividedBy(1e18).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ formatNumber(ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).times(savingsRateStorage.underlyingBalance).dividedBy($store.lpMantissa).toFixed(2)) }} kUSD</b> if you redeem it right now.
+                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(ksrTokenTotal).dividedBy(1e36).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ formatNumber( ksrBalance.times(lockedkUSD.dividedBy(ksrTokenTotal)).dividedBy(1e36), 2) }} kUSD</b> if you redeem it right now.
               </p>
               <div v-else class="loader-wrapper words-loader">
-                <div class="loader"></div>
+                <div class="loader is-large is-primary"></div>
+              </div>
+
+              <hr class="is-marginless">
+
+              <div class="recent-transactions" v-if="recentTransactions !== null">
+
+                <div class="has-text-centered large-padding" v-if="recentTransactions === false">
+                  <p>Sandbox doesn't have a tzkt.io indexer to use!</p>
+                </div>
+                <div v-else>
+                  <div class="box" :key="tx.id" v-for="tx in recentTransactions">
+
+                    <p class="title timestamp-title is-6">~{{ formatMoment(tx.timestamp) }} ago <span class="help"> ({{ tx.timestamp }}) </span></p>
+                    <span v-if="tx.parameter.entrypoint === 'deposit'">
+                      📈 Deposited <b>{{ formatNumber(parseInt(tx.parameter.value) / 1e18, 2) }}</b> kUSD
+                    </span>
+                    <span v-else-if="tx.parameter.entrypoint === 'redeem'">
+                      📉 Redeemed <b>{{ formatNumber(parseInt(tx.parameter.value) / 1e36, 2) }}</b> KSR
+                    </span>
+                    <span v-else>Unknown entrypoint! {{ tx.parameter.entrypoint }}</span>
+                  </div>
+                  <div class="has-text-centered large-padding" v-if="recentTransactions.length === 0">
+                    <p>No recent transactions...yet!</p>
+                  </div>
+                </div>
+
+              </div>
+              <div v-else class="loader-wrapper large-padding">
+                <div class="loader is-large is-primary"></div>
               </div>
 
             </div>
@@ -190,6 +221,7 @@
   import Mixins from "@/mixins"
   import BigNumber from "bignumber.js"
   import moment from 'moment'
+  import axios from "axios";
 
   BigNumber.set({ DECIMAL_PLACES: 36 })
 
@@ -209,6 +241,7 @@
         lockedkUSD: null,
         currentInterestRate: null,
         ksrTokenTotal: null,
+        recentTransactions: null,
 
         warningModalOpen: false,
         learnMoreModalOpen: false,
@@ -236,6 +269,11 @@
       if (this.$store.walletPKH === null){
         this.$eventBus.$on('wallet-connected', this.updateTotals)
       }
+
+      setInterval(async () => {
+        this.lockedkUSD = (await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18))
+      }, 5000)
+
     },
     methods: {
       formatMoment(time){
@@ -247,15 +285,30 @@
 
         this.savingsRateStorage = await this.savingsRateContract.storage()
 
-        this.lockedkUSD = null
         this.currentInterestRate = null
         this.ksrTokenTotal = null
         this.ksrBalance = null
+        this.recentTransactions = null
 
-        this.lockedkUSD = this.formatNumber((await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18)))
         this.currentInterestRate = (await this.spClient.getInterestRateAPY(this.savingsRateStorage)).toFixed(2)
-        this.ksrTokenTotal = (await this.spClient.getLPTokenTotal(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(36)).toFixed(10)
+        this.ksrTokenTotal = (await this.spClient.getLPTokenTotal(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(36))
+        this.lockedkUSD = (await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18))
         await this.updateKSRBalance()
+
+        if (this.tzktAPILink() !== null){
+          // https://api.granadanet.tzkt.io/#operation/Operations_GetTransactions
+          this.recentTransactions = (await axios.get(`${this.tzktAPILink()}/v1/operations/transactions`, {params: {
+              sender: this.$store.walletPKH,
+              target: this.$store.NETWORK_CONTRACTS.SAVINGS_POOL,
+              status: 'applied',
+              limit: 10,
+              'sort.desc': 'id',
+              'entrypoint.in': 'deposit,redeem',
+            }}
+          )).data
+        } else {
+          this.recentTransactions = false
+        }
 
         this.balancesUpdated = true
       },
@@ -342,6 +395,19 @@
     min-height: 100vh;
     z-index: 31;
     position: relative;
+    .timestamp-title{
+      display: flex;
+      align-items: center;
+      span{
+        margin-left: 0.25rem;
+      }
+    }
+    .recent-transactions{
+      padding: 1rem;
+    }
+    .loader-wrapper.large-padding, .has-text-centered.large-padding{
+      padding: 5rem 1rem;
+    }
     .button.is-static{
       min-width: 5rem;
     }
