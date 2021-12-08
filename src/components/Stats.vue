@@ -27,16 +27,22 @@
 
     <div class="peg-data is-flex is-flex-direction-column is-align-items-center">
       <p class="heading">
-        Current kUSD Peg
-        <strong v-if="pegData !== null" :class="pegData.pegProgressClass">${{ pegData.currentkUSDPrice }}</strong>
+        kUSD Price / Peg Depth -
+        <span v-if="pegData !== null">
+          <strong>${{ pegData.currentkUSDPrice }}</strong> / <strong>{{ formatNumber(pegData.deltaForPeg.pegDepth.dividedBy(1e18), 2) }} kUSD</strong>
+        </span>
         <strong v-else><span class="tiny-loader loader"></span></strong>
         <popover>
           <span slot="popup-content">
-            <strong>
-              The kUSD peg is tracked against the <a target="_blank" rel="noopener" :href="harbingerLink">Harbinger</a> price feed,
+            <span>
+              The kUSD <b>"peg"</b> is tracked against the <b><a target="_blank" rel="noopener" :href="harbingerLink()">Harbinger</a></b> price feed,
               <br>
-              which is a <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/v/vwap.asp">VWAP</a> of <a href="https://pro.coinbase.com/trade/XTZ-USD" rel="noopener" target="_blank">Coinbase Pro</a> data for the XTZ/USD pair.
-            </strong>
+              which is a <b><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/v/vwap.asp">VWAP</a></b> of <b><a href="https://pro.coinbase.com/trade/XTZ-USD" rel="noopener" target="_blank">Coinbase Pro</a></b> data for the XTZ/USD pair.
+            </span>
+            <br><br>
+            <span>
+              The <b><router-link target="_blank" :to="{ name: 'Docs', params: { folder: 'general', page: 'the-peg' } }">Peg Depth</router-link></b> is a measurement of the amount of <br> kUSD needed to be bought or sold to move the peg by <b>1%</b>.
+            </span>
           </span>
           <span>(<a class="has-text-primary has-text-weight-bold">?</a>)</span>
         </popover>

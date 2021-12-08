@@ -15,6 +15,8 @@
               <p>kUSD is currently <span>oversold</span> by <b>{{ currentPegPercent.abs().toFixed(2) }}%</b>, and trading at <b>~${{ currentkUSDPrice }}</b>.</p>
               <br>
               <p>To reach equilibrium, <b>{{ formatNumber(deltaForPeg.kUSD.toFixed(2)) }} kUSD</b> need to be bought for <b>{{ formatNumber(deltaForPeg.xtz.toFixed(2)) }} XTZ</b>.</p>
+              <br>
+              <p class="help">Please note: This is a <b>*spot price*</b>, not an average price.</p>
             </div>
             <div
               class="peg-progress"
@@ -106,6 +108,9 @@ export default {
       const halfPercentOff = percentOff.dividedBy(2)
       const kusdToRecv = tokenPool.times(halfPercentOff)
 
+      const onePercentOff = new BigNumber("0.01").dividedBy(2)
+      const pegDepth = tokenPool.times(onePercentOff)
+
       const updatedTokenPoolAmt = tokenPool.minus(kusdToRecv)
       const updatedTezPoolAmt = invariant.dividedBy(updatedTokenPoolAmt)
 
@@ -113,7 +118,7 @@ export default {
 
       // const updatedQuipuPrice = updatedTokenPoolAmt.dividedBy(updatedTezPoolAmt).dividedBy(conversionMantissa)
 
-      return {kUSD: kusdToRecv.dividedBy(kUSDMantissa), xtz: tezInput}
+      return {kUSD: kusdToRecv.dividedBy(kUSDMantissa), xtz: tezInput, pegDepth}
     },
     currentPegPercent(){
       const quipuPrice = this.quipuData.storage.token_pool.div(this.quipuData.storage.tez_pool).div(1e12)
@@ -194,6 +199,9 @@ export default {
       > span{
         width: 100%;
         height: 100%;
+      }
+      .popper{
+        width: 28rem;
       }
     }
     .negative-peg{

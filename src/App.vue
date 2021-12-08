@@ -97,7 +97,7 @@ export default {
       } catch (e){
         // If we're in the sandbox, just manually resolve these data
         if (this.$store.network === Network.Sandbox){
-          console.log("Manually resolving ovens...")
+          this.$log("Manually resolving ovens...")
           // Clear this if we're manually resolving to show loader
           this.$store.balanceData = null
           this.$store.allOvensData = await this.manuallyResolveOvens()
