@@ -1,5 +1,32 @@
 <template>
   <div class="savings-rate animate__animated animate__fadeIn">
+
+    <transition
+      name="custom-classes-transition"
+      enter-active-class="animate__fadeIn"
+      leave-active-class="animate__fadeOut"
+    >
+      <div v-if="warningModalOpen" :class="{'is-active': warningModalOpen}" class="modal animate__animated animate__fast">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Safety Warning</p>
+          </header>
+          <section class="modal-card-body">
+            <div class="content">
+              <h4 class="title">The Kolibri Savings Rate contract has <span class="has-text-danger">not</span> undergone a security review yet.</h4>
+              <p>It has <span class="has-text-danger has-text-weight-bold">not</span> been audited by a 3rd party firm for security issues or correctness of operation, and while we've made efforts to review and test the pool, software bugs may still occur which could result in loss of funds.</p>
+              <p>You can find the source code for this savings rate contract at <a target="_blank" rel="noopener" href="https://github.com/Hover-Labs/kolibri-contracts/blob/master/smart_contracts/savings-pool.py"><b>hover-labs/kolibri-contracts</b></a></p>
+              <p><b>Use this pool at your own risk!</b></p>
+            </div>
+          </section>
+          <footer class="modal-card-foot is-justify-content-flex-end">
+            <button @click="warningModalOpen = !warningModalOpen" class="button is-primary has-text-weight-bold">Acknowledge</button>
+          </footer>
+        </div>
+      </div>
+    </transition>
+
     <div class="columns is-centered">
       <div class="column is-two-thirds-tablet">
         <div class="box is-paddingless">
@@ -8,7 +35,7 @@
             <div class="words">
               <h1 class="title has-text-white is-1">Kolibri</h1>
               <h3 class="subtitle has-text-white is-3">Savings Rate</h3>
-              <button class="button is-outlined is-white">Learn More</button>
+              <router-link :to="{ name: 'Docs', params: { folder: 'components', page: 'savings-rate' } }" class="button is-outlined is-white">Learn More</router-link>
             </div>
           </div>
 
@@ -16,8 +43,8 @@
             <nav class="level sr-stats">
               <div class="level-item has-text-centered">
                 <div>
-                  <p class="heading">Locked kUSD</p>
-                  <p class="title">{{ formatNumber(lockedkUSD) }} <span class="heading is-inline-block">kUSD</span></p>
+                  <p class="heading">Total Pool Size</p>
+                  <p class="title">{{ formatNumber(lockedkUSD, 2) }} <span class="heading is-inline-block">kUSD</span></p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -33,15 +60,14 @@
                 </div>
               </div>
             </nav>
-            <nav class="level sr-stats">
-              <div class="level-item has-text-centered">
-                <div>
-                  <p class="heading">Interest Last Compounded</p>
-                  <p class="title is-4">{{ savingsRateStorage.lastInterestCompoundTime }}</p>
-                  <p class="help">(~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago)</p>
-                </div>
-              </div>
-            </nav>
+<!--            <nav class="level sr-stats">-->
+<!--              <div class="level-item has-text-centered">-->
+<!--                <div>-->
+<!--                  <p class="heading">Interest Last Compounded</p>-->
+<!--                  <p class="title is-4">~{{ formatMoment(savingsRateStorage.lastInterestCompoundTime) }} ago</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </nav>-->
           </div>
           <div v-else class="loader-wrapper stats-loader">
             <div class="loader is-large is-primary"></div>
@@ -101,7 +127,7 @@
                   </div>
                   <div class="field">
                     <div class="control">
-                      <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button is-primary has-text-weight-bold">Deposit kUSD</button>
+                      <button :class="{'is-loading': txPending}" @click="depositkUSD" :disabled="!depositInput || txPending" class="button action-button is-primary has-text-weight-bold">Deposit kUSD</button>
                     </div>
                   </div>
                 </div>
@@ -131,17 +157,38 @@
                   </div>
                   <div class="field">
                     <div class="control">
-                      <button :class="{'is-loading': txPending}" @click="redeemKSR" :disabled="!redeemInput || txPending" class="button is-primary has-text-weight-bold">Redeem KSR</button>
+                      <button :class="{'is-loading': txPending}" @click="redeemKSR" :disabled="!redeemInput || txPending" class="button action-button is-primary has-text-weight-bold">Redeem KSR</button>
                     </div>
                   </div>
                 </div>
               </div>
 
+              <hr class="is-marginless">
+
               <p class="has-text-centered ksr-value" v-if="ksrBalance !== null">
-                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).dividedBy(1e18).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ formatNumber(ksrBalance.dividedBy(savingsRateStorage.underlyingBalance).times(savingsRateStorage.underlyingBalance).dividedBy($store.lpMantissa).toFixed(2)) }} kUSD</b> if you redeem it right now.
+                Your <b>{{ numberWithCommas(ksrBalance.dividedBy($store.lpMantissa).toFixed(2)) }} KSR</b> is <b>~{{ ksrBalance.dividedBy(ksrTokenTotal).dividedBy(1e36).times(100).toFixed(2) }}%</b> of the total KSR supply, entitling you to <b>{{ formatNumber( ksrBalance.times(lockedkUSD.dividedBy(ksrTokenTotal)).dividedBy(1e36), 2) }} kUSD</b> if you redeem it right now.
               </p>
               <div v-else class="loader-wrapper words-loader">
-                <div class="loader"></div>
+                <div class="loader is-large is-primary"></div>
+              </div>
+
+              <hr class="is-marginless">
+
+              <div class="recent-transactions" v-if="recentTransactions !== null">
+
+                <div class="has-text-centered large-padding" v-if="recentTransactions === false">
+                  <p>Sandbox doesn't have a tzkt.io indexer to use!</p>
+                </div>
+                <div v-else>
+                  <recent-activity-entry :now="now" :tx="tx" :key="tx.id" v-for="tx in recentTransactions" />
+                  <div class="has-text-centered large-padding" v-if="recentTransactions.length === 0">
+                    <p>No recent transactions...yet!</p>
+                  </div>
+                </div>
+
+              </div>
+              <div v-else class="loader-wrapper large-padding">
+                <div class="loader is-large is-primary"></div>
               </div>
 
             </div>
@@ -164,11 +211,14 @@
   import Mixins from "@/mixins"
   import BigNumber from "bignumber.js"
   import moment from 'moment'
+  import axios from "axios";
+  import RecentActivityEntry from "@/components/RecentActivityEntry";
 
   BigNumber.set({ DECIMAL_PLACES: 36 })
 
   export default {
     name: "SavingsRate",
+    components: {RecentActivityEntry},
     mixins: [Mixins],
     data() {
       return {
@@ -183,53 +233,77 @@
         lockedkUSD: null,
         currentInterestRate: null,
         ksrTokenTotal: null,
+        recentTransactions: null,
+
+        warningModalOpen: false,
+        learnMoreModalOpen: false,
 
         balancesUpdated: false,
       }
     },
     async mounted(){
+      if (!this.$store.isTestnet && !this.$store.isSandbox){
+        this.warningModalOpen = true
+      }
 
       // TODO: get from kolibri-js
-      this.savingsRateContract = await this.$store.tezosToolkit.wallet.at('KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      this.savingsRateContract = await this.$store.tezosToolkit.wallet.at(this.$store.NETWORK_CONTRACTS.SAVINGS_POOL)
       this.savingsRateStorage = await this.savingsRateContract.storage()
 
       // TODO: get address from kolibri-js
-      this.spClient = this.$store.getSavingsPoolClient(this.$store.wallet, 'KT18q6duGbqJAD5jZEP7t6ng1sA3ZtDBiWux')
+      this.spClient = this.$store.getSavingsPoolClient(this.$store.wallet, this.$store.NETWORK_CONTRACTS.SAVINGS_POOL)
       await this.updateTotals()
 
       setInterval(() => {
         this.now = moment()
       }, 1000)
 
-      if (this.$store.walletPKH !== null){
-        await this.updateKSRBalance()
-      } else {
-        this.$eventBus.$on('wallet-connected', this.updateKSRBalance)
+      if (this.$store.walletPKH === null){
+        this.$eventBus.$on('wallet-connected', this.updateTotals)
       }
+
+      setInterval(async () => {
+        this.lockedkUSD = (await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18))
+      }, 5000)
+
     },
     methods: {
-      formatMoment(time){
-        const duration = this.now.diff(moment(time))
-        return moment.duration(duration).humanize()
-      },
       async updateTotals(){
         this.balancesUpdated = false
 
         this.savingsRateStorage = await this.savingsRateContract.storage()
 
-        this.lockedkUSD = null
         this.currentInterestRate = null
         this.ksrTokenTotal = null
         this.ksrBalance = null
+        this.recentTransactions = null
 
-        this.lockedkUSD = this.formatNumber((await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18)))
         this.currentInterestRate = (await this.spClient.getInterestRateAPY(this.savingsRateStorage)).toFixed(2)
-        this.ksrTokenTotal = (await this.spClient.getLPTokenTotal(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(36)).toFixed(10)
+        this.ksrTokenTotal = (await this.spClient.getLPTokenTotal(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(36))
+        this.lockedkUSD = (await this.spClient.getPoolSize(this.savingsRateStorage)).dividedBy(new BigNumber(10).pow(18))
         await this.updateKSRBalance()
+
+        if (this.tzktAPILink() !== null){
+          // https://api.granadanet.tzkt.io/#operation/Operations_GetTransactions
+          this.recentTransactions = (await axios.get(`${this.tzktAPILink()}/v1/operations/transactions`, {params: {
+              sender: this.$store.walletPKH,
+              target: this.$store.NETWORK_CONTRACTS.SAVINGS_POOL,
+              status: 'applied',
+              limit: 10,
+              'sort.desc': 'id',
+              'entrypoint.in': 'deposit,redeem',
+            }}
+          )).data
+        } else {
+          this.recentTransactions = false
+        }
 
         this.balancesUpdated = true
       },
       async updateKSRBalance(){
+        if (this.$store.walletPKH === null){
+          return
+        }
         let balance = await this.savingsRateStorage.balances.get(this.$store.walletPKH)
 
         if (balance === undefined){
@@ -309,6 +383,22 @@
     min-height: 100vh;
     z-index: 31;
     position: relative;
+    .timestamp-title{
+      display: flex;
+      align-items: center;
+    }
+    .recent-transactions{
+      padding: 1rem;
+    }
+    .loader-wrapper.large-padding, .has-text-centered.large-padding{
+      padding: 5rem 1rem;
+    }
+    .button.is-static{
+      min-width: 5rem;
+    }
+    .action-button{
+      min-width: 9rem;
+    }
     .input-50{
       width: 50%;
     }
@@ -373,6 +463,17 @@
     }
     .stats-loader{
       padding: 4.5rem;
+    }
+
+    .management-buttons{
+      @include until($tablet){
+        > div > div.field{
+          padding: 1rem 2rem;
+          .input-50{
+            width: 100%;
+          }
+        }
+      }
     }
 
     /* Chrome, Safari, Edge, Opera */

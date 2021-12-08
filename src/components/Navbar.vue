@@ -50,7 +50,7 @@
         </router-link>
 
         <router-link
-          v-if="$store.network === 'sandboxnet'"
+          v-if="$store.isSandbox || $store.isTestnet"
           :to="{name: 'SavingsRate'}"
           class="navbar-item"
         >
@@ -169,7 +169,9 @@ export default {
     font-weight: bold;
   }
   .navbar-brand{
-    min-width: 14.5rem;
+    @include from($widescreen){
+      min-width: 14.5rem;
+    }
   }
   .navbar-item.wallet-connector{
     min-width: 14.5rem;
