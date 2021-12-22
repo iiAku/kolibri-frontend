@@ -226,10 +226,7 @@ export default {
       STABILITY_FUND: 'Stability Fund',
       ORACLE: 'Oracle',
       LIQUIDITY_POOL: 'Liquidity Pool',
-    }
-
-    if (this.$store.isSandbox || this.$store.isTestnet){
-      contracts.SAVINGS_POOL = 'Kolibri Savings Rate'
+      SAVINGS_POOL: 'Kolibri Savings Rate',
     }
 
     return {
