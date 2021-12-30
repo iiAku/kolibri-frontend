@@ -92,7 +92,11 @@ export default {
           ovenData.stabilityFee = new BigNumber(oven.stabilityFees)
           ovenData.outstandingTokens = new BigNumber(oven.outstandingTokens)
 
-          return Object.assign(ovenData, { ovenAddress: oven.ovenAddress, ovenOwner: oven.ovenOwner })
+          return Object.assign(ovenData, {
+            ovenAddress: oven.ovenAddress,
+            ovenOwner: oven.ovenOwner,
+            baker: oven.baker
+          })
         })
       } catch (e){
         // If we're in the sandbox, just manually resolve these data
