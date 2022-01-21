@@ -15,8 +15,8 @@ import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 
-const FORCE_MAINNET = true
-// const FORCE_MAINNET = false
+// const FORCE_MAINNET = true
+const FORCE_MAINNET = false
 
 function dontIndexTestnets() {
     // If we're in testnet tell google not to index
@@ -180,8 +180,8 @@ state = _.merge(state, {
 })
 
 // Update polling interval to 2s in sandbox mode
-if (isSandbox){
-    state.tezosToolkit.setProvider({config: {confirmationPollingIntervalSecond: 2}})
+if (isSandbox) {
+    state.tezosToolkit.setProvider({ config: { confirmationPollingIntervalSecond: 2 } })
 }
 
 export default state
