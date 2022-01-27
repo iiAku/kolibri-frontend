@@ -34,7 +34,7 @@
                   <option
                     :key="nodeName"
                     :value="nodeAddresses[$store.network]"
-                    v-for="(nodeAddresses, nodeName) in nodes"
+                    v-for="(nodeAddresses, nodeName) in validNodes"
                   >
                     {{ nodeName }}
                   </option>
@@ -118,6 +118,14 @@ export default {
     }
   },
   computed: {
+    validNodes(){
+      return Object.entries(this.nodes).reduce((acc, [network, nodeInfo]) => {
+        if (nodeInfo[this.$store.network] !== undefined){
+          acc[network] = nodeInfo
+        }
+        return acc
+      }, {})
+    },
   },
   methods: {
     async loadGTranslate(){
@@ -198,6 +206,7 @@ export default {
     } else {
       nodes = {
         ECADLabs: {
+          hangzhounet: 'https://hangzhounet.api.tez.ie',
           granadanet: 'https://granadanet.api.tez.ie',
           mainnet: 'https://mainnet.api.tez.ie',
         },
