@@ -5,6 +5,14 @@
         <div class="notification is-info">
           Welcome to the Kolibri Farm! Here you can deposit LP tokens (and others) to farm <b><a rel="noopener" target="_blank" href="https://kolibri-xtz.medium.com/announcing-kolibri-dao-6687eb528cb">kDAO governance tokens</a></b>, which let you vote and propose governance actions within the Kolibri protocol!
         </div>
+        <div class="notification is-warning">
+          The <b><a rel="noopener" target="_blank" href="https://governance.kolibri.finance">Kolibri DAO</a></b> has approved 
+          <b><a rel="noopener" target="_blank" href=" https://governance.kolibri.finance/proposals/19 ">Kolibri Governance Proposal 19</a></b> which creates 
+          <b><a rel="noopener" target="_blank" href='https://app.youves.com/swap'>Youves kUSD/uUSD Flat Curve LP Tokens</a></b> farm. 
+          <br /><br />
+          This farm is listed on this page, but will <b>NOT</b> emit kDAO tokens until the proposal is executed, sometime after 
+          <b><a rel="noopener" target="_blank" href="https://tzstats.com/2127382">block 2127382</a></b>.
+        </div>
       </div>
     </div>
     <div v-if="!$store.isTestnet && !$store.isSandbox && $store.currentBlockHeight !== null" class="columns is-centered is-gapless">

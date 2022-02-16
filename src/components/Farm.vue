@@ -305,11 +305,20 @@ export default {
     },
     async updateTokenBalance(){
       const balanceMap = this.decimalsMap[this.pairName].balances()
+
       const holdingsData = await balanceMap.get(this.$store.walletPKH)
+
       if (holdingsData === undefined){
         this.holdingsData = {balance: new BigNumber(0)}
-      } else {
+      // kUSD, QLkUSD and the Quipuswap LP return an object, where `balances` is set.
+      // Youves does not return an object and only returns a balance.
+      // TODO(keefertaylor): Generalize this code to make it less brittle.
+      } else if (holdingsData.balance !== undefined) {
+        // Assign holdings data directly. This code path executes for kUSD, QLkUSD and the Quipuswap LP
         this.holdingsData = holdingsData
+      } else {
+        // Assign holdingsData as an object. This code path executes for Youves LP
+        this.holdingsData = { balance: holdingsData}
       }
       this.depositedTokens = await this.farmContractData.delegators.get(this.$store.walletPKH)
     },
@@ -475,10 +484,15 @@ export default {
           balances: () => this.tokenContractData.balances,
           description: "The kUSD farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://kolibri.finance/'>kUSD</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
         },
-        'kUSD Quipu LP': {
+        'kUSD/uUSD Flat Curve LP': {
+          mantissa: new BigNumber(10).pow(18),
+          balances: () => this.tokenContractData.tokens,
+          description: "The kUSD/uUSD Flat Curve LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://app.youves.com/swap'>Youves kUSD/uUSD Flat Curve LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.",
+        },
+        'kUSD/XTZ Quipuswap LP': {
           mantissa: new BigNumber(10).pow(6),
           balances: () => this.tokenContractData.storage.ledger,
-          description: "The kUSD Quipu LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://analytics.quipuswap.com/pairs/KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6'>Quipuswap XTZ/kUSD LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.<br><br><strong>Please note!</strong> Baking rewards are usually paid to the LP holder (see <a rel='noopener' target='_blank' href='https://madfish.crunch.help/quipu-swap/how-to-get-trading-fees-and-baking-rewards-on-quipu-swap'><b>this article</b></a>), but by depositing them in the farm the baking rewards for the XTZ portion of the pair go to the DAO instead.",
+          description: "The kUSD/XTZ Quipuswap LP farm allows you to deposit <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://analytics.quipuswap.com/pairs/KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6'>Quipuswap kUSD/XTZ LP Tokens</a> and farm <a class='has-text-weight-bold' target='_blank' rel='noopener' href='https://governance.kolibri.finance/'>Kolibri Governance Tokens (kDAO)</a>.<br><br><strong>Please note!</strong> Baking rewards are usually paid to the LP holder (see <a rel='noopener' target='_blank' href='https://madfish.crunch.help/quipu-swap/how-to-get-trading-fees-and-baking-rewards-on-quipu-swap'><b>this article</b></a>), but by depositing them in the farm the baking rewards for the XTZ portion of the pair go to the DAO instead.",
         },
         'QLkUSD': {
           mantissa: new BigNumber(10).pow(36),
