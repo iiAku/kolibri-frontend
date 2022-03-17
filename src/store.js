@@ -28,7 +28,7 @@ function dontIndexTestnets() {
 
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((
-    window.location.hostname === 'localhost' ||  window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://hangzhounet.api.tez.ie/'
     NETWORK = Network.Hangzhou
@@ -38,10 +38,20 @@ if ((
     isTestnet = true
     isSandbox = false
 
-    farmContracts = {
-        'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
-        'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
-        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+    // Youves flat curve is not configured on all networks. Only add the farm to the page if it is configured.
+    if (NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm !== undefined) {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/uUSD Flat Curve LP': NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
+    } else {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
     }
 
     dontIndexTestnets()
@@ -57,10 +67,20 @@ if ((
     isTestnet = false
     isSandbox = true
 
-    farmContracts = {
-        'kUSD': CONTRACTS.SANDBOX.FARMS.KUSD.farm,
-        'QLkUSD': CONTRACTS.SANDBOX.FARMS.QLKUSD.farm,
-        'kUSD Quipu LP': CONTRACTS.SANDBOX.FARMS.KUSD_LP.farm
+    // Youves flat curve is not configured on all networks. Only add the farm to the page if it is configured.
+    if (NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm !== undefined) {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/uUSD Flat Curve LP': NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
+    } else {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
     }
 
     dontIndexTestnets()
@@ -84,10 +104,20 @@ if ((
     isTestnet = false
     isSandbox = false
 
-    farmContracts = {
-        'kUSD Quipu LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
-        'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
-        'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+    // Youves flat curve is not configured on all networks. Only add the farm to the page if it is configured.
+    if (NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm !== undefined) {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/uUSD Flat Curve LP': NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
+    } else {
+        farmContracts = {
+            'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
+            'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
+        }
     }
 }
 
