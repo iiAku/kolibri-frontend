@@ -10,11 +10,11 @@
   "devDependencies": {
     "@dicebear/avatars": "4.2.5",
     "@dicebear/avatars-bottts-sprites": "4.2.5",
-    "@hover-labs/kolibri-js": "^3.2.7",
+    "@hover-labs/kolibri-js": "^4.1.2",
     "@sweetalert2/theme-bulma": "^4.0.1",
-    "@taquito/local-forging": "^10.2.1",
-    "@taquito/michelson-encoder": "^10.2.1",
-    "@taquito/taquito": "^10.2.1",
+    "@taquito/local-forging": "^12.0.2",
+    "@taquito/michelson-encoder": "^12.0.2",
+    "@taquito/taquito": "^12.0.2",
     "@temple-wallet/dapp": "^5.0.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -69,7 +69,7 @@
     "not dead"
   ],
   "dependencies": {
-    "@airgap/beacon-sdk": "^2.3.7",
-    "@taquito/beacon-wallet": "^10.2.1"
+    "@airgap/beacon-sdk": "^2.3.11",
+    "@taquito/beacon-wallet": "^12.0.2"
   }
 }
