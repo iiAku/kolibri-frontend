@@ -10,7 +10,7 @@
   "devDependencies": {
     "@dicebear/avatars": "4.2.5",
     "@dicebear/avatars-bottts-sprites": "4.2.5",
-    "@hover-labs/kolibri-js": "^3.2.7",
+    "@hover-labs/kolibri-js": "^4.1.2",
     "@sweetalert2/theme-bulma": "^4.0.1",
     "@taquito/local-forging": "^10.2.1",
     "@taquito/michelson-encoder": "^10.2.1",
@@ -69,7 +69,7 @@
     "not dead"
   ],
   "dependencies": {
-    "@airgap/beacon-sdk": "^2.3.7",
+    "@airgap/beacon-sdk": "^2.3.13",
     "@taquito/beacon-wallet": "^10.2.1"
   }
 }
