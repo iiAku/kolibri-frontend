@@ -106,6 +106,7 @@
 
 <script>
 import axios from "axios";
+import _ from 'lodash'
 import Mixins from '../mixins';
 
 export default {
@@ -262,12 +263,22 @@ export default {
           confirmButtonText: 'Set Node',
           showLoaderOnConfirm: true,
           preConfirm: async (nodeURL) => {
+            // Please note this is a best effort at filtering characters and is by no means exhaustive of
+            // special encodings or other things. The stored URL must be carefully handled elsewhere to prevent
+            // potential XSS issues.
             nodeURL = nodeURL.replace(/\/+$/, '')
+                             .replaceAll(' ', '')
+                             .replaceAll(' ', '')
+                             .replaceAll('\n', '')
+                             .replaceAll('<', '')
+                             .replaceAll('>', '')
+                             .replaceAll('{', '')
+                             .replaceAll('}', '')
 
             try {
               new URL(nodeURL)
             } catch(e) {
-              await this.$swal.showValidationMessage(e)
+              await this.$swal.showValidationMessage(_.escape(e))
               return false
             }
 
@@ -275,7 +286,7 @@ export default {
               await axios.get(nodeURL + '/chains/main/blocks/head/header')
               return nodeURL
             } catch (e) {
-              await this.$swal.showValidationMessage(`Request failed: ${e}`)
+              await this.$swal.showValidationMessage(`Request failed: ${_.escape(e)}`)
               return false
             }
           },
@@ -300,7 +311,7 @@ export default {
           console.error(e)
           this.$swal(
             "Could Not Connect",
-            `There was an error in the selected node!<br><pre class="has-text-left">${JSON.stringify(e, null, 2)}</pre>`,
+            `There was an error in the selected node!<br><pre class="has-text-left">${_.escape(JSON.stringify(e, null, 2))}</pre>`,
             "error"
           );
         } finally {

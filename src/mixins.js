@@ -75,9 +75,9 @@ export default {
                 errString += `(<b>Error Code: ${errorCode}</b>)<br><br>`
                 errString += `<p>${errorMap[parsedError]}</p>`
             } else {
-                errString += `<br><pre class="has-text-left">${JSON.stringify(err, null, 2)}</pre>`
+                errString += `<br><pre class="has-text-left">${_.escape(JSON.stringify(err, null, 2))}</pre>`
                 if (err.stack){
-                    errString += `<pre class="has-text-left">${err.stack}</pre>`
+                    errString += `<pre class="has-text-left">${_.escape(err.stack)}</pre>`
                 }
             }
 

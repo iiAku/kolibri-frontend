@@ -5,6 +5,7 @@ import { WalletStates } from "@/enums";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import BigNumber from "bignumber.js";
 import {Network} from "@hover-labs/kolibri-js";
+import _ from "lodash";
 
 BigNumber.set({ DECIMAL_PLACES: 36 })
 
@@ -111,7 +112,7 @@ export default {
         console.error(e)
         this.$swal(
           "Could Not Connect",
-          `We couldn't connect to Beacon 🙈!<br><pre class="has-text-left">${JSON.stringify(e, null, 2)}</pre>`,
+          `We couldn't connect to Beacon 🙈!<br><pre class="has-text-left">${_.escape(JSON.stringify(e, null, 2))}</pre>`,
           "error"
         );
         this.$store.walletState = WalletStates.ERROR;
