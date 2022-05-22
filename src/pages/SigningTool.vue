@@ -70,7 +70,11 @@
     },
     methods: {
       async signPayload(){
-        this.signatureResult = await this.$store.wallet.client.requestSignPayload({payload: this.message})
+        const payload = {
+          payload: this.message.substr(2),
+          signingType: 'micheline',
+        }
+        this.signatureResult = await this.$store.wallet.client.requestSignPayload(payload)
         this.$log(this.signatureResult)
       }
     },
