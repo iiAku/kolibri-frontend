@@ -12,7 +12,9 @@
 
               <popover>
                 <p slot="popup-content" v-html="decimalsMap[pairName].description"></p>
-                <h1 class="title"><a class="has-text-white">{{ pairName }} Farm</a></h1>
+                <h1 class="title">
+                  <a class="has-text-white">{{ pairName }} Farm <template v-if="['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)">(inactive)</template> </a>
+                </h1>
               </popover>
 
               <a target="_blank" rel="noopener"
@@ -190,7 +192,7 @@
             </nav>
 <br>
 
-            <div class="columns is-centered">
+            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)" class="columns is-centered">
               <div class="column">
                 <div class="field has-addons has-addons-centered">
                   <div class="control">
@@ -238,8 +240,22 @@
                 </div>
               </div>
             </div>
+            <div class="is-flex is-flex-direction-column has-text-centered" v-else>
+              <hr class="mt-2">
+              <p class="has-text-weight-bold">The {{ pairName }} farm has ended as part of <a class="has-text-white is-underlined	" style="border-bottom: 1px solid white;"  rel="noopener" target="_blank" href="https://governance.kolibri.finance/proposals/31">Kolibri Proposal #31</a>. Please remove your liquidity using the button below.</p>
+              <div class="pt-4">
+                <button
+                  @click="withdrawLiquidity"
+                  :class="{'is-loading': networkSending || globalSending}"
+                  :disabled="this.networkSending || globalSending || depositedTokens === undefined || this.depositedTokens.lpTokenBalance.isZero()"
+                  class="button is-info is-medium"
+                >
+                  Withdraw all {{ pairName }} liquidity
+                </button>
+              </div>
+            </div>
 
-            <div class="buttons is-right">
+            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)" class="buttons is-right">
               <button
                 :disabled="networkSending || globalSending || estimatedRewards.isZero()"
                 :class="{'is-loading': networkSending || globalSending}"
@@ -336,6 +352,26 @@ export default {
         this.holdingsData = null
 
         this.$eventBus.$emit('refresh-kdao-holdings')
+        await this.initialize()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.networkSending = false
+        this.$eventBus.$emit('tx-finished')
+      }
+    },
+    async withdrawLiquidity(){
+      this.networkSending = true
+      try {
+        const farmContract = await this.$store.tezosToolkit.wallet.at(this.contract)
+
+        const sendResult = await farmContract.methods.escape().send()
+
+        this.$eventBus.$emit('tx-submitted', sendResult)
+
+        await sendResult.confirmation(1)
+
+        this.holdingsData = null
         await this.initialize()
       } catch (e) {
         console.error(e)
@@ -453,7 +489,10 @@ export default {
       const rewardRatio = reward.times(lpMantissa).div(this.farmContractData.farmLpTokenBalance)
       const accRewardPerShareEnd = this.farmContractData.farm.accumulatedRewardPerShare.plus(rewardRatio)
 
-      const accumulatedRewardPerShare = accRewardPerShareEnd.minus(accRewardPerShareStart)
+      const accumulatedRewardPerShare = BigNumber.max(
+        accRewardPerShareEnd.minus(accRewardPerShareStart),
+        new BigNumber(0)
+      )
 
       const estimatedRewards = accumulatedRewardPerShare.times(this.depositedTokens.lpTokenBalance).dividedBy(lpMantissa)
 

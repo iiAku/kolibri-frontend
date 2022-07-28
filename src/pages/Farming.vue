@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="columns is-centered is-gapless farms">
-      <div class="column is-half-desktop">
+      <div class="column is-three-quarters-desktop">
         <div v-if="$store.wallet !== null" class="buttons is-centered">
           <button @click="claimAll" :disabled="!isDoneGettingClaimableRewards || networkSending || totalClaimable.isLessThan(0.005)" :class="{'is-loading': !isDoneGettingClaimableRewards || networkSending}" class="button is-info is-medium has-text-weight-bold">🧑‍🌾 Claim All {{ totalClaimable.dividedBy(Math.pow(10, 18)).toFixed(2) }} kDAO</button>
         </div>

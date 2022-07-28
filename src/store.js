@@ -107,16 +107,16 @@ if ((
     // Youves flat curve is not configured on all networks. Only add the farm to the page if it is configured.
     if (NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm !== undefined) {
         farmContracts = {
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
             'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
             'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
             'kUSD/uUSD Flat Curve LP': NETWORK_CONTRACTS.FARMS.YOUVES_FLAT.farm,
-            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         }
     } else {
         farmContracts = {
+            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
             'kUSD': NETWORK_CONTRACTS.FARMS.KUSD.farm,
             'QLkUSD': NETWORK_CONTRACTS.FARMS.QLKUSD.farm,
-            'kUSD/XTZ Quipuswap LP': NETWORK_CONTRACTS.FARMS.KUSD_LP.farm,
         }
     }
 }
