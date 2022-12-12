@@ -13,7 +13,7 @@
               <popover>
                 <p slot="popup-content" v-html="decimalsMap[pairName].description"></p>
                 <h1 class="title">
-                  <a class="has-text-white">{{ pairName }} Farm <template v-if="['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP', 'kUSD/XTZ Quipuswap LP'].includes(pairName)">(inactive)</template> </a>
+                  <a class="has-text-white">{{ pairName }} Farm <template v-if="['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)">(inactive)</template> </a>
                 </h1>
               </popover>
 
@@ -55,8 +55,8 @@
           </div>
 
           <div class="level-right">
-            <p class="has-text-white has-text-weight-bold">0 kDAO / Week</p>
-<!--            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(poolRatePerWeek.toFixed(2)) }} kDAO / Week</p>-->
+            <p class="has-text-white has-text-weight-bold">{{ numberWithCommas(poolRatePerWeek.toFixed(2)) }} kDAO /
+              Week</p>
           </div>
         </nav>
 
@@ -67,7 +67,7 @@
             </div>
           </div>
 
-          <div v-if="!currentRewardPerWeek.isZero() && false" class="level-right">
+          <div v-if="!currentRewardPerWeek.isZero()" class="level-right">
             <span>
               <strong class="has-text-white">
                 1 kDAO / Week Per
@@ -192,7 +192,7 @@
             </nav>
 <br>
 
-            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP', 'kUSD/XTZ Quipuswap LP'].includes(pairName)" class="columns is-centered">
+            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)" class="columns is-centered">
               <div class="column">
                 <div class="field has-addons has-addons-centered">
                   <div class="control">
@@ -242,8 +242,7 @@
             </div>
             <div class="is-flex is-flex-direction-column has-text-centered" v-else>
               <hr class="mt-2">
-              <p v-if="pairName !== 'kUSD/XTZ Quipuswap LP'" class="has-text-weight-bold">The {{ pairName }} farm has ended as part of <a class="has-text-white is-underlined	" style="border-bottom: 1px solid white;"  rel="noopener" target="_blank" href="https://governance.kolibri.finance/proposals/31">Kolibri Proposal #31</a>. Please remove your liquidity using the button below.</p>
-              <p v-else>LP farms have moved to Quipuswap!</p>
+              <p class="has-text-weight-bold">The {{ pairName }} farm has ended as part of <a class="has-text-white is-underlined	" style="border-bottom: 1px solid white;"  rel="noopener" target="_blank" href="https://governance.kolibri.finance/proposals/31">Kolibri Proposal #31</a>. Please remove your liquidity using the button below.</p>
               <div class="pt-4">
                 <button
                   @click="withdrawLiquidity"
@@ -256,7 +255,7 @@
               </div>
             </div>
 
-            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP', 'kUSD/XTZ Quipuswap LP'].includes(pairName)" class="buttons is-right">
+            <div v-if="!['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP'].includes(pairName)" class="buttons is-right">
               <button
                 :disabled="networkSending || globalSending || estimatedRewards.isZero()"
                 :class="{'is-loading': networkSending || globalSending}"
