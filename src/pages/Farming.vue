@@ -2,8 +2,11 @@
   <div class="farming">
     <div class="columns is-centered is-gapless">
       <div class="column is-half-desktop">
-        <div class="notification is-info">
-          Welcome to the Kolibri Farm! Here you can deposit LP tokens (and others) to farm <b><a rel="noopener" target="_blank" href="https://kolibri-xtz.medium.com/announcing-kolibri-dao-6687eb528cb">kDAO governance tokens</a></b>, which let you vote and propose governance actions within the Kolibri protocol!
+        <div class="notification is-warning">
+          <p class="title has-text-centered">These Farms Are Deprecated!</p>
+          <p>
+            New farms can be found at <a rel="noopener" target="_blank" href="https://quipuswap.com/farming">https://quipuswap.com/farming</a>, with a much better interface! Please withdraw your liquidity and migrate it to the new pool/s.
+          </p>
         </div>
       </div>
     </div>
