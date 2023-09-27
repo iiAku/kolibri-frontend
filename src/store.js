@@ -28,7 +28,7 @@ function dontIndexTestnets() {
 
 let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((
-    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ||
+    // window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
     NODE_URL = 'https://hangzhounet.api.tez.ie/'
     NETWORK = Network.Hangzhou
@@ -56,7 +56,7 @@ if ((
 
     dontIndexTestnets()
 } else if ((
-    window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ||
+    // window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ||
     window.location.hostname === 'sandbox.kolibri.finance') && !FORCE_MAINNET) {
 
     NODE_URL = 'https://sandbox.hover.engineering'
@@ -95,7 +95,6 @@ if ((
 
     dontIndexTestnets()
 } else {
-    // NODE_URL = 'https://mainnet-tezos.giganode.io'
     NODE_URL = 'https://mainnet.api.tez.ie'
 
     NETWORK = Network.Mainnet

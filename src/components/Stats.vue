@@ -25,19 +25,14 @@
                 <span>
                   The collateral ratio determines how much collateral you need to back your minted kUSD with.
                   <br>
-                  A ratio of 200% means for every 1 kUSD you mint, you need at *least* $2 worth of XTZ.
-                  <span v-if="$store.lpDisabled">
-                    <br>
-                    <br>
-                    <b>The collateral ratio is temporarily {{ formattedCollateralRate() }}%</b> due to a <b><a href="https://kolibri-xtz.medium.com/kolibri-liquidity-pool-exploit-postmortem-f738966c20fb" rel="noopener" target="_blank">vulnerability in the Kolibri Liquidity Pool</a></b>.
-                  </span>
+                  A ratio of 150% means for every 1 kUSD you mint, you need at *least* $1.50 worth of XTZ.
                 </span>
               </span>
               <span>(<a class="has-text-primary has-text-weight-bold">?</a>)</span>
             </popover>
           </p>
           <p v-if="$store.collateralRate === null" class="loader"></p>
-          <p v-else :class="{'has-text-warning': $store.lpDisabled}"  class="title">{{ formattedCollateralRate() }}%</p>
+          <p v-else class="title">{{ formattedCollateralRate() }}%</p>
         </div>
       </div>
     </nav>

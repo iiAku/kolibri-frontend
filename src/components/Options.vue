@@ -211,10 +211,6 @@ export default {
           granadanet: 'https://granadanet.api.tez.ie',
           mainnet: 'https://mainnet.api.tez.ie',
         },
-        Giganode: {
-          granadanet: 'https://testnet-tezos.giganode.io',
-          mainnet: 'https://mainnet-tezos.giganode.io',
-        },
         SmartPy: {
           granadanet: 'https://granadanet.smartpy.io',
           mainnet: 'https://mainnet.smartpy.io',

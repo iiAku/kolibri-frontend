@@ -161,7 +161,7 @@ export default {
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
       this.$store.currentBlockHeight = currentBlock.header.level
-      setTimeout(this.updateBlockHeight, this.$store.network === Network.Sandbox ? 4 * 1000 : 10 * 1000)
+      setTimeout(this.updateBlockHeight, this.$store.network === Network.Sandbox ? 4 * 1000 : 5 * 1000)
     },
   }
 }
