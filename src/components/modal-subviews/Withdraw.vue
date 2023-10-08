@@ -162,7 +162,7 @@ export default {
       const ovenValue = this.ovenDollarValue(this.ovenAddress); // USD
 
       let ovenValueFormatted = ovenValue
-        .dividedBy(2)
+        .dividedBy(this.$store.collateralOperand)
         .minus(borrowedTokens)
         .dividedBy(this.currentPriceFormatted())
         .times(2)
@@ -198,7 +198,7 @@ export default {
       const maxCollateralDollars = this.ovenDollarValueMinusWithdraw(
         this.ovenAddress,
         withdrawAmount
-      ).dividedBy(2);
+      ).dividedBy(this.$store.collateralOperand);
 
       const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 

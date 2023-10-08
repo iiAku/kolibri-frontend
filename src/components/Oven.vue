@@ -182,16 +182,16 @@
             </p>
             <p class="heading">
               Collateral Utilization:
-              <strong v-if="collatoralizedRate(ovenData.balance) < 80"
-                >{{ collatoralizedRate(ovenData.balance) }}%</strong
+              <strong v-if="collatoralizedRate(ovenData) < 80"
+                >{{ collatoralizedRate(ovenData) }}%</strong
               >
               <strong
-                v-else-if="collatoralizedRate(ovenData.balance) < 100"
+                v-else-if="collatoralizedRate(ovenData) < 100"
                 class="has-text-warning"
-                >{{ collatoralizedRate(ovenData.balance) }}%</strong
+                >{{ collatoralizedRate(ovenData) }}%</strong
               >
               <strong v-else class="has-text-danger"
-                >{{ collatoralizedRate(ovenData.balance) }}%</strong
+                >{{ collatoralizedRate(ovenData) }}%</strong
               >
 
               <span v-if="!outstandingTokens(ovenAddress).isZero()">
@@ -211,28 +211,28 @@
 
             <div class="allocation-info is-fullwidth">
               <progress
-                v-if="collatoralizedRate(ovenData.balance) < 80"
+                v-if="collatoralizedRate(ovenData) < 80"
                 class="progress is-primary"
-                :value="collatoralizedRate(ovenData.balance)"
+                :value="collatoralizedRate(ovenData)"
                 max="100"
               >
-                {{ collatoralizedRate(ovenData.balance) }}%
+                {{ collatoralizedRate(ovenData) }}%
               </progress>
               <progress
-                v-else-if="collatoralizedRate(ovenData.balance) < 100"
+                v-else-if="collatoralizedRate(ovenData) < 100"
                 class="progress is-warning"
-                :value="collatoralizedRate(ovenData.balance)"
+                :value="collatoralizedRate(ovenData)"
                 max="100"
               >
-                {{ collatoralizedRate(ovenData.balance) }}%
+                {{ collatoralizedRate(ovenData) }}%
               </progress>
               <progress
                 v-else
                 class="progress is-danger"
-                :value="collatoralizedRate(ovenData.balance)"
+                :value="collatoralizedRate(ovenData)"
                 max="100"
               >
-                {{ collatoralizedRate(ovenData.balance) }}%
+                {{ collatoralizedRate(ovenData) }}%
               </progress>
             </div>
           </div>
@@ -402,7 +402,7 @@ export default {
         .dividedBy(Math.pow(10, 6))
         .multipliedBy(ovenBalance.dividedBy(Math.pow(10, 6)));
 
-      let valueHalf = currentValue.dividedBy(2);
+      let valueHalf = currentValue.dividedBy(this.$store.collateralOperand);
 
       let borrowedTokens = this.ovenData.outstandingTokens.dividedBy(
         Math.pow(10, 18)
@@ -410,23 +410,8 @@ export default {
 
       return valueHalf.minus(borrowedTokens).decimalPlaces(18);
     },
-    collatoralizedRate(ovenBalance) {
-      if (parseInt(ovenBalance) === 0) {
-        return 0;
-      }
-
-      let currentValue = this.$store.priceData.price
-        .dividedBy(Math.pow(10, 6))
-        .multipliedBy(ovenBalance.dividedBy(Math.pow(10, 6)))
-
-      let valueHalf = currentValue.dividedBy(2);
-
-      let rate = this.ovenData.outstandingTokens
-        .dividedBy(Math.pow(10, 18))
-        .dividedBy(valueHalf)
-        .times(100);
-
-      return rate.toFixed(2);
+    collatoralizedRate(oven) {
+      return this.collatoralizedRateForOven(oven)
     },
     async updateOvenData() {
       const keys = [

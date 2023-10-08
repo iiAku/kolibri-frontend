@@ -224,7 +224,7 @@ export default {
         repayAmount = 0;
       }
 
-      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2);
+      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(this.$store.collateralOperand);
 
       const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 

@@ -72,7 +72,7 @@
                   !oven.isLiquidated &&
                   $store.collateralRate
                     .dividedBy(Math.pow(10, 18))
-                    .dividedBy(2)
+                    .dividedBy(this.$store.collateralOperand)
                     .isLessThan(collatoralizedRateForOven(oven))
                 "
                 class="button is-danger is-small">
@@ -305,7 +305,7 @@ export default {
       let currentValue = this.$store.priceData.price
         .multipliedBy(ovenBalance)
         .dividedBy(Math.pow(10, 10));
-      let valueHalf = currentValue.dividedBy(2);
+      let valueHalf = currentValue.dividedBy(this.$store.collateralOperand);
 
       let borrowedTokens = this.oven.outstandingTokens.dividedBy(Math.pow(10, 18));
 
@@ -319,7 +319,7 @@ export default {
       let currentValue = this.$store.priceData.price
         .multipliedBy(ovenBalance)
         .dividedBy(Math.pow(10, 10));
-      let valueHalf = currentValue.dividedBy(2);
+      let valueHalf = currentValue.dividedBy(this.$store.collateralOperand);
 
       let rate = this.oven.outstandingTokens
         .dividedBy(valueHalf)
@@ -339,12 +339,12 @@ export default {
       return this.$store.collateralRate
         .plus(this.$store.privateLiquidationThreshold)
         .dividedBy(Math.pow(10, 18))
-        .dividedBy(2)
+        .dividedBy(this.$store.collateralOperand)
     },
     lpLiquidationThreshold(){
       return this.$store.collateralRate
         .dividedBy(Math.pow(10, 18))
-        .dividedBy(2)
+        .dividedBy(this.$store.collateralOperand)
     }
   },
   components: {

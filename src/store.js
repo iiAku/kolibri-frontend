@@ -146,6 +146,7 @@ let state = Vue.observable({
     stabilityFee: null,
     privateLiquidationThreshold: null,
     collateralRate: null,
+    collateralOperand: null,
     ownedOvens: null,
     balanceData: null,
     wallet: null,
