@@ -46,7 +46,7 @@
       <p class="heading">
         <a
           v-if="borrowAmtNumber.isLessThanOrEqualTo(maxSafeAmt.times(1.01))"
-          @click="borrowAmount = maxSafeAmt"
+          @click="borrowAmount = maxSafeAmt.toFixed(2)"
           class="has-text-weight-bold"
           >Max Safe (80%)</a
         >
@@ -178,10 +178,10 @@ export default {
   computed: {
     maxSafeAmt() {
       return this.ovenDollarValue(this.ovenAddress)
-        .dividedBy(2)
-        .multipliedBy(0.8)
-        .minus(this.outstandingTokensFormatted(this.ovenAddress))
-        .decimalPlaces(18);
+      .dividedBy(this.$store.collateralOperand)
+      .multipliedBy(0.8)
+      .minus(this.outstandingTokensFormatted(this.ovenAddress))
+      .decimalPlaces(18);
     },
     shouldAllowBorrow() {
       if (!this.borrowAmount || this.borrowAmount <= 0) {
@@ -203,7 +203,7 @@ export default {
         borrowAmount = 0;
       }
 
-      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(2);
+      const maxCollateral = this.ovenDollarValue(this.ovenAddress).dividedBy(this.$store.collateralOperand);
 
       const borrowedTokens = this.outstandingTokensFormatted(this.ovenAddress);
 

@@ -78,6 +78,7 @@ export default {
 
       this.$store.collateralRate = minterStorage.collateralizationPercentage;
       this.$store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold || null;
+      this.$store.collateralOperand =  this.$store.collateralRate.minus(this.$store.privateLiquidationThreshold ?? 0).dividedBy(Math.pow(10, 20))
     },
     async updateAllOvenData(){
       try {

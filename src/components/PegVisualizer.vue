@@ -105,10 +105,10 @@ export default {
       const harbingerPrice = this.$store.priceData.price.div(tezMantissa)
 
       const percentOff = new BigNumber(1).minus(harbingerPrice.dividedBy(quipuPrice))
-      const halfPercentOff = percentOff.dividedBy(2)
+      const halfPercentOff = percentOff.dividedBy(this.$store.collateralOperand)
       const kusdToRecv = tokenPool.times(halfPercentOff)
 
-      const onePercentOff = new BigNumber("0.01").dividedBy(2)
+      const onePercentOff = new BigNumber("0.01").dividedBy(this.$store.collateralOperand)
       const pegDepth = tokenPool.times(onePercentOff)
 
       const updatedTokenPoolAmt = tokenPool.minus(kusdToRecv)

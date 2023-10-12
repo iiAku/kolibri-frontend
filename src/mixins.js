@@ -1,6 +1,9 @@
 import _, { find } from 'lodash'
+
 import {ContractErrors} from '@hover-labs/kolibri-js'
+import { ConversionUtils } from "@hover-labs/kolibri-js"
 import axios from "axios";
+import {customGetCollateralUtilization} from './utils'
 import moment from "moment";
 
 const errorMap = {
@@ -142,7 +145,7 @@ export default {
         maxBorrowAmtkUSD(ovenAddress) {
             const borrowedTokens = this.outstandingTokensFormatted(ovenAddress)
             const ovenValue = this.ovenDollarValue(ovenAddress)
-            return ovenValue.dividedBy(2).minus(borrowedTokens).decimalPlaces(18)
+            return ovenValue.dividedBy(this.$store.collateralOperand).minus(borrowedTokens).decimalPlaces(18)
         },
         collatoralizationWarningClasses(rate) {
             if (rate > 100) {
@@ -154,7 +157,7 @@ export default {
             }
         },
         currentCollateralRate(ovenAddress) {
-            const maxCollateral = this.ovenDollarValue(ovenAddress).dividedBy(2)
+            const maxCollateral = this.ovenDollarValue(ovenAddress).dividedBy(this.$store.collateralOperand)
 
             const borrowedTokens = this.outstandingTokensFormatted(ovenAddress)
 
@@ -166,14 +169,19 @@ export default {
             return borrowedTokens.dividedBy(maxCollateral).times(100)
         },
         collatoralizedRateForOven(oven){
-            if (parseInt(oven.balance) === 0) { return 0 }
+            const collateralUtilization = customGetCollateralUtilization(
+              this.$store.priceData.price,
+              oven.balance,
+              oven.outstandingTokens
+            )
 
-            let currentValue = this.$store.priceData.price.multipliedBy(oven.balance).dividedBy(Math.pow(10, 10))
-            let valueHalf = currentValue.dividedBy(2)
+            const rate = collateralUtilization.multipliedBy(
+              this.$store.collateralOperand
+            )
 
-            let rate = oven.outstandingTokens.dividedBy(valueHalf).dividedBy(Math.pow(10, 14))
-
-            return rate.toFixed(2)
+            return parseFloat(
+                ConversionUtils.shardToHumanReadablePercentage(rate)
+            ).toFixed(2)
         },
         ovenBalance(ovenAddress){
             if (!this.$store.ownedOvens[ovenAddress]) { return 0 }
