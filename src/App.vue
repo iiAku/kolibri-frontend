@@ -30,6 +30,7 @@ import {Network} from "@hover-labs/kolibri-js";
 
 import Mixins from './mixins'
 import HoverLabsFooter from "@/components/HoverLabsFooter";
+import {z} from 'zod'
 
 export default {
   name: 'App',
@@ -153,11 +154,22 @@ export default {
         }, 0).dividedBy(Math.pow(10, 18))
       }
     },
-    updatePriceInfo(){
-      this.$store.harbingerClient.getPriceData()
-          .then((priceData) => {
-            this.$store.priceData = priceData;
-          })
+    async updatePriceInfo(){
+      // Youves contract: KT1ExbCyFbsvPQTUitHAK7HSfYkJgiCtBGpM
+      const baseUrl = "https://api.tzkt.io/v1/bigmaps/597699/keys/XTZUSDT";
+      const response = await axios.get(baseUrl);
+      const responseSchema = z.object({
+        key: z.literal("XTZUSDT"),
+        value: z.object({
+          price: z.coerce.number(),
+          last_update_timestamp: z.coerce.number(),
+        }),
+      });
+      const parsedResponse = responseSchema.parse(response.data);
+      this.$store.priceData = {
+        timestamp: parsedResponse.value.last_update_timestamp,
+        price: new BigNumber(parsedResponse.value.price),
+      };
     },
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
