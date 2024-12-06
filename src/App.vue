@@ -155,21 +155,16 @@ export default {
       }
     },
     async updatePriceInfo(){
-      // Youves contract: KT1ExbCyFbsvPQTUitHAK7HSfYkJgiCtBGpM
-      const baseUrl = "https://api.tzkt.io/v1/bigmaps/597699/keys/XTZUSDT";
+      // Youves contract: KT1ExbCyFbsvPQTUitHAK7HSfYkJgiCtBGpM - key USDT
+      const baseUrl = 'https://rpc.tzbeta.net/chains/main/blocks/head/context/big_maps/597699/exprtbVCZ3qh45pH3wZpx1TN2pAJ94pss44kpbHodsxuQ8E7ntVw4M'
       const response = await axios.get(baseUrl);
       const responseSchema = z.object({
-        key: z.literal("XTZUSDT"),
-        value: z.object({
-          price: z.coerce.number(),
-          last_update_timestamp: z.coerce.number(),
-        }),
-      });
+        prim: z.literal('Pair'),
+        args: z.array(z.object({ int: z.coerce.number() }))
+      })
       const parsedResponse = responseSchema.parse(response.data);
-      this.$store.priceData = {
-        timestamp: parsedResponse.value.last_update_timestamp,
-        price: new BigNumber(parsedResponse.value.price),
-      };
+      const [price, timestamp] = parsedResponse.args.map((arg) => arg.int)
+      this.$store.priceData = { timestamp, price: new BigNumber(price)};
     },
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
