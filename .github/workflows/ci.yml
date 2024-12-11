@@ -45,7 +45,7 @@ jobs:
     - name: "Build & Deploy Frontend"
       run: npm run build
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy testnet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -54,7 +54,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'testnet'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy sandbox.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -63,7 +63,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'sandbox'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy zeronet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -72,7 +72,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'zeronet'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
