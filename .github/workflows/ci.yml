@@ -1,5 +1,8 @@
 name: Build
 
+env:
+  NODE_OPTIONS: --openssl-legacy-provider
+
 on:
   push:
     branches: [ master ]
