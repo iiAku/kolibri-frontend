@@ -26,7 +26,7 @@ if (!ipfsURL) {
   console.log("Created client...")
 
   console.log("Adding files...")
-  let deployedApp = await client.add(ipfsClient.globSource('dist', { recursive: true }), { pin: true });
+  let deployedApp = await client.add(ipfsClient.globSource('.output/public', { recursive: true }), { pin: true });
 
   const ipnsUpdate = await client.name.publish(deployedApp.cid, {key: "kolibri-frontend"})
   console.log(`Pushed ${deployedApp.path} [size=${deployedApp.size}, cid=${deployedApp.cid}]`);

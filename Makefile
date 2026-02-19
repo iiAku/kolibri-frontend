@@ -6,7 +6,7 @@ build:
 		-v $$(pwd):/shared \
 		--workdir /shared \
 		vue-frontend \
-		npm run build --report
+		npx nuxi build
 
 build-ipfs:
 	docker run --rm -it \
@@ -14,15 +14,15 @@ build-ipfs:
 		--workdir /shared \
 		-e IPFS_BUILD=1 \
 		vue-frontend \
-		npm run build --report
+		npx nuxi build
 
 serve:
 	docker run --rm -it \
 		-v $$(pwd):/shared \
 		--workdir /shared \
-		-p 8080:8080 \
+		-p 3000:3000 \
 		vue-frontend \
-		npm run serve
+		npx nuxi dev
 
 bash:
 	docker run --rm -it \

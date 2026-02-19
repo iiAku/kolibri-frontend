@@ -1,0 +1,22 @@
+$primary: #3EBD93;
+$link: $primary;
+
+$navbar-dropdown-border-top: 2px solid $primary;
+$navbar-dropdown-item-hover-color: $primary;
+$navbar-height: 4rem;
+$navbar-item-active-color: $primary;
+
+$grey-darker: #486581;
+$grey-dark: #486581;
+
+$code: $grey-darker;
+
+$light-grey: #F0F4F8;
+
+$panel-heading-background-color: white;
+$panel-heading-color: $grey-darker;
+
+$family-sans-serif: 'Open Sans', sans-serif;
+
+@import 'bulma/sass/utilities';
+@import 'bulma/sass/utilities/mixins';

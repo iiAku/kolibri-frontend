@@ -1,8 +1,5 @@
 name: Build
 
-env:
-  NODE_OPTIONS: --openssl-legacy-provider
-
 on:
   push:
     branches: [ master ]
@@ -27,15 +24,15 @@ jobs:
   build_and_deploy_frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     - uses: actions/setup-node@v4
-      # with:
-      #   node-version: '16.13.0'
+      with:
+        node-version: '24'
 
     - name: Retrieve the cached "node_modules" directory (if present)
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       id: node-cache
       with:
         path: node_modules
@@ -45,12 +42,12 @@ jobs:
       if: steps.node-cache.outputs.cache-hit != 'true'
       run: npm i --legacy-peer-deps
 
-    - name: "Build & Deploy Frontend"
-      run: npm run build
+    - name: "Build Frontend"
+      run: npx nuxi build
 
     - uses: cloudflare/wrangler-action@v3
       name: "Deploy testnet.kolibri.finance"
-      if: github.ref == 'refs/heads/master' # Only deploy on merge to master
+      if: github.ref == 'refs/heads/master'
       env:
         USER: root
       with:
@@ -59,7 +56,7 @@ jobs:
 
     - uses: cloudflare/wrangler-action@v3
       name: "Deploy sandbox.kolibri.finance"
-      if: github.ref == 'refs/heads/master' # Only deploy on merge to master
+      if: github.ref == 'refs/heads/master'
       env:
         USER: root
       with:
@@ -67,17 +64,8 @@ jobs:
         environment: 'sandbox'
 
     - uses: cloudflare/wrangler-action@v3
-      name: "Deploy zeronet.kolibri.finance"
-      if: github.ref == 'refs/heads/master' # Only deploy on merge to master
-      env:
-        USER: root
-      with:
-        apiToken: ${{ secrets.CF_API_TOKEN }}
-        environment: 'zeronet'
-
-    - uses: cloudflare/wrangler-action@v3
       name: "Deploy kolibri.finance"
-      if: github.ref == 'refs/heads/master' # Only deploy on merge to master
+      if: github.ref == 'refs/heads/master'
       env:
         USER: root
       with:
@@ -87,15 +75,15 @@ jobs:
   build_and_deploy_ipfs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14.17.6'
+          node-version: '24'
 
       - name: Retrieve the cached "node_modules" directory (if present)
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: node-cache
         with:
           path: node_modules
@@ -103,16 +91,16 @@ jobs:
 
       - name: Install dependencies (if the cached directory was not found)
         if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: "Build & Deploy Frontend"
-        if: github.ref == 'refs/heads/master' # Only deploy on merge to master
+        if: github.ref == 'refs/heads/master'
         env:
           IPFS_URL: ${{ secrets.IPFS_URL }}
           IPFS_AUTH: ${{ secrets.IPFS_AUTH }}
           IPFS_BUILD: 1
         run: |
-          npm run build
+          npx nuxi build
           npm install ipfs-http-client@52.0.5  # Keep this out of direct deps
           node scripts/ipfs-upload.js
 
