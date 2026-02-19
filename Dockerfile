@@ -1,3 +1,3 @@
-FROM node
+FROM node:24-alpine
 
-RUN npm install -g @vue/cli
+RUN npm install -g nuxi

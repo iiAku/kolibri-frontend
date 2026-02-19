@@ -1,0 +1,64 @@
+@import './globals';
+@import 'bulma/bulma';
+@import 'animate.css';
+@import '@sweetalert2/theme-bulma/bulma.scss';
+
+// Bulma 0.9 compat: is-marginless/is-paddingless removed in 1.0
+.is-marginless {
+  margin: 0 !important;
+}
+.is-paddingless {
+  padding: 0 !important;
+}
+
+// Global styles (migrated from App.vue)
+html.disable-scroll {
+  overflow: hidden;
+}
+
+.swal2-content {
+  pre {
+    margin-top: 1rem;
+  }
+}
+
+.swal2-confirm {
+  background-color: #3EBD93;
+}
+
+.loader-wrapper {
+  padding: 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  &.left-spaced {
+    margin-left: 0.5rem;
+  }
+  &.is-large {
+    width: 3rem;
+    height: 3rem;
+  }
+  &.is-medium {
+    width: 2rem;
+    height: 2rem;
+  }
+  &.is-primary {
+    border: 2px solid #3EBD93;
+    border-right-color: transparent;
+    border-top-color: transparent;
+  }
+  &.is-white {
+    border: 2px solid $white;
+    border-right-color: transparent;
+    border-top-color: transparent;
+  }
+}
+
+.price-has-popover {
+  cursor: pointer;
+  border-bottom: 1px solid $primary;
+}

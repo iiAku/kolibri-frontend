@@ -1,24 +1,16 @@
 account_id = "496ea6f6559820c64e0b6f776d64731f"
 name = "kolibri-finance"
 compatibility_date = "2024-12-11"
-# type = "webpack"
 workers_dev = true
-site = { bucket = "./dist" }
+site = { bucket = ".output/public" }
 
 main = "workers-site/index.js"
 
 [env.testnet]
-# The route pattern your Workers application will be served at
 route = "testnet.kolibri.finance/*"
 
 [env.sandbox]
-# The route pattern your Workers application will be served at
 route = "sandbox.kolibri.finance/*"
 
-[env.zeronet]
-# The route pattern your Workers application will be served at
-route = "zeronet.kolibri.finance/*"
-
 [env.production]
-# The route pattern your Workers application will be served at
 route = "kolibri.finance/*"
