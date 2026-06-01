@@ -145,9 +145,6 @@ const DEAD_NODE_HOSTS = new Set([
     'granadanet.api.tez.ie',
     'mainnet.ecadinfra.com',
     'ghostnet.ecadinfra.com',
-    'rpc.tzbeta.net',
-    'rpctest.tzbeta.net',
-    'rpczero.tzbeta.net',
 ])
 
 const isDeadNodeOverride = (nodeURL) => {

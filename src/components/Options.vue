@@ -212,6 +212,12 @@ export default {
         SmartPy: {
           mainnet: 'https://mainnet.smartpy.io',
         },
+        'Tezos Commons': {
+          mainnet: 'https://mainnet.tcinfra.net',
+        },
+        'Tezos Foundation': {
+          mainnet: 'https://rpc.tzbeta.net',
+        },
       }
     }
 
