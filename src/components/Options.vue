@@ -206,19 +206,12 @@ export default {
       }
     } else {
       nodes = {
-        ECADLabs: {
-          hangzhounet: 'https://hangzhounet.api.tez.ie',
-          granadanet: 'https://granadanet.api.tez.ie',
-          mainnet: 'https://mainnet.api.tez.ie',
+        TzKT: {
+          mainnet: 'https://rpc.tzkt.io/mainnet',
         },
         SmartPy: {
-          granadanet: 'https://granadanet.smartpy.io',
           mainnet: 'https://mainnet.smartpy.io',
         },
-        TZBeta: {
-          granadanet: 'https://rpctest.tzbeta.net',
-          mainnet: 'https://rpc.tzbeta.net',
-        }
       }
     }
 

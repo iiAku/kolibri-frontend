@@ -95,7 +95,7 @@ if ((
 
     dontIndexTestnets()
 } else {
-    NODE_URL = 'https://mainnet.api.tez.ie'
+    NODE_URL = 'https://rpc.tzkt.io/mainnet'
 
     NETWORK = Network.Mainnet
     NETWORK_CONTRACTS = CONTRACTS.MAIN
@@ -135,8 +135,39 @@ if (ovenNameMapping !== null) {
     ovenNames = {}
 }
 
+// ECAD Labs shut down, taking down api.tez.ie and ecadinfra.com. Drop any saved override
+// pointing at a known-dead host so existing users fall back to the working default instead
+// of staying stuck on a node that will never respond. Deterministic (no startup probing) so
+// a transient outage never erases a user's legitimate custom RPC.
+const DEAD_NODE_HOSTS = new Set([
+    'mainnet.api.tez.ie',
+    'hangzhounet.api.tez.ie',
+    'granadanet.api.tez.ie',
+    'mainnet.ecadinfra.com',
+    'ghostnet.ecadinfra.com',
+    'rpc.tzbeta.net',
+    'rpctest.tzbeta.net',
+    'rpczero.tzbeta.net',
+])
+
+const isDeadNodeOverride = (nodeURL) => {
+    if (!nodeURL) {
+        return false
+    }
+    try {
+        return DEAD_NODE_HOSTS.has(new URL(nodeURL).hostname)
+    } catch (e) {
+        return false
+    }
+}
+
 const nodeOverrideKey = `${NETWORK}-nodeOverride`
-NODE_URL = localStorage.getItem(nodeOverrideKey) ? localStorage.getItem(nodeOverrideKey) : NODE_URL
+const savedNodeURL = localStorage.getItem(nodeOverrideKey)
+const savedNodeIsDead = isDeadNodeOverride(savedNodeURL)
+if (savedNodeIsDead) {
+    localStorage.removeItem(nodeOverrideKey)
+}
+NODE_URL = savedNodeIsDead ? NODE_URL : (savedNodeURL || NODE_URL)
 
 let state = Vue.observable({
     currentBlockHeight: null,
