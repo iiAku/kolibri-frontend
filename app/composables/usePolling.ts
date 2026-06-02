@@ -28,15 +28,21 @@ export const usePolling = () => {
     const contract = await store.tezosToolkit.contract.at(store.NETWORK_CONTRACTS.MINTER)
     const minterStorage = await contract.storage() as any
 
-    store.stabilityFee = minterStorage.stabilityFee
+    // Re-wrap Taquito's BigNumbers into the app's BigNumber so the app's config governs
+    // (POW_PRECISION/DECIMAL_PLACES: 36). Taquito ships its own BigNumber copy whose
+    // POW_PRECISION default is 0 (unlimited) — running .pow(365*24*60) on it computes the
+    // full-precision result and hangs the main thread.
+    store.stabilityFee = new BigNumber(minterStorage.stabilityFee)
       .dividedBy(SHARD)
       .plus(1)
       .pow(365 * 24 * 60)
       .minus(1)
       .times(SHARD)
 
-    store.collateralRate = minterStorage.collateralizationPercentage
-    store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold || null
+    store.collateralRate = new BigNumber(minterStorage.collateralizationPercentage)
+    store.privateLiquidationThreshold = minterStorage.privateOwnerLiquidationThreshold
+      ? new BigNumber(minterStorage.privateOwnerLiquidationThreshold)
+      : null
     store.collateralOperand = store.collateralRate!
       .minus(store.privateLiquidationThreshold ?? 0)
       .dividedBy(COLLATERAL_DIVISOR)
