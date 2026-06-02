@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { BeaconWallet } from '@taquito/beacon-wallet'
-import { NetworkType } from '@airgap/beacon-types'
+import { NetworkType } from '@ecadlabs/beacon-types'
 import BigNumber from 'bignumber.js'
 import { Network } from '~/lib/kolibri'
 import { useKolibriStore } from '~/stores/kolibri'

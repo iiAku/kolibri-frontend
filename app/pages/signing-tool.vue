@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TezosLanguageUtil } from 'conseiljs'
+import { emitMicheline, unpackDataBytes } from '@taquito/michel-codec'
 
 const store = useKolibriStore()
 const { $eventBus } = useNuxtApp()
@@ -11,9 +11,16 @@ const decodedMessage = computed(() => {
   if (message.value === null || !message.value.startsWith('0x')) {
     return null
   }
-  return TezosLanguageUtil.normalizeMichelsonWhiteSpace(
-    TezosLanguageUtil.hexToMichelson(message.value.substring(4)).code,
-  )
+  // Strip the leading "0x" only — unpackDataBytes expects the full packed bytes
+  // including the "05" Micheline watermark.
+  try {
+    return emitMicheline(unpackDataBytes({ bytes: message.value.substring(2) }), {
+      indent: '  ',
+      newline: '\n',
+    })
+  } catch {
+    return null
+  }
 })
 
 const signPayload = async () => {
@@ -57,7 +64,7 @@ const signPayload = async () => {
               </div>
               <div class="field is-grouped is-grouped-right">
                 <div class="control">
-                  <button v-if="store.wallet !== null" :disabled="signatureResult !== null" class="button is-primary" @click="signPayload">Sign Message</button>
+                  <button v-if="store.wallet !== null" :disabled="signatureResult !== null || decodedMessage === null" class="button is-primary" @click="signPayload">Sign Message</button>
                   <button v-else class="button is-primary" @click="$eventBus.emit('wallet-connect-request')">Connect Wallet</button>
                 </div>
               </div>

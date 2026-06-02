@@ -11,23 +11,25 @@
     "postinstall": "nuxi prepare"
   },
   "dependencies": {
-    "@taquito/beacon-wallet": "^24.0.2",
-    "@taquito/local-forging": "^24.0.2",
-    "@taquito/michelson-encoder": "^24.0.2",
-    "@taquito/rpc": "^24.0.2",
-    "@taquito/taquito": "^24.0.2",
-    "@taquito/utils": "^24.0.2",
-    "axios": "^1.13.5",
-    "bignumber.js": "^9.3.1",
+    "@ecadlabs/beacon-types": "4.8.1-ecad.7",
+    "@taquito/beacon-wallet": "^24.3.0",
+    "@taquito/local-forging": "^24.3.0",
+    "@taquito/michel-codec": "^24.3.0",
+    "@taquito/michelson-encoder": "^24.3.0",
+    "@taquito/rpc": "^24.3.0",
+    "@taquito/taquito": "^24.3.0",
+    "@taquito/utils": "^24.3.0",
+    "axios": "^1.16.1",
+    "bignumber.js": "^11.1.2",
+    "bs58check": "^4.0.0",
     "bulma": "^1.0.4",
-    "conseiljs": "^5.3.0",
     "decimal.js": "^10.6.0",
     "floating-vue": "^5.2.2",
-    "marked": "^17.0.3",
+    "marked": "^18.0.4",
     "mitt": "^3.0.1",
-    "nuxt": "^4.3.1",
+    "nuxt": "^4.4.6",
     "pinia": "^3.0.4",
-    "sweetalert2": "^11.26.19"
+    "sweetalert2": "^11.26.25"
   },
   "devDependencies": {
     "@dicebear/avatars": "4.10.8",
@@ -35,7 +37,7 @@
     "@pinia/nuxt": "^0.11.3",
     "@sweetalert2/theme-bulma": "^5.0.27",
     "animate.css": "^4.1.1",
-    "sass": "^1.97.3",
-    "vite-plugin-node-polyfills": "^0.25.0"
+    "sass": "^1.100.0",
+    "vite-plugin-node-polyfills": "^0.28.0"
   }
 }
