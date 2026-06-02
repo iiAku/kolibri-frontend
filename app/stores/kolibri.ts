@@ -20,7 +20,7 @@ const detectNetwork = (): { network: typeof Network[keyof typeof Network]; nodeU
   if (hostname === 'testnet.kolibri.finance') {
     return {
       network: Network.Hangzhou,
-      nodeURL: 'https://ghostnet.ecadinfra.com',
+      nodeURL: 'https://rpc.ghostnet.teztnets.com',
       contracts: CONTRACTS.TEST,
       isTestnet: true,
       isSandbox: false,
@@ -39,10 +39,27 @@ const detectNetwork = (): { network: typeof Network[keyof typeof Network]; nodeU
 
   return {
     network: Network.Mainnet,
-    nodeURL: 'https://mainnet.ecadinfra.com',
+    nodeURL: 'https://rpc.tzkt.io/mainnet',
     contracts: CONTRACTS.MAIN,
     isTestnet: false,
     isSandbox: false,
+  }
+}
+
+const DEAD_NODE_HOSTS = new Set([
+  'mainnet.api.tez.ie',
+  'hangzhounet.api.tez.ie',
+  'granadanet.api.tez.ie',
+  'mainnet.ecadinfra.com',
+  'ghostnet.ecadinfra.com',
+])
+
+const isDeadNodeOverride = (nodeURL: string | null): boolean => {
+  if (!nodeURL) return false
+  try {
+    return DEAD_NODE_HOSTS.has(new URL(nodeURL).hostname)
+  } catch {
+    return false
   }
 }
 
@@ -82,10 +99,16 @@ export const useKolibriStore = defineStore('kolibri', () => {
     document.head.appendChild(meta)
   }
 
-  // Node URL override from localStorage
+  // Node URL override from localStorage. ECAD Labs shut down, taking down api.tez.ie and
+  // ecadinfra.com — drop any saved override pointing at a known-dead host so existing users
+  // fall back to the working default instead of staying stuck on a node that never responds.
   const nodeOverrideKey = `${detected.network}-nodeOverride`
   const savedNodeURL = localStorage.getItem(nodeOverrideKey)
-  const resolvedNodeURL = savedNodeURL || detected.nodeURL
+  const savedNodeIsDead = isDeadNodeOverride(savedNodeURL)
+  if (savedNodeIsDead) {
+    localStorage.removeItem(nodeOverrideKey)
+  }
+  const resolvedNodeURL = savedNodeIsDead ? detected.nodeURL : savedNodeURL || detected.nodeURL
 
   // Network
   const network = ref(detected.network)

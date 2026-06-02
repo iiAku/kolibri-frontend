@@ -139,9 +139,10 @@ const nodes: Record<string, Record<string, string>> = store.isSandbox
       '127.0.0.1:8732': { sandboxnet: 'http://127.0.0.1:8732' },
     }
   : {
-      ECADLabs: { mainnet: 'https://mainnet.ecadinfra.com' },
       TzKT: { mainnet: 'https://rpc.tzkt.io/mainnet' },
       SmartPy: { mainnet: 'https://mainnet.smartpy.io' },
+      'Tezos Commons': { mainnet: 'https://mainnet.tcinfra.net' },
+      'Tezos Foundation': { mainnet: 'https://rpc.tzbeta.net' },
     }
 
 const validNodes = computed(() =>
